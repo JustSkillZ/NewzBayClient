@@ -28,6 +28,8 @@ import com.facebook.login.LoginResult;
 
 public class entrance extends AppCompatActivity {
 
+    private TextView info;
+    private LoginButton loginButton;
     private CallbackManager callbackManager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,8 +37,31 @@ public class entrance extends AppCompatActivity {
         FacebookSdk.sdkInitialize(getApplicationContext());
         callbackManager = CallbackManager.Factory.create();
         setContentView(R.layout.activity_entrance);
-    }
+        info = (TextView)findViewById(R.id.info);
+        loginButton = (LoginButton)findViewById(R.id.btn_Facebook);
+        loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+            @Override
+            public void onSuccess(LoginResult loginResult) {
+                info.setText("User ID: " + loginResult.getAccessToken().getUserId() + "\n" + "Auth Token: " + loginResult.getAccessToken().getToken());
+            }
 
+            @Override
+            public void onCancel() {
+                info.setText("Login attempt canceled.");
+            }
+
+            @Override
+            public void onError(FacebookException e) {
+                info.setText("Login attempt failed.");
+            }
+
+        });
+
+    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        callbackManager.onActivityResult(requestCode, resultCode, data);
+    }
     @Override
     protected void onResume() {
         super.onResume();

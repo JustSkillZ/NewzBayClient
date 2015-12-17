@@ -28,7 +28,7 @@ import com.facebook.login.LoginResult;
 
 public class entrance extends AppCompatActivity {
 
-    private TextView info;
+    private Intent nfScreen = null;
     private LoginButton loginButton;
     private CallbackManager callbackManager;
     @Override
@@ -37,26 +37,30 @@ public class entrance extends AppCompatActivity {
         FacebookSdk.sdkInitialize(getApplicationContext());
         callbackManager = CallbackManager.Factory.create();
         setContentView(R.layout.activity_entrance);
-        info = (TextView)findViewById(R.id.info);
+        if(Profile.getCurrentProfile() != null)
+        {
+            Intent nfScreen = new Intent(this, newsfeed.class);
+            startActivity(nfScreen);
+        }
         loginButton = (LoginButton)findViewById(R.id.btn_Facebook);
         loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
-            public void onSuccess(LoginResult loginResult) {
-                info.setText("User ID: " + loginResult.getAccessToken().getUserId() + "\n" + "Auth Token: " + loginResult.getAccessToken().getToken());
+            public void onSuccess(LoginResult loginResult)
+            {
+                movToNewsFeed();
             }
 
             @Override
             public void onCancel() {
-                info.setText("Login attempt canceled.");
+
             }
 
             @Override
             public void onError(FacebookException e) {
-                info.setText("Login attempt failed.");
+
             }
 
         });
-
     }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -77,8 +81,9 @@ public class entrance extends AppCompatActivity {
         // Logs 'app deactivate' App Event.
         AppEventsLogger.deactivateApp(this);
     }
-    public void movToNewsFeed(View view) {
-        Intent newsfeedScreen = new Intent(this, newsfeed.class);
-        startActivity(newsfeedScreen);
+    public void movToNewsFeed() {
+        Intent nfScreen = new Intent(this, newsfeed.class);
+        startActivity(nfScreen);
+        this.onStop();
     }
 }

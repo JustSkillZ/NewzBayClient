@@ -5,7 +5,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.Vector;
@@ -25,8 +24,6 @@ public class ArticleAdapter  extends ArrayAdapter<String>{
         String letter = getItem(position);
         TextView textView1 = (TextView) view.findViewById(R.id.textView1);
         textView1.setText(letter);
-        ImageView imageView1 = (ImageView) view.findViewById(R.id.imageView1);
-        imageView1.setImageResource(R.drawable.magshimim);
         return view;
     }
 }

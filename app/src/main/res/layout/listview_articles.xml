@@ -2,28 +2,118 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="@color/white"
-    android:layout_gravity="left">
+    android:orientation="vertical"
+    android:layout_gravity="left"
+    android:weightSum="1">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/textView1"
-        android:textSize="30sp"
+        android:text="mainHeadline"
         android:textStyle="bold"
-        android:textColor="@color/grey"
-        android:padding="15dp"
-        android:layout_gravity="left"/>
+        android:textSize="20dp"
+        android:textColor="@color/black"
+        android:id="@+id/tv_mainHeadline"
+        android:layout_gravity="right"
+        android:gravity="center"/>
 
-    <Button
-        android:layout_width="250dp"
-        android:layout_height="70dp"
-        android:id="@+id/btn_test"
-        android:background="@color/grey"
-        android:text="Like"
-        android:onClick="likeClickHandler"
-        android:textColor="@color/white"
-        android:layout_marginLeft="15dp"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="secondHeadline"
+        android:layout_marginTop="3dp"
+        android:textSize="18sp"
+        android:textColor="@color/grey"
+        android:textStyle="bold"
+        android:id="@+id/tv_secondHeadline"
+        android:layout_gravity="right"
+        android:gravity="center"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="YNET 18/12/2015 20:27"
+        android:layout_marginTop="3dp"
+        android:textSize="16sp"
+        android:textColor="@color/grey"
+        android:id="@+id/tv_DateAndSite"
+        android:layout_gravity="right"
+        android:gravity="center_horizontal"/>
+
+
+    <ImageButton
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:maxHeight="360dp"
+        android:id="@+id/ib_picture"
+        android:onClick="openSite"
+        android:background="@drawable/buttonborder"
+        android:src="@drawable/nb_white"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="1">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/tv_likes"
+            android:text="+999 Likes"
+            android:layout_marginBottom="4dp"
+            android:layout_marginTop="4dp"
+            android:textAllCaps="false"
+            android:textSize="16sp"
+            android:onClick="likeClickHandler"
+            android:saveEnabled="true"
+            android:textColor="@color/grey" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/tv_comments"
+            android:text="    +999 Comments"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="4dp"
+            android:textAllCaps="false"
+            android:textSize="16sp"
+            android:textColor="@color/grey"
+            android:layout_weight="0.32" />"
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="2">
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:layout_weight="1"
+            android:id="@+id/btn_like"
+            android:background="@drawable/buttonborder"
+            android:text="Like"
+            android:textAllCaps="false"
+            android:textSize="18sp"
+            android:saveEnabled="true"
+            android:textColor="@color/grey" />
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:layout_weight="1"
+            android:id="@+id/btn_comment"
+            android:background="@drawable/buttonborder"
+            android:text="Comment"
+            android:textAllCaps="false"
+            android:textSize="18sp"
+            android:textColor="@color/grey"/>
+    </LinearLayout>
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="28dp"
+        android:background="@color/nb"
+        android:elevation="10dp"/>
 
 </LinearLayout>

@@ -52,7 +52,7 @@
         android:layout_alignEnd="@+id/btn_Facebook"
         android:layout_alignStart="@+id/btn_Facebook"
         android:background="@drawable/nb_sign_in"
-        android:onClick="movToNewsFeed"
+        android:onClick="signInAsGuest"
         android:clickable="true"/>
 
     <ImageView

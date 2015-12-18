@@ -81,6 +81,12 @@ public class entrance extends AppCompatActivity {
         // Logs 'app deactivate' App Event.
         AppEventsLogger.deactivateApp(this);
     }
+
+    public void signInAsGuest(View v)
+    {
+        movToNewsFeed();
+    }
+
     public void movToNewsFeed() {
         Intent nfScreen = new Intent(this, newsfeed.class);
         startActivity(nfScreen);

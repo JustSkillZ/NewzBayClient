@@ -3,13 +3,17 @@
     package="magshimim.newzbay">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.USE_CREDENTIALS" />
     <application
+        android:largeHeap="true"
         android:name=".MyApplication"
         android:allowBackup="true"
         android:icon="@mipmap/nb"
         android:label="@string/app_name"
         android:theme="@style/AppTheme_NoActionBar" >
         <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/app_id"/>
+        <meta-data android:name="com.google.android.gms.version" android:value="@integer/google_play_services_version" />
         <activity
             android:name=".entrance"
             android:label="@string/app_name"
@@ -34,7 +38,6 @@
             android:label="SignInActivity"
             android:theme="@style/ThemeOverlay.MyNoTitleActivity">
         </activity>
-
     </application>
 
 </manifest>

@@ -40,12 +40,8 @@ public class SignInActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_entrance);
 
-        mStatusTextView = (TextView) findViewById(R.id.status);
-
-
         // Button listeners
         findViewById(R.id.btn_Google).setOnClickListener(this);
-        findViewById(R.id.sign_out_button).setOnClickListener(this);
 
         // [START configure_signin]
         // Configure sign-in to request the user's ID, email address, and basic
@@ -193,12 +189,7 @@ public class SignInActivity extends AppCompatActivity implements
     private void updateUI(boolean signedIn) {
         if (signedIn) {
             findViewById(R.id.btn_Google).setVisibility(View.GONE);
-            findViewById(R.id.sign_out_button).setVisibility(View.VISIBLE);
-        } else {
-            mStatusTextView.setText(R.string.disconnect);
-
-            findViewById(R.id.btn_Google).setVisibility(View.VISIBLE);
-            findViewById(R.id.sign_out_button).setVisibility(View.GONE);
+            movToNewsFeed();
         }
     }
 
@@ -208,9 +199,11 @@ public class SignInActivity extends AppCompatActivity implements
             case R.id.btn_Google:
                 signIn();
                 break;
-            case R.id.sign_out_button:
-                signOut();
-                break;
         }
+    }
+    public void movToNewsFeed() {
+        Intent nfScreen = new Intent(this, newsfeed.class);
+        startActivity(nfScreen);
+        this.onStop();
     }
 }

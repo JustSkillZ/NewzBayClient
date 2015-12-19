@@ -37,7 +37,7 @@ public class entrance extends AppCompatActivity {
         FacebookSdk.sdkInitialize(getApplicationContext());
         callbackManager = CallbackManager.Factory.create();
         setContentView(R.layout.activity_entrance);
-        startActivity(new Intent(this, SignInActivity.class));
+        //startActivity(new Intent(this, SignInActivity.class));
         if(Profile.getCurrentProfile() != null)
         {
             Intent nfScreen = new Intent(this, newsfeed.class);
@@ -46,8 +46,7 @@ public class entrance extends AppCompatActivity {
         loginButton = (LoginButton)findViewById(R.id.btn_Facebook);
         loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
-            public void onSuccess(LoginResult loginResult)
-            {
+            public void onSuccess(LoginResult loginResult) {
                 movToNewsFeed();
             }
 

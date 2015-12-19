@@ -1,0 +1,51 @@
+{
+  "project_info": {
+    "project_id": "newzbay-1162",
+    "project_number": "594269236789",
+    "name": "NewzBay"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:594269236789:android:e7c46a7e5987d2d9",
+        "client_id": "android:magshimim.newzbay",
+        "client_type": 1,
+        "android_client_info": {
+          "package_name": "magshimim.newzbay"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "594269236789-nqnhrq8rckjvefh02e22pam0qvuk8km0.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "magshimim.newzbay",
+            "certificate_hash": "E89B58E8D3455ABDE7A2FF66C52EDBD24CFE4C1E"
+          }
+        }
+      ],
+      "api_key": [],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "cloud_messaging_service": {
+          "status": 1,
+          "apns_config": []
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "google_signin_service": {
+          "status": 2
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "client_info": [],
+  "ARTIFACT_VERSION": "1"
+}

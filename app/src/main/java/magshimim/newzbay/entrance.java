@@ -37,6 +37,7 @@ public class entrance extends AppCompatActivity {
         FacebookSdk.sdkInitialize(getApplicationContext());
         callbackManager = CallbackManager.Factory.create();
         setContentView(R.layout.activity_entrance);
+        startActivity(new Intent(this, SignInActivity.class));
         if(Profile.getCurrentProfile() != null)
         {
             Intent nfScreen = new Intent(this, newsfeed.class);

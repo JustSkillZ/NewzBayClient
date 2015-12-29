@@ -1,8 +1,4 @@
 <resources>
     <string name="app_name">NewzBay</string>
     <string name="app_id">1531168860534945</string>
-    <string name="server_client_id">594269236789-nqnhrq8rckjvefh02e22pam0qvuk8km0.apps.googleusercontent.com</string>
-    <string name="disconnect">Disconnect</string>
-    <string name="signed_in_fmt">Signed in as: %s</string>
-    <string name="loading">Loading…</string>
 </resources>

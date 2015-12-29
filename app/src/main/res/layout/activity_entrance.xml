@@ -33,16 +33,15 @@
         android:id="@+id/tv_EIOP"
         android:textStyle="bold" />
 
-
     <com.google.android.gms.common.SignInButton
-        android:id="@+id/btn_Google"
-        android:layout_alignStart="@+id/iv_magshimim"
         android:layout_width="wrap_content"
         android:layout_height="69dp"
+        android:id="@+id/btn_Google"
         android:layout_below="@+id/tv_EIOP"
         android:layout_marginTop="45dp"
         android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true"/>
+        android:layout_alignParentEnd="true" />
+
 
     <Button
         android:layout_width="wrap_content"

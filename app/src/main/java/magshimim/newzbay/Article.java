@@ -14,8 +14,10 @@ public class Article {
     private Date date;
     private String siteName;
     private String url;
+    private int numberOfLikes;
+    private boolean liked;
 
-    public Article(String subject, String mainHeadline, String secondHeadline, Drawable picture, Date date, String siteName, String url)
+    public Article(String subject, String mainHeadline, String secondHeadline, Drawable picture, Date date, String siteName, String url, int numberOfLikes, boolean liked)
     {
         this.subject = subject;
         this.mainHeadline = mainHeadline;
@@ -24,6 +26,8 @@ public class Article {
         this.date = date;
         this.siteName = siteName;
         this.url = url;
+        this.numberOfLikes = numberOfLikes;
+        this.liked = liked;
     }
 
     public String getSubject()
@@ -59,5 +63,20 @@ public class Article {
     public String getUrl()
     {
         return this.url;
+    }
+
+    public int getNumberOfLikes()
+    {
+        return this.numberOfLikes;
+    }
+
+    public boolean getLiked()
+    {
+        return this.liked;
+    }
+
+    public void setLiked(boolean liked)
+    {
+        this.liked = liked;
     }
 }

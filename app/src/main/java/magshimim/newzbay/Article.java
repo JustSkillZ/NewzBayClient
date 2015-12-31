@@ -15,9 +15,10 @@ public class Article {
     private String siteName;
     private String url;
     private int numberOfLikes;
+    private int numberOfComments;
     private boolean liked;
 
-    public Article(String subject, String mainHeadline, String secondHeadline, Drawable picture, Date date, String siteName, String url, int numberOfLikes, boolean liked)
+    public Article(String subject, String mainHeadline, String secondHeadline, Drawable picture, Date date, String siteName, String url, int numberOfLikes, int numberOfComments, boolean liked)
     {
         this.subject = subject;
         this.mainHeadline = mainHeadline;
@@ -27,6 +28,7 @@ public class Article {
         this.siteName = siteName;
         this.url = url;
         this.numberOfLikes = numberOfLikes;
+        this.numberOfComments = numberOfComments;
         this.liked = liked;
     }
 
@@ -70,6 +72,11 @@ public class Article {
         return this.numberOfLikes;
     }
 
+    public int getNumberOfComments()
+    {
+        return this.numberOfComments;
+    }
+
     public boolean getLiked()
     {
         return this.liked;
@@ -78,5 +85,15 @@ public class Article {
     public void setLiked(boolean liked)
     {
         this.liked = liked;
+    }
+
+    public void incNumberOfLikes()
+    {
+        numberOfLikes++;
+    }
+
+    public void decNumberOfLikes()
+    {
+        numberOfLikes--;
     }
 }

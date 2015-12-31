@@ -36,9 +36,9 @@ public class newsfeed extends AppCompatActivity {
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         saveInInternalFolder("NewzBay", "check");
         Vector<Article> articles = new Vector<Article>();
-        articles.add(new Article("Subject", "כותרת ראשית 1", "Second Headline", null, null, "Site", "http://www.ynet.co.il/articles/0,7340,L-4740637,00.html", 605, true));
-        articles.add(new Article("Subject", "כותרת ראשית 2", "Second Headline", null, null, "Site", "http://www.google.co.il", 524, false));
-        articles.add(new Article("Subject", "כותרת ראשית 3", "Second Headline", null, null, "Site", "http://www.facebook.com", 106, true));
+        articles.add(new Article("Subject", "כותרת ראשית 1", "Second Headline", null, null, "Site", "http://www.ynet.co.il/articles/0,7340,L-4740637,00.html", 605, 24, true));
+        articles.add(new Article("Subject", "כותרת ראשית 2", "Second Headline", null, null, "Site", "http://www.google.co.il", 524, 53, false));
+        articles.add(new Article("Subject", "כותרת ראשית 3", "Second Headline", null, null, "Site", "http://www.facebook.com", 106, 40, true));
         listadapter = new ArticleAdapter(this, articles);
         listView_article = (ListView) findViewById(R.id.listView_articles);
         listView_article.setAdapter(listadapter);
@@ -59,10 +59,10 @@ public class newsfeed extends AppCompatActivity {
     private final Runnable refreshListView = new Runnable(){
         public void run(){
             Vector<Article> articles = new Vector<Article>();
-            articles.add(new Article("Subject", "כותרת ראשית 1", "Second Headline", null, null, "Site", "http://www.ynet.co.il/articles/0,7340,L-4740637,00.html", 605, true));
-            articles.add(new Article("Subject", "כותרת ראשית 2", "Second Headline", null, null, "Site", "http://www.google.co.il", 524, false));
-            articles.add(new Article("Subject", "כותרת ראשית 3", "Second Headline", null, null, "Site", "http://www.facebook.com", 106, true));
-            articles.add(new Article("Subject", "כותרת ראשית 4", "Second Headline", null, null, "Site", "http://www.youtube.com", 275, true));
+            articles.add(new Article("Subject", "כותרת ראשית 1", "Second Headline", null, null, "Site", "http://www.ynet.co.il/articles/0,7340,L-4740637,00.html", 605, 24, true));
+            articles.add(new Article("Subject", "כותרת ראשית 2", "Second Headline", null, null, "Site", "http://www.google.co.il", 524, 53, false));
+            articles.add(new Article("Subject", "כותרת ראשית 3", "Second Headline", null, null, "Site", "http://www.facebook.com", 106, 40, true));
+            articles.add(new Article("Subject", "כותרת ראשית 4", "Second Headline", null, null, "Site", "http://www.youtube.com", 275, 404, true));
 
             listadapter = new ArticleAdapter(newsfeed.this, articles);
             listView_article.setAdapter(listadapter);

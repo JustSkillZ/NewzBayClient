@@ -64,7 +64,6 @@
             android:layout_marginTop="4dp"
             android:textAllCaps="false"
             android:textSize="16sp"
-            android:onClick="likeClickHandler"
             android:saveEnabled="true"
             android:textColor="@color/grey" />
 

@@ -22,7 +22,9 @@ public class ArticleAdapter  extends ArrayAdapter<Article>{
     private Vector<Article> articles;
     private Context context;
     private Button like;
+    private TextView countLikes;
     private Button comment;
+    private TextView countComments;
     private ImageButton picture;
 
     public ArticleAdapter(Context context, Vector<Article> values) {
@@ -32,23 +34,42 @@ public class ArticleAdapter  extends ArrayAdapter<Article>{
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, ViewGroup parent) {
         LayoutInflater layoutInflater = LayoutInflater.from(getContext());
         View view = layoutInflater.inflate(R.layout.listview_articles, parent, false);
         TextView mainHeadline = (TextView) view.findViewById(R.id.tv_mainHeadline);
         mainHeadline.setText(articles.elementAt(position).getMainHeadline());
+        countLikes = (TextView) view.findViewById(R.id.tv_likes);
+        countLikes.setText(articles.get(position).getNumberOfLikes() + " Likes");
+        countComments = (TextView) view.findViewById(R.id.tv_comments);
+        countComments.setText("    " + articles.get(position).getNumberOfComments() + " Comments");
         like = (Button) view.findViewById(R.id.btn_like);
+        if(articles.get(position).getLiked())
+        {
+            like.setText("Unlike");
+        }
+        else
+        {
+            like.setText("Like");
+        }
+
         like.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 like = (Button) v.findViewById(R.id.btn_like);
-                if(like.getText().equals("Like"))
-                {
-                    like.setText("Unlike");
-                }
-                else if(like.getText().equals("Unlike"))
-                {
+                countLikes = (TextView) v.findViewById(R.id.tv_likes);
+                if (articles.get(position).getLiked()) {
                     like.setText("Like");
+                    articles.get(position).setLiked(false);
+                    articles.get(position).decNumberOfLikes();
+                    countLikes.setText(articles.get(position).getNumberOfLikes() + " Likes");
+
+                }
+                else {
+                    like.setText("Unlike");
+                    articles.get(position).setLiked(true);
+                    articles.get(position).incNumberOfLikes();
+                    countLikes.setText(articles.get(position).getNumberOfLikes() + " Likes");
                 }
             }
         });

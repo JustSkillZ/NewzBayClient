@@ -6,6 +6,8 @@ import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -26,11 +28,20 @@ public class ArticleAdapter  extends ArrayAdapter<Article>{
     private Button comment;
     private TextView countComments;
     private ImageButton picture;
+    private WebView web;
+    private android.support.v7.widget.Toolbar toolbar_main;
+    private android.support.v7.widget.Toolbar toolbar_web;
 
-    public ArticleAdapter(Context context, Vector<Article> values) {
+    public ArticleAdapter(Context context, Vector<Article> values, WebView web,
+                          android.support.v7.widget.Toolbar toolbar_main,
+                          android.support.v7.widget.Toolbar toolbar_web)
+    {
         super(context, R.layout.listview_articles, values);
         articles = values;
         this.context = context;
+        this.web = web;
+        this.toolbar_main = toolbar_main;
+        this.toolbar_web = toolbar_web;
     }
 
     @Override
@@ -81,11 +92,11 @@ public class ArticleAdapter  extends ArrayAdapter<Article>{
                 View parentRow = (View) v.getParent();
                 listView = (ListView) parentRow.getParent();
                 int position = listView.getPositionForView(parentRow);
-                Intent intent = new Intent();
-                intent.setAction(Intent.ACTION_VIEW);
-                intent.addCategory(Intent.CATEGORY_BROWSABLE);
-                intent.setData(Uri.parse(articles.elementAt(position).getUrl()));
-                context.startActivity(intent);
+                web.setWebViewClient(new WebViewClient());
+                web.loadUrl(articles.elementAt(position).getUrl());
+                toolbar_main.setVisibility(View.GONE);
+                toolbar_web.setVisibility(View.VISIBLE);
+                web.setVisibility(View.VISIBLE);
             }
         });
         return view;

@@ -6,6 +6,9 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
 import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.ListView;
@@ -22,15 +25,27 @@ import android.widget.Toast;
 public class newsfeed extends AppCompatActivity {
 
     private android.support.v7.widget.Toolbar toolbar_main;
+    private android.support.v7.widget.Toolbar toolbar_web;
     private ListAdapter listadapter;
     private SwipeRefreshLayout refreshList;
     private ListView listView_article;
     private Handler handler = new Handler();
+    private WebView web;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_newsfeed);
+
+        toolbar_web = (android.support.v7.widget.Toolbar) findViewById(R.id.toolbar_web);
+        setSupportActionBar(toolbar_web);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        toolbar_web.setVisibility(View.GONE);
+
+        web = (WebView) findViewById(R.id.wv_article);
+        web.getSettings().setJavaScriptEnabled(true);
+        web.getSettings().setBuiltInZoomControls(true);
+        web.getSettings().setDisplayZoomControls(false);
         toolbar_main = (android.support.v7.widget.Toolbar) findViewById(R.id.toolbar_main);
         setSupportActionBar(toolbar_main);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
@@ -40,7 +55,7 @@ public class newsfeed extends AppCompatActivity {
         articles.add(new Article("Subject", "כותרת ראשית 2", "Second Headline", null, null, "Site", "http://www.google.co.il", 524, 53, false));
         articles.add(new Article("Subject", "כותרת ראשית 3", "Second Headline", null, null, "Site", "http://www.facebook.com", 106, 40, true));
         listView_article = (ListView) findViewById(R.id.listView_articles);
-        listadapter = new ArticleAdapter(this, articles);
+        listadapter = new ArticleAdapter(this, articles, web, toolbar_main, toolbar_web);
         listView_article.setAdapter(listadapter);
         refreshList = (SwipeRefreshLayout) findViewById(R.id.refresh_ListView);
         refreshList.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -64,7 +79,7 @@ public class newsfeed extends AppCompatActivity {
             articles.add(new Article("Subject", "כותרת ראשית 3", "Second Headline", null, null, "Site", "http://www.facebook.com", 106, 40, true));
             articles.add(new Article("Subject", "כותרת ראשית 4", "Second Headline", null, null, "Site", "http://www.youtube.com", 275, 404, true));
 
-            listadapter = new ArticleAdapter(newsfeed.this, articles);
+            listadapter = new ArticleAdapter(newsfeed.this, articles, web, toolbar_main, toolbar_web);
             listView_article.setAdapter(listadapter);
             refreshList.setRefreshing(false);
         }
@@ -105,6 +120,25 @@ public class newsfeed extends AppCompatActivity {
             Toast.makeText(this, "Error read internals", Toast.LENGTH_SHORT).show();
             e.printStackTrace();
             return "";
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if(web.getVisibility() != View.GONE) {
+            if(web.canGoBack()) {
+                web.goBack();
+            }
+            else
+            {
+                toolbar_web.setVisibility(View.GONE);
+                toolbar_main.setVisibility(View.VISIBLE);
+                web.setVisibility(View.GONE);
+                web.clearHistory();
+            }
+        }
+        else {
+            super.onBackPressed();
         }
     }
 }

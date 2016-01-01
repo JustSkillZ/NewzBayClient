@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
+
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:minHeight="?android:attr/actionBarSize"
+    android:background="@color/nb"
+    android:elevation="10dp"
+    android:fadingEdgeLength="10dp"
+    android:theme="@style/AppTheme_NoActionBar">
+
+    <Button
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:background="@drawable/arrow_back_white"
+        android:id="@+id/btn_closeWeb"
+        android:layout_gravity="left"
+        android:layout_marginLeft="5dp"/>
+
+    <Button
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:background="@drawable/navigate_next_white"
+        android:id="@+id/toolbar_search"
+        android:layout_gravity="right" />
+
+    <Button
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:background="@drawable/refresh_white"
+        android:layout_gravity="center_horizontal"
+        android:id="@+id/btn_webRefresh"/>
+
+    <Button
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:background="@drawable/navigate_before_white"
+        android:id="@+id/btn_previousPage"
+        android:layout_gravity="left"
+        android:layout_marginLeft="5dp"/>
+
+</android.support.v7.widget.Toolbar>

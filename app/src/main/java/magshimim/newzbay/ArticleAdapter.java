@@ -57,7 +57,8 @@ public class ArticleAdapter  extends ArrayAdapter<Article>{
             public void onClick(View v) {
 
                 like = (Button) v.findViewById(R.id.btn_like);
-                countLikes = (TextView) listView.getChildAt(position).findViewById(R.id.tv_likes);
+                ViewGroup item = (ViewGroup)v.getParent().getParent();
+                countLikes = (TextView) item.findViewById(R.id.tv_likes);
                 if (articles.get(position).getLiked()) {
                     like.setText("Like");
                     articles.get(position).setLiked(false);

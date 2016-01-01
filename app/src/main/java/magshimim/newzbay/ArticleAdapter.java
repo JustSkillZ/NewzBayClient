@@ -52,12 +52,12 @@ public class ArticleAdapter  extends ArrayAdapter<Article>{
         {
             like.setText("Like");
         }
-
         like.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                v.
                 like = (Button) v.findViewById(R.id.btn_like);
-                countLikes = (TextView) v.findViewById(R.id.tv_likes);
+                countLikes = (TextView) view.findViewById(R.id.tv_likes);
                 if (articles.get(position).getLiked()) {
                     like.setText("Like");
                     articles.get(position).setLiked(false);

@@ -1,6 +1,6 @@
 package magshimim.newzbay;
 
-
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.Socket;
@@ -42,7 +42,22 @@ public class Communication {
             } catch (IOException e1) {
                 e1.printStackTrace();
             }
-
+            try
+            {
+                DataOutputStream dos = new DataOutputStream(clientSocket.getOutputStream());
+                dos.writeUTF("check");
+                dos.flush();
+                dos.close();
+                clientSocket.close();
+            }
+            catch (UnknownHostException e1)
+            {
+                e1.printStackTrace();
+            }
+            catch (IOException e1)
+            {
+                e1.printStackTrace();
+            }
         }
 
     }

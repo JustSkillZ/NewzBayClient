@@ -14,29 +14,34 @@
         android:layout_height="40dp"
         android:background="@drawable/arrow_back_white"
         android:id="@+id/btn_closeWeb"
+        android:onClick="closeWeb"
         android:layout_gravity="left"
         android:layout_marginLeft="5dp"/>
-
-    <Button
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:background="@drawable/navigate_next_white"
-        android:id="@+id/toolbar_search"
-        android:layout_gravity="right" />
-
-    <Button
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:background="@drawable/refresh_white"
-        android:layout_gravity="center_horizontal"
-        android:id="@+id/btn_webRefresh"/>
 
     <Button
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:background="@drawable/navigate_before_white"
         android:id="@+id/btn_previousPage"
-        android:layout_gravity="left"
-        android:layout_marginLeft="5dp"/>
+        android:onClick="previousPage"
+        android:layout_gravity="center_horizontal" />
+
+    <Button
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:background="@drawable/refresh_white"
+        android:layout_gravity="center_horizontal"
+        android:onClick="reloadWebPage"
+        android:id="@+id/btn_webRefresh"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="24dp"/>
+
+    <Button
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:background="@drawable/navigate_next_white"
+        android:id="@+id/btn_nextPage"
+        android:onClick="nextPage"
+        android:layout_gravity="center_horizontal" />
 
 </android.support.v7.widget.Toolbar>

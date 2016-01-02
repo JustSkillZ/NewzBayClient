@@ -10,4 +10,5 @@
     <color name="grey">#545454</color>
     <color name="transparent">#00000000 </color>
     <color name="timestamp">#a0a3a7</color>
+    <color name="disabledButton">#282780</color>
 </resources>

@@ -93,6 +93,7 @@ public class ArticleAdapter  extends ArrayAdapter<Article>{
                 listView = (ListView) parentRow.getParent();
                 int position = listView.getPositionForView(parentRow);
                 web.setWebViewClient(new WebViewClient());
+                web.clearHistory();
                 web.loadUrl(articles.elementAt(position).getUrl());
                 toolbar_main.setVisibility(View.GONE);
                 toolbar_web.setVisibility(View.VISIBLE);

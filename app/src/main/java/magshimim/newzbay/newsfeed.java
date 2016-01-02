@@ -1,26 +1,22 @@
 package magshimim.newzbay;
 
 import android.content.Context;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
-import android.support.v4.widget.DrawerLayout;
+import android.os.Handler;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.webkit.WebSettings;
 import android.webkit.WebView;
-import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.ListView;
-
+import android.widget.Toast;
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Vector;
-import android.os.Handler;
-import android.widget.Toast;
 
 public class newsfeed extends AppCompatActivity {
 
@@ -41,7 +37,6 @@ public class newsfeed extends AppCompatActivity {
         setSupportActionBar(toolbar_web);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         toolbar_web.setVisibility(View.GONE);
-
         web = (WebView) findViewById(R.id.wv_article);
         web.getSettings().setJavaScriptEnabled(true);
         web.getSettings().setBuiltInZoomControls(true);
@@ -131,14 +126,42 @@ public class newsfeed extends AppCompatActivity {
             }
             else
             {
-                toolbar_web.setVisibility(View.GONE);
-                toolbar_main.setVisibility(View.VISIBLE);
-                web.setVisibility(View.GONE);
-                web.clearHistory();
+                closeWeb(null);
             }
         }
         else {
             super.onBackPressed();
+        }
+    }
+
+    public void closeWeb(View v)
+    {
+        toolbar_web.setVisibility(View.GONE);
+        toolbar_main.setVisibility(View.VISIBLE);
+        web.setVisibility(View.GONE);
+        web.loadUrl("about:blank");
+    }
+
+    public void reloadWebPage(View v)
+    {
+        web.reload();
+        v.setAlpha((float)0.65);
+        v.getBackground().setColorFilter(getResources().getColor(R.color.disabledButton), PorterDuff.Mode.MULTIPLY);
+    }
+
+    public void previousPage(View v)
+    {
+        if(web.canGoBack())
+        {
+            web.goBack();
+        }
+    }
+
+    public void nextPage(View v)
+    {
+        if(web.canGoForward())
+        {
+            web.goForward();
         }
     }
 }

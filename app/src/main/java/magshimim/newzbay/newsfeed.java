@@ -7,6 +7,7 @@ import android.os.Handler;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.webkit.WebBackForwardList;
 import android.webkit.WebView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
@@ -27,6 +28,7 @@ public class newsfeed extends AppCompatActivity {
     private ListView listView_article;
     private Handler handler = new Handler();
     private WebView web;
+    private WebBackForwardList webBackForwardList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -122,7 +124,15 @@ public class newsfeed extends AppCompatActivity {
     public void onBackPressed() {
         if(web.getVisibility() != View.GONE) {
             if(web.canGoBack()) {
-                web.goBack();
+                webBackForwardList = web.copyBackForwardList();
+                if(webBackForwardList.getCurrentIndex() == 1)
+                {
+                    closeWeb(null);
+                }
+                else
+                {
+                    web.goBack();
+                }
             }
             else
             {
@@ -153,7 +163,11 @@ public class newsfeed extends AppCompatActivity {
     {
         if(web.canGoBack())
         {
-            web.goBack();
+            webBackForwardList = web.copyBackForwardList();
+            if(webBackForwardList.getCurrentIndex() > 1)
+            {
+                web.goBack();
+            }
         }
     }
 

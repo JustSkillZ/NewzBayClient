@@ -47,10 +47,16 @@ public class entrance extends AppCompatActivity implements
         callbackManager = CallbackManager.Factory.create();
         setContentView(R.layout.activity_entrance);
         communication = new Communication();
+        new Thread(communication).start();
+        while(!communication.getIsConnect())
+        {
+
+        }
         facebook_login();
         if (Profile.getCurrentProfile() != null) {
             Log.d(TAG, "facebook login");
             is_facebook_log = true;
+            communication.clientSend("First name: " + Profile.getCurrentProfile().getFirstName());
             movToNewsFeed();
         }
         else
@@ -78,11 +84,12 @@ public class entrance extends AppCompatActivity implements
 
     public void signInAsGuest(View v) {
         Log.d(TAG, "guest login");
+        communication.clientSend("First name: guest");
         movToNewsFeed();
     }
 
     public void movToNewsFeed() {
-        Intent nfScreen = new Intent(this, newsfeed.class);
+        Intent nfScreen = new Intent(this, newsfeed_activity.class);
         startActivity(nfScreen);
         this.onStop();
     }
@@ -95,6 +102,7 @@ public class entrance extends AppCompatActivity implements
             public void onSuccess(LoginResult loginResult) {
                 is_facebook_log = true;
                 Log.d(TAG, "facebook login");
+                communication.clientSend("First name: " + Profile.getCurrentProfile().getFirstName());
                 movToNewsFeed();
             }
 
@@ -130,14 +138,14 @@ public class entrance extends AppCompatActivity implements
         if (opr.isDone()) {
             // If the user's cached credentials are valid, the OptionalPendingResult will be "done"
             // and the GoogleSignInResult will be available instantly.
-            Log.d(TAG, "Got cached sign-in");
+            //Log.d(TAG, "Got cached sign-in");
             GoogleSignInResult result = opr.get();
             handleSignInResult(result);
         } else {
             // If the user has not previously signed in on this device or the sign-in has expired,
             // this asynchronous branch will attempt to sign in the user silently.  Cross-device
             // single sign-on will occur in this branch.
-            Log.d(TAG, "not cached");
+            //Log.d(TAG, "not cached");
             showProgressDialog();
             opr.setResultCallback(new ResultCallback<GoogleSignInResult>() {
                 @Override
@@ -174,12 +182,13 @@ public class entrance extends AppCompatActivity implements
     }
 
     private void handleSignInResult(GoogleSignInResult result) {
-        Log.d(TAG, "handleSignInResult:" + result.isSuccess());
+        //Log.d(TAG, "handleSignInResult:" + result.isSuccess());
         if (result.isSuccess()) {
             // Signed in successfully, show authenticated UI.
             GoogleSignInAccount acct = result.getSignInAccount();
             Log.d(TAG, "google login");
             is_google_log = true;
+            communication.clientSend("@101|" + acct.getDisplayName());
             movToNewsFeed();
         } else {
             // Signed out, show unauthenticated UI.

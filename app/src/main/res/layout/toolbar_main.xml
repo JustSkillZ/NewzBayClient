@@ -17,13 +17,6 @@
         android:textColor="@color/white"
         android:textSize="28sp"
         android:textStyle="bold" />
-    <Button
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:background="@drawable/nb_white"
-        android:id="@+id/btn_slideMenu"
-        android:layout_gravity="left"
-        android:layout_marginLeft="5dp"/>
 
     <Button
         android:layout_width="40dp"

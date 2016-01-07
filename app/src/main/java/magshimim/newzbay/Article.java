@@ -10,7 +10,7 @@ public class Article {
     private String subject;
     private String mainHeadline;
     private String secondHeadline;
-    private Drawable picture;
+    private Bitmap picture;
     private Date date;
     private String siteName;
     private String url;
@@ -18,7 +18,7 @@ public class Article {
     private int numberOfComments;
     private boolean liked;
 
-    public Article(String subject, String mainHeadline, String secondHeadline, Drawable picture, Date date, String siteName, String url, int numberOfLikes, int numberOfComments, boolean liked)
+    public Article(String subject, String mainHeadline, String secondHeadline, Bitmap picture, Date date, String siteName, String url, int numberOfLikes, int numberOfComments, boolean liked)
     {
         this.subject = subject;
         this.mainHeadline = mainHeadline;
@@ -47,7 +47,7 @@ public class Article {
         return this.secondHeadline;
     }
 
-    public Drawable getPicture()
+    public Bitmap getPicture()
     {
         return this.picture;
     }

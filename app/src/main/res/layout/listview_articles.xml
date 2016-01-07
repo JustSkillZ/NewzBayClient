@@ -44,8 +44,7 @@
 
     <ImageButton
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:maxHeight="360dp"
+        android:layout_height="360dp"
         android:id="@+id/ib_picture"
         android:onClick="openSite"
         android:background="@drawable/buttonborder"

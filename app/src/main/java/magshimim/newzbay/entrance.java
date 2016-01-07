@@ -188,7 +188,7 @@ public class entrance extends AppCompatActivity implements
             GoogleSignInAccount acct = result.getSignInAccount();
             Log.d(TAG, "google login");
             is_google_log = true;
-            communication.clientSend("@101|" + acct.getDisplayName());
+            communication.clientSend("@101|" + acct.getDisplayName() + "|");
             movToNewsFeed();
         } else {
             // Signed out, show unauthenticated UI.

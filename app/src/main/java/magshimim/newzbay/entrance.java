@@ -46,17 +46,17 @@ public class entrance extends AppCompatActivity implements
         FacebookSdk.sdkInitialize(getApplicationContext());
         callbackManager = CallbackManager.Factory.create();
         setContentView(R.layout.activity_entrance);
-        communication = new Communication();
-        new Thread(communication).start();
-        while(!communication.getIsConnect())
-        {
-
-        }
+//        communication = new Communication();
+//        new Thread(communication).start();
+//        while(!communication.getIsConnect())
+//        {
+//
+//        }
         facebook_login();
         if (Profile.getCurrentProfile() != null) {
             Log.d(TAG, "facebook login");
             is_facebook_log = true;
-            communication.clientSend("First name: " + Profile.getCurrentProfile().getFirstName());
+//            communication.clientSend("First name: " + Profile.getCurrentProfile().getFirstName());
             movToNewsFeed();
         }
         else
@@ -84,7 +84,7 @@ public class entrance extends AppCompatActivity implements
 
     public void signInAsGuest(View v) {
         Log.d(TAG, "guest login");
-        communication.clientSend("First name: guest");
+//        communication.clientSend("First name: guest");
         movToNewsFeed();
     }
 
@@ -102,7 +102,7 @@ public class entrance extends AppCompatActivity implements
             public void onSuccess(LoginResult loginResult) {
                 is_facebook_log = true;
                 Log.d(TAG, "facebook login");
-                communication.clientSend("First name: " + Profile.getCurrentProfile().getFirstName());
+//                communication.clientSend("First name: " + Profile.getCurrentProfile().getFirstName());
                 movToNewsFeed();
             }
 
@@ -188,7 +188,7 @@ public class entrance extends AppCompatActivity implements
             GoogleSignInAccount acct = result.getSignInAccount();
             Log.d(TAG, "google login");
             is_google_log = true;
-            communication.clientSend("@101|" + acct.getDisplayName() + "|");
+//            communication.clientSend("@101|" + acct.getDisplayName() + "|");
             movToNewsFeed();
         } else {
             // Signed out, show unauthenticated UI.

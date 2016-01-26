@@ -13,11 +13,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/tv_mainMenu"
-        android:layout_gravity= "center"
         android:text="תפריט ראשי"
         android:textSize="30sp"
         android:textStyle="bold"
-        android:textColor="@color/white">
+        android:textColor="@color/white"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true">
     </TextView>
 
 </RelativeLayout>

@@ -29,7 +29,6 @@ public class entrance extends AppCompatActivity implements
 
     public boolean is_facebook_log = false;
     public boolean is_google_log = false;
-    private Intent nfScreen = null;
     private LoginButton facebook_loginButton;
     private SignInButton google_signInButton;
     private CallbackManager callbackManager;

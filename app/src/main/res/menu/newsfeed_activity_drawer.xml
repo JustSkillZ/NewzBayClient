@@ -5,27 +5,42 @@
     <item android:title="קטגוריות">
         <menu>
             <item
-                android:id="@+id/nav_camera"
-                android:icon="@drawable/ic_menu_camera"
-                android:title="Import" />
+                android:id="@+id/nav_news"
+                android:icon="@drawable/news_category"
+                android:title="חדשות בארץ" />
             <item
-                android:id="@+id/nav_gallery"
-                android:icon="@drawable/ic_menu_gallery"
-                android:title="Gallery" />
+                android:id="@+id/nav_global_news"
+                android:icon="@drawable/global_news_category"
+                android:title="חדשות בעולם" />
             <item
-                android:id="@+id/nav_slideshow"
-                android:icon="@drawable/ic_menu_slideshow"
-                android:title="Slideshow" />
-
+                android:id="@+id/nav_economy"
+                android:icon="@drawable/economy_category"
+                android:title="כלכלה" />
+            <item
+                android:id="@+id/nav_sport"
+                android:icon="@drawable/sport_category"
+                android:title="ספורט" />
+            <item
+                android:id="@+id/nav_culture"
+                android:icon="@drawable/culture_category"
+                android:title="תרבות" />
+            <item
+                android:id="@+id/nav_technology"
+                android:icon="@drawable/technology_category"
+                android:title="טכנולוגיה" />
+            <item
+                android:id="@+id/nav_science"
+                android:icon="@drawable/science_category"
+                android:title="מדע" />
         </menu>
     </item>
 
-    <item android:title="Communicate">
+    <item android:title="">
         <menu>
             <item
                 android:id="@+id/nav_settings"
                 android:icon="@drawable/ic_settings_white_24dp"
-                android:title="Settings" />
+                android:title="הגדרות" />
         </menu>
     </item>
 

@@ -2,8 +2,16 @@ package magshimim.newzbay;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
+import android.graphics.Rect;
+import android.graphics.RectF;
+import android.media.Image;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.NavigationView;
@@ -12,6 +20,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -19,8 +28,11 @@ import android.webkit.WebBackForwardList;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.BufferedReader;
@@ -28,6 +40,8 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Vector;
 
 public class newsfeed_activity extends AppCompatActivity
@@ -73,7 +87,8 @@ public class newsfeed_activity extends AppCompatActivity
         toolbar_main.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                drawer.openDrawer(GravityCompat.START);
+                drawerHandler(drawer);
+
             }
         });
         drawer.setDrawerListener(toggle);
@@ -170,6 +185,22 @@ public class newsfeed_activity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private void drawerHandler(DrawerLayout drawer)
+    {
+        drawer.openDrawer(GravityCompat.START);
+        TextView userFullName = (TextView) drawer.findViewById(R.id.tv_userFullName);
+        if(FacebookAndGoogle.currentFacebookProfile != null)
+        {
+            userFullName.setText(FacebookAndGoogle.currentFacebookProfile.getName());
+            Bitmap bm = FacebookAndGoogle.getBitmapFromURL(FacebookAndGoogle.currentFacebookProfile.getProfilePictureUri(500, 500).toString());
+            ImageButton userPic = (ImageButton) drawer.findViewById(R.id.ib_userPic);
+            userPic.setImageBitmap(RoundedImageView.getCroppedBitmap(bm, 240));
+        }
+
+
+
     }
 
     private void createSwipeRefreshLayout()

@@ -27,8 +27,6 @@ import com.google.android.gms.common.api.ResultCallback;
 public class entrance extends AppCompatActivity implements
         GoogleApiClient.OnConnectionFailedListener, View.OnClickListener {
 
-    public boolean is_facebook_log = false;
-    public boolean is_google_log = false;
     private LoginButton facebook_loginButton;
     private SignInButton google_signInButton;
     private CallbackManager callbackManager;
@@ -42,6 +40,8 @@ public class entrance extends AppCompatActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        FacebookAndGoogle.setLoggedWithFacebook(false);
+        FacebookAndGoogle.setLoggedWithGoogle(false);
         FacebookSdk.sdkInitialize(getApplicationContext());
         callbackManager = CallbackManager.Factory.create();
         setContentView(R.layout.activity_entrance);
@@ -54,13 +54,14 @@ public class entrance extends AppCompatActivity implements
         facebook_login();
         if (Profile.getCurrentProfile() != null) {
             Log.d(TAG, "facebook login");
-            is_facebook_log = true;
+            FacebookAndGoogle.setLoggedWithFacebook(true);
+            FacebookAndGoogle.setCurrentFacebookProfile(Profile.getCurrentProfile());
 //            communication.clientSend("First name: " + Profile.getCurrentProfile().getFirstName());
             movToNewsFeed();
         }
         else
         {
-            is_facebook_log = false;
+            FacebookAndGoogle.setLoggedWithFacebook(false);
             google_login();
         }
     }
@@ -99,7 +100,8 @@ public class entrance extends AppCompatActivity implements
         facebook_loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
-                is_facebook_log = true;
+                FacebookAndGoogle.setLoggedWithFacebook(true);
+                FacebookAndGoogle.setCurrentFacebookProfile(Profile.getCurrentProfile());
                 Log.d(TAG, "facebook login");
 //                communication.clientSend("First name: " + Profile.getCurrentProfile().getFirstName());
                 movToNewsFeed();
@@ -107,12 +109,12 @@ public class entrance extends AppCompatActivity implements
 
             @Override
             public void onCancel() {
-                is_facebook_log = false;
+                FacebookAndGoogle.setLoggedWithFacebook(false);
             }
 
             @Override
             public void onError(FacebookException e) {
-                is_facebook_log = false;
+                FacebookAndGoogle.setLoggedWithFacebook(false);
             }
 
         });
@@ -186,12 +188,12 @@ public class entrance extends AppCompatActivity implements
             // Signed in successfully, show authenticated UI.
             GoogleSignInAccount acct = result.getSignInAccount();
             Log.d(TAG, "google login");
-            is_google_log = true;
+            FacebookAndGoogle.setLoggedWithGoogle(true);
 //            communication.clientSend("@101|" + acct.getDisplayName() + "|");
             movToNewsFeed();
         } else {
             // Signed out, show unauthenticated UI.
-            is_google_log = false;
+            FacebookAndGoogle.setLoggedWithGoogle(false);
         }
     }
 

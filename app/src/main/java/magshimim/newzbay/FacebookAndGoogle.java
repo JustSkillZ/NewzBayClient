@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -30,11 +31,63 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLConnection;
+import java.util.Random;
 
 public class FacebookAndGoogle {
-    public static boolean loggedWithFacebook;
-    public static boolean loggedWithGoogle;
-    public static Profile currentFacebookProfile = null;
+    private static boolean loggedWithFacebook = false;
+    private static boolean loggedWithGoogle = false;
+    private static Profile currentFacebookProfile = null;
+    private static GoogleSignInAccount currentGoogleProfile = null;
+    private static GoogleApiClient mGoogleApiClient = null;
+    private static Bitmap profilePic = null;
+    private static String picURL = "";
+    private static String fullName = "Guest";
+
+    public static void reset(Bitmap bm)
+    {
+        loggedWithFacebook = false;
+        loggedWithGoogle = false;
+        currentFacebookProfile = null;
+        currentGoogleProfile = null;
+        mGoogleApiClient = null;
+        profilePic = bm;
+        picURL = "";
+        Random r = new Random();
+        fullName = "Guest" + Integer.toString(r.nextInt(999999999));
+    }
+
+    public static GoogleApiClient getmGoogleApiClient() {
+        return mGoogleApiClient;
+    }
+
+    public static void setmGoogleApiClient(GoogleApiClient mGoogleApiClient) {
+        FacebookAndGoogle.mGoogleApiClient = mGoogleApiClient;
+    }
+
+    public static GoogleSignInAccount getCurrentGoogleProfile() {
+        return currentGoogleProfile;
+    }
+
+    public static void setCurrentGoogleProfile(GoogleSignInAccount currentGoogleProfile) {
+        FacebookAndGoogle.currentGoogleProfile = currentGoogleProfile;
+    }
+
+    public static String getFullName() {
+        return fullName;
+    }
+
+    public static void setFullName(String fullName) {
+        FacebookAndGoogle.fullName = fullName;
+    }
+
+    public static Bitmap getProfilePic() {
+        return profilePic;
+    }
+
+    public static void setProfilePic(Bitmap profilePic) {
+        FacebookAndGoogle.profilePic = profilePic;
+    }
 
     public static boolean isLoggedWithFacebook()
     {
@@ -56,23 +109,33 @@ public class FacebookAndGoogle {
         loggedWithGoogle = loggedWithGoogle1;
     }
 
+    public static Profile getCurrentFacebookProfile() {
+        return currentFacebookProfile;
+    }
+
     public static void setCurrentFacebookProfile(Profile currentFacebookProfile1)
     {
         currentFacebookProfile = currentFacebookProfile1;
     }
-    public static Bitmap getBitmapFromURL(String src)
-    {
-        try {
-            URL url = new URL(src);
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setDoInput(true);
-            connection.connect();
-            InputStream input = connection.getInputStream();
-            Bitmap myBitmap = BitmapFactory.decodeStream(input);
-            return myBitmap;
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
+    public static Bitmap getBitmapFromURL(String src) {
+        picURL = src;
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    URL url = new URL(picURL);
+                    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                    connection.setDoInput(true);
+                    connection.connect();
+                    InputStream input = connection.getInputStream();
+                    profilePic = BitmapFactory.decodeStream(input);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+        Thread t = new Thread(runnable);
+        t.start();
+        return profilePic;
     }
 }

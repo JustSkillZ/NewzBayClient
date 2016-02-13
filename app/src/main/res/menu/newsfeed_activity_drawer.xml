@@ -34,14 +34,13 @@
                 android:title="מדע" />
         </menu>
     </item>
-
-    <item android:title="">
-        <menu>
-            <item
-                android:id="@+id/nav_settings"
-                android:icon="@drawable/ic_settings_white_24dp"
-                android:title="הגדרות" />
-        </menu>
-    </item>
+    <item
+        android:id="@+id/nav_settings"
+        android:icon="@drawable/ic_settings_white_24dp"
+        android:title="הגדרות" />
+    <item
+        android:id="@+id/nav_discconect"
+        android:icon="@drawable/disconnect_logo"
+        android:title="התנתק" />
 
 </menu>

@@ -2,6 +2,8 @@ package magshimim.newzbay;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -40,8 +42,7 @@ public class entrance extends AppCompatActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        FacebookAndGoogle.setLoggedWithFacebook(false);
-        FacebookAndGoogle.setLoggedWithGoogle(false);
+        FacebookAndGoogle.reset(BitmapFactory.decodeResource(getResources(), R.drawable.user_icon));
         FacebookSdk.sdkInitialize(getApplicationContext());
         callbackManager = CallbackManager.Factory.create();
         setContentView(R.layout.activity_entrance);
@@ -56,6 +57,7 @@ public class entrance extends AppCompatActivity implements
             Log.d(TAG, "facebook login");
             FacebookAndGoogle.setLoggedWithFacebook(true);
             FacebookAndGoogle.setCurrentFacebookProfile(Profile.getCurrentProfile());
+            FacebookAndGoogle.setFullName(FacebookAndGoogle.getCurrentFacebookProfile().getName());
 //            communication.clientSend("First name: " + Profile.getCurrentProfile().getFirstName());
             movToNewsFeed();
         }
@@ -85,13 +87,14 @@ public class entrance extends AppCompatActivity implements
     public void signInAsGuest(View v) {
         Log.d(TAG, "guest login");
 //        communication.clientSend("First name: guest");
+        FacebookAndGoogle.reset(BitmapFactory.decodeResource(getResources(), R.drawable.user_icon));
         movToNewsFeed();
     }
 
     public void movToNewsFeed() {
         Intent nfScreen = new Intent(this, newsfeed_activity.class);
         startActivity(nfScreen);
-        this.onStop();
+        finish();
     }
 
     public void facebook_login()
@@ -100,10 +103,11 @@ public class entrance extends AppCompatActivity implements
         facebook_loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
-                FacebookAndGoogle.setLoggedWithFacebook(true);
-                FacebookAndGoogle.setCurrentFacebookProfile(Profile.getCurrentProfile());
                 Log.d(TAG, "facebook login");
 //                communication.clientSend("First name: " + Profile.getCurrentProfile().getFirstName());
+                FacebookAndGoogle.setLoggedWithFacebook(true);
+                FacebookAndGoogle.setCurrentFacebookProfile(Profile.getCurrentProfile());
+                FacebookAndGoogle.setFullName(FacebookAndGoogle.getCurrentFacebookProfile().getName());
                 movToNewsFeed();
             }
 
@@ -131,7 +135,6 @@ public class entrance extends AppCompatActivity implements
                 .enableAutoManage(this /* FragmentActivity */, this /* OnConnectionFailedListener */)
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .build();
-
         google_signInButton = (SignInButton) findViewById(R.id.btn_Google);
         google_signInButton.setSize(SignInButton.SIZE_STANDARD);
         google_signInButton.setScopes(gso.getScopeArray());
@@ -187,6 +190,8 @@ public class entrance extends AppCompatActivity implements
         if (result.isSuccess()) {
             // Signed in successfully, show authenticated UI.
             GoogleSignInAccount acct = result.getSignInAccount();
+            FacebookAndGoogle.setCurrentGoogleProfile(acct);
+            FacebookAndGoogle.setmGoogleApiClient(mGoogleApiClient);
             Log.d(TAG, "google login");
             FacebookAndGoogle.setLoggedWithGoogle(true);
 //            communication.clientSend("@101|" + acct.getDisplayName() + "|");

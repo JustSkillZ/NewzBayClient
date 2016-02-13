@@ -181,9 +181,6 @@ public class newsfeed_activity extends AppCompatActivity
         }
         else if (id == R.id.nav_discconect) {
             if (FacebookAndGoogle.isLoggedWithGoogle()) {
-                FacebookAndGoogle.getmGoogleApiClient().disconnect();
-                Plus.AccountApi.clearDefaultAccount( FacebookAndGoogle.getmGoogleApiClient());
-                Plus.AccountApi.revokeAccessAndDisconnect( FacebookAndGoogle.getmGoogleApiClient());
                 FacebookAndGoogle.reset(BitmapFactory.decodeResource(getResources(), R.drawable.user_icon));
             }
             else if(FacebookAndGoogle.isLoggedWithFacebook())

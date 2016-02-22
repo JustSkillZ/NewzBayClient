@@ -1,44 +1,24 @@
 package magshimim.newzbay;
 
-import android.app.ProgressDialog;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.os.AsyncTask;
-import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
-import android.view.View;
-import com.facebook.CallbackManager;
-import com.facebook.FacebookCallback;
-import com.facebook.FacebookException;
-import com.facebook.FacebookSdk;
+
 import com.facebook.Profile;
-import com.facebook.appevents.AppEventsLogger;
-import com.facebook.login.LoginResult;
-import com.facebook.login.widget.LoginButton;
-import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.auth.api.signin.GoogleSignInResult;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.OptionalPendingResult;
-import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.plus.model.people.Person;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLConnection;
 import java.util.Random;
 
 public class FacebookAndGoogle {
     private static boolean loggedWithFacebook = false;
     private static boolean loggedWithGoogle = false;
     private static Profile currentFacebookProfile = null;
-    private static GoogleSignInAccount currentGoogleProfile = null;
+    private static Person currentGoogleProfile = null;
     private static GoogleApiClient mGoogleApiClient = null;
     private static Bitmap profilePic = null;
     private static String picURL = "";
@@ -65,11 +45,11 @@ public class FacebookAndGoogle {
         FacebookAndGoogle.mGoogleApiClient = mGoogleApiClient;
     }
 
-    public static GoogleSignInAccount getCurrentGoogleProfile() {
+    public static Person getCurrentGoogleProfile() {
         return currentGoogleProfile;
     }
 
-    public static void setCurrentGoogleProfile(GoogleSignInAccount currentGoogleProfile) {
+    public static void setCurrentGoogleProfile(Person currentGoogleProfile) {
         FacebookAndGoogle.currentGoogleProfile = currentGoogleProfile;
     }
 

@@ -23,6 +23,7 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.facebook.login.LoginManager;
 import com.google.android.gms.plus.Plus;
 
@@ -50,6 +51,10 @@ public class newsfeed_activity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.newsfeed_activity);
+
+        Intent welcome = new Intent(this,Explanation.class);
+        startActivity(welcome);
+
         if(FacebookAndGoogle.isLoggedWithFacebook())
         {
             FacebookAndGoogle.getBitmapFromURL(FacebookAndGoogle.getCurrentFacebookProfile().getProfilePictureUri(500, 500).toString());
@@ -57,7 +62,7 @@ public class newsfeed_activity extends AppCompatActivity
         }
         else if(FacebookAndGoogle.isLoggedWithGoogle())
         {
-            FacebookAndGoogle.getBitmapFromURL(FacebookAndGoogle.getCurrentGoogleProfile().getPhotoUrl().toString());
+            FacebookAndGoogle.getBitmapFromURL(FacebookAndGoogle.getCurrentGoogleProfile().getImage().getUrl().replace("sz=50", "sz=500").toString());
             FacebookAndGoogle.setFullName(FacebookAndGoogle.getCurrentGoogleProfile().getDisplayName());
         }
         createWebView();
@@ -181,7 +186,9 @@ public class newsfeed_activity extends AppCompatActivity
         }
         else if (id == R.id.nav_discconect) {
             if (FacebookAndGoogle.isLoggedWithGoogle()) {
-                FacebookAndGoogle.reset(BitmapFactory.decodeResource(getResources(), R.drawable.user_icon));
+                Plus.AccountApi.clearDefaultAccount(FacebookAndGoogle.getmGoogleApiClient());
+                FacebookAndGoogle.getmGoogleApiClient().disconnect();
+                FacebookAndGoogle.getmGoogleApiClient().connect();
             }
             else if(FacebookAndGoogle.isLoggedWithFacebook())
             {
@@ -252,10 +259,9 @@ public class newsfeed_activity extends AppCompatActivity
             e.printStackTrace();
         }
     }
+
     private String readInInternalFolder(String fileName) {
         Context context = getApplicationContext();
-
-
         try {
             FileInputStream fis = context.openFileInput(fileName);
             InputStreamReader isr = new InputStreamReader(fis, "UTF-8");
@@ -356,4 +362,3 @@ public class newsfeed_activity extends AppCompatActivity
         }
     }
 }
-

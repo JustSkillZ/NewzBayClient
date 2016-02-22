@@ -13,6 +13,10 @@
                 android:icon="@drawable/global_news_category"
                 android:title="חדשות בעולם" />
             <item
+                android:id="@+id/nav_politics"
+                android:icon="@drawable/politics_category"
+                android:title="פוליטיקה" />
+            <item
                 android:id="@+id/nav_economy"
                 android:icon="@drawable/economy_category"
                 android:title="כלכלה" />
@@ -24,6 +28,10 @@
                 android:id="@+id/nav_culture"
                 android:icon="@drawable/culture_category"
                 android:title="תרבות" />
+            <item
+                android:id="@+id/nav_celebrities"
+                android:icon="@drawable/celebrities_category"
+                android:title="סלבס" />
             <item
                 android:id="@+id/nav_technology"
                 android:icon="@drawable/technology_category"

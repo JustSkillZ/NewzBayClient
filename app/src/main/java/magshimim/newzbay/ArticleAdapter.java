@@ -1,6 +1,7 @@
 package magshimim.newzbay;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -95,6 +96,8 @@ public class ArticleAdapter  extends ArrayAdapter<Article>{
                 toolbar_main.setVisibility(View.GONE);
                 toolbar_web.setVisibility(View.VISIBLE);
                 web.setVisibility(View.VISIBLE);
+                Intent intent = new Intent(context,Explanation2.class);
+                context.startActivity(intent);
             }
         });
         return view;

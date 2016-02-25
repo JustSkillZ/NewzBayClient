@@ -12,6 +12,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
 import android.webkit.WebBackForwardList;
@@ -144,6 +145,19 @@ public class newsfeed_activity extends AppCompatActivity
         }
     }
 
+    @Override
+    public boolean onKeyLongPress(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK)
+        {
+            if(web.getVisibility() != View.GONE)
+            {
+                closeWeb(null);
+            }
+            return true;
+        }
+        return super.onKeyLongPress(keyCode, event);
+    }
+
 /** NOT NEEDED FOR NOW
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -174,7 +188,7 @@ public class newsfeed_activity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_news) {
-            // Handle the camera action
+
         } else if (id == R.id.nav_economy) {
 
         } else if (id == R.id.nav_sport) {

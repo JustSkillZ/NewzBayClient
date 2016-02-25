@@ -23,13 +23,14 @@
 
     <style name="AppTheme_NoActionBar.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
-    <style name="Transparent" parent="@style/Theme.AppCompat">
+    <style name="Transparent" parent="@style/Theme.AppCompat.NoActionBar">
         <item name="android:windowIsTranslucent">true</item>
         <item name="android:windowBackground">@color/transparent</item>
         <item name="android:windowContentOverlay">@null</item>
         <item name="android:windowNoTitle">true</item>
-        <item name="android:windowIsFloating">true</item>
         <item name="android:backgroundDimEnabled">true</item>
+        <item name="colorPrimaryDark">@color/timeBar</item>
+        <item name="colorPrimary">@color/nb</item>
     </style>
 
 

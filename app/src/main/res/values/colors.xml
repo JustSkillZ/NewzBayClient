@@ -12,4 +12,5 @@
     <color name="timestamp">#a0a3a7</color>
     <color name="disabledButton">#282780</color>
     <color name="purple">#6c08d3</color>
+    <color name="ExplanationBlue">#34cffc</color>
 </resources>

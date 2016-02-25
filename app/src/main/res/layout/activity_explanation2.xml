@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="magshimim.newzbay.Explanation">
+
+    <include
+        android:id="@+id/toolbar_web"
+        layout="@layout/toolbar_web">
+    </include>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="במסך זה נטען הדף האינטרנטי"
+        android:textColor="@color/ExplanationBlue"
+        android:textStyle="bold"
+        android:paddingLeft="12dp"
+        android:id="@+id/textView2"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="הבנתי"
+        android:textStyle="bold"
+        android:id="@+id/button"
+        android:background="@drawable/button_rounded_corners_facebook"
+        android:onClick="closeExplanation"
+        android:layout_below="@+id/textView2"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="43dp" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/imageView4"
+        android:background="@drawable/arrow_down2"
+        android:layout_alignParentBottom="true"
+        android:layout_alignEnd="@+id/textView2" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="לחיצה קצרה על מקש החזור של המכשיר תחזור עמוד אחד אחורה ולחיצה ארוכה תסגור את הדפדפן"
+        android:textColor="@color/ExplanationBlue"
+        android:textStyle="bold"
+        android:paddingLeft="12dp"
+        android:id="@+id/textView8"
+        android:layout_above="@+id/imageView4"
+        android:layout_alignEnd="@+id/imageView4" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="יציאה מהדפדפן"
+        android:textColor="@color/ExplanationBlue"
+        android:textStyle="bold"
+        android:paddingLeft="12dp"
+        android:id="@+id/textView9"
+        android:layout_below="@+id/imageView5"
+        android:layout_toStartOf="@+id/button" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/imageView5"
+        android:background="@drawable/arrow_up3"
+        android:layout_marginLeft="10dp"
+        android:layout_below="@+id/toolbar_web"
+        android:layout_alignParentStart="true" />
+
+</RelativeLayout>

@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.Vector;
 
@@ -46,6 +47,65 @@ public class ArticleAdapter  extends ArrayAdapter<Article>{
     public View getView(final int position, View convertView, ViewGroup parent) {
         LayoutInflater layoutInflater = LayoutInflater.from(getContext());
         View view = layoutInflater.inflate(R.layout.listview_articles, parent, false);
+        if(!FacebookAndGoogle.isLoggedWithGoogle() && !FacebookAndGoogle.isLoggedWithFacebook())
+        {
+            like = (Button) view.findViewById(R.id.btn_like);
+            like.setBackgroundResource(R.drawable.buttonborder_disabled);
+            like.setAlpha((float) 0.3);
+            like.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Toast toast = Toast.makeText(context, "רק משתמשים מחוברים יכולים לעשות לייק", Toast.LENGTH_LONG);
+                    toast.show();
+                }
+            });
+
+            comment = (Button) view.findViewById(R.id.btn_comment);
+            comment.setBackgroundResource(R.drawable.buttonborder_disabled);
+            comment.setAlpha((float) 0.3);
+            comment.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Toast toast = Toast.makeText(context, "רק משתמשים מחוברים יכולים להגיב", Toast.LENGTH_LONG);
+                    toast.show();
+                }
+            });
+
+        }
+        else
+        {
+            like = (Button) view.findViewById(R.id.btn_like);
+            if(articles.get(position).getLiked())
+            {
+                like.setText("Unlike");
+            }
+            else
+            {
+                like.setText("Like");
+            }
+            like.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    like = (Button) v.findViewById(R.id.btn_like);
+                    ViewGroup item = (ViewGroup)v.getParent().getParent();
+                    countLikes = (TextView) item.findViewById(R.id.tv_likes);
+                    if (articles.get(position).getLiked()) {
+                        like.setText("Like");
+                        articles.get(position).setLiked(false);
+                        articles.get(position).decNumberOfLikes();
+                        countLikes.setText(articles.get(position).getNumberOfLikes() + " Likes");
+
+                    }
+                    else {
+                        like.setText("Unlike");
+                        articles.get(position).setLiked(true);
+                        articles.get(position).incNumberOfLikes();
+                        countLikes.setText(articles.get(position).getNumberOfLikes() + " Likes");
+                    }
+                }
+            });
+        }
         TextView mainHeadline = (TextView) view.findViewById(R.id.tv_mainHeadline);
         mainHeadline.setText(articles.elementAt(position).getMainHeadline());
         countLikes = (TextView) view.findViewById(R.id.tv_likes);
@@ -54,37 +114,6 @@ public class ArticleAdapter  extends ArrayAdapter<Article>{
         countComments.setText("    " + articles.get(position).getNumberOfComments() + " Comments");
         picture = (ImageButton) view.findViewById(R.id.ib_picture);
         picture.setImageBitmap(articles.get(position).getPicture());
-        like = (Button) view.findViewById(R.id.btn_like);
-        if(articles.get(position).getLiked())
-        {
-            like.setText("Unlike");
-        }
-        else
-        {
-            like.setText("Like");
-        }
-        like.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                like = (Button) v.findViewById(R.id.btn_like);
-                ViewGroup item = (ViewGroup)v.getParent().getParent();
-                countLikes = (TextView) item.findViewById(R.id.tv_likes);
-                if (articles.get(position).getLiked()) {
-                    like.setText("Like");
-                    articles.get(position).setLiked(false);
-                    articles.get(position).decNumberOfLikes();
-                    countLikes.setText(articles.get(position).getNumberOfLikes() + " Likes");
-
-                }
-                else {
-                    like.setText("Unlike");
-                    articles.get(position).setLiked(true);
-                    articles.get(position).incNumberOfLikes();
-                    countLikes.setText(articles.get(position).getNumberOfLikes() + " Likes");
-                }
-            }
-        });
         picture = (ImageButton) view.findViewById(R.id.ib_picture);
         picture.setOnClickListener(new View.OnClickListener() {
             @Override

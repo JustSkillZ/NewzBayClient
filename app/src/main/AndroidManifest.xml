@@ -33,23 +33,30 @@
         <activity
             android:name=".newsfeed_activity"
             android:label="@string/title_activity_newsfeed_activity"
-            android:theme="@style/AppTheme_NoActionBar" />
+            android:theme="@style/AppTheme_NoActionBar"
+            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"/>
         <activity
             android:name=".settings_activity"
-            android:label="@string/title_activity_settings_activity" />
-        <activity android:name=".Splash">
+            android:label="@string/title_activity_settings_activity"
+            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"/>
+        <activity android:name=".Splash"
+            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.intent.action.MAIN"/>
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
             android:name=".Explanation"
-            android:theme="@style/Transparent"></activity>
+            android:theme="@style/Transparent"
+            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".Explanation2"
-            android:theme="@style/Transparent"></activity>
+            android:theme="@style/Transparent"
+            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
+            android:screenOrientation="portrait"/>
     </application>
 
 </manifest>

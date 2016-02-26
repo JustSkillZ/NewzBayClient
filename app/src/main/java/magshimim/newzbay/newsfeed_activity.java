@@ -76,9 +76,9 @@ public class newsfeed_activity extends AppCompatActivity
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         saveInInternalFolder("NewzBay", "check");
         Vector<Article> articles = new Vector<Article>();
-        articles.add(new Article("Subject", "כותרת ראשית 1", "Second Headline", BitmapFactory.decodeResource(getResources(), R.drawable.nb_white), null, "Site", "http://www.ynet.co.il/articles/0,7340,L-4740637,00.html", 605, 24, true));
-        articles.add(new Article("Subject", "כותרת ראשית 2", "Second Headline", BitmapFactory.decodeResource(getResources(), R.drawable.nb_white), null, "Site", "http://www.google.co.il", 524, 53, false));
-        articles.add(new Article("Subject", "כותרת ראשית 3", "Second Headline", BitmapFactory.decodeResource(getResources(), R.drawable.nb_white), null, "Site", "http://www.facebook.com", 106, 40, true));
+        articles.add(new Article("Subject", "כותרת ראשית 1", "Second Headline", BitmapFactory.decodeResource(getResources(), R.drawable.anchor), null, "Site", "http://www.ynet.co.il/articles/0,7340,L-4740637,00.html", 605, 24, true));
+        articles.add(new Article("Subject", "כותרת ראשית 2", "Second Headline", BitmapFactory.decodeResource(getResources(), R.drawable.anchor), null, "Site", "http://www.google.co.il", 524, 53, false));
+        articles.add(new Article("Subject", "כותרת ראשית 3", "Second Headline", BitmapFactory.decodeResource(getResources(), R.drawable.anchor), null, "Site", "http://www.facebook.com", 106, 40, true));
         listView_article = (ListView) findViewById(R.id.listView_articles);
         listadapter = new ArticleAdapter(this, articles, web, toolbar_main, toolbar_web);
         listView_article.setAdapter(listadapter);
@@ -86,9 +86,15 @@ public class newsfeed_activity extends AppCompatActivity
 
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar_main, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+                this, drawer, toolbar_main, R.string.navigation_drawer_open, R.string.navigation_drawer_close) {
+            @Override
+            public void onDrawerSlide(View drawerView, float slideOffset) {
+                super.onDrawerSlide(drawerView, slideOffset);
+                drawerHandler(drawer);
+            }
+        };
         toggle.setDrawerIndicatorEnabled(false);
-        toolbar_main.setNavigationIcon(R.drawable.nb_white);
+        toolbar_main.setNavigationIcon(R.drawable.anchor);
         toolbar_main.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -221,7 +227,12 @@ public class newsfeed_activity extends AppCompatActivity
 
     private void drawerHandler(DrawerLayout drawer)
     {
-        drawer.openDrawer(GravityCompat.START);
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        }
+        else {
+            drawer.openDrawer(GravityCompat.START);
+        }
         TextView userFullName = (TextView) drawer.findViewById(R.id.tv_userFullName);
         userFullName.setText(FacebookAndGoogle.getFullName());
         ImageButton userPic = (ImageButton) drawer.findViewById(R.id.ib_userPic);
@@ -246,10 +257,10 @@ public class newsfeed_activity extends AppCompatActivity
     private final Runnable refreshListView = new Runnable(){
         public void run(){
             Vector<Article> articles = new Vector<Article>();
-            articles.add(new Article("Subject", "כותרת ראשית 1", "Second Headline", BitmapFactory.decodeResource(getResources(), R.drawable.nb_white), null, "Site", "http://www.ynet.co.il/articles/0,7340,L-4740637,00.html", 605, 24, true));
-            articles.add(new Article("Subject", "כותרת ראשית 2", "Second Headline", BitmapFactory.decodeResource(getResources(), R.drawable.nb_white), null, "Site", "http://www.google.co.il", 524, 53, false));
-            articles.add(new Article("Subject", "כותרת ראשית 3", "Second Headline", BitmapFactory.decodeResource(getResources(), R.drawable.nb_white), null, "Site", "http://www.facebook.com", 106, 40, true));
-            articles.add(new Article("Subject", "כותרת ראשית 4", "Second Headline", BitmapFactory.decodeResource(getResources(), R.drawable.nb_white), null, "Site", "http://www.youtube.com", 275, 404, true));
+            articles.add(new Article("Subject", "כותרת ראשית 1", "Second Headline", BitmapFactory.decodeResource(getResources(), R.drawable.anchor), null, "Site", "http://www.ynet.co.il/articles/0,7340,L-4740637,00.html", 605, 24, true));
+            articles.add(new Article("Subject", "כותרת ראשית 2", "Second Headline", BitmapFactory.decodeResource(getResources(), R.drawable.anchor), null, "Site", "http://www.google.co.il", 524, 53, false));
+            articles.add(new Article("Subject", "כותרת ראשית 3", "Second Headline", BitmapFactory.decodeResource(getResources(), R.drawable.anchor), null, "Site", "http://www.facebook.com", 106, 40, true));
+            articles.add(new Article("Subject", "כותרת ראשית 4", "Second Headline", BitmapFactory.decodeResource(getResources(), R.drawable.anchor), null, "Site", "http://www.youtube.com", 275, 404, true));
 
             listadapter = new ArticleAdapter(newsfeed_activity.this, articles, web, toolbar_main, toolbar_web);
             listView_article.setAdapter(listadapter);

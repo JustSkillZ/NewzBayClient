@@ -13,7 +13,7 @@ public class Explanation extends AppCompatActivity {
         android.support.v7.widget.Toolbar toolbar_main = (android.support.v7.widget.Toolbar) findViewById(R.id.toolbar_main);
         setSupportActionBar(toolbar_main);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
-        toolbar_main.setNavigationIcon(R.drawable.nb_white);
+        toolbar_main.setNavigationIcon(R.drawable.anchor);
     }
 
     public void closeExplanation(View v)

@@ -47,7 +47,7 @@
         android:layout_width="wrap_content"
         android:layout_height="65dp"
         android:id="@+id/btn_NB"
-        android:drawableLeft="@drawable/nb_new_small24"
+        android:drawableLeft="@drawable/anchor"
         android:text="Sign in as Guest"
         android:textAllCaps="false"
         android:layout_below="@+id/btn_Facebook"

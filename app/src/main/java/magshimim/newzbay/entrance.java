@@ -4,10 +4,12 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.graphics.BitmapFactory;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
 
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
@@ -161,7 +163,9 @@ public class entrance extends AppCompatActivity implements GoogleApiClient.Conne
 
         google_signInButton = (SignInButton) findViewById(R.id.btn_Google);
         google_signInButton.setSize(SignInButton.SIZE_STANDARD);
+        google_signInButton.setColorScheme(SignInButton.COLOR_DARK);
         google_signInButton.setScopes(new Scope[]{Plus.SCOPE_PLUS_LOGIN});
+        setGooglePlusButtonText(google_signInButton);
 
     }
 
@@ -306,6 +310,18 @@ public class entrance extends AppCompatActivity implements GoogleApiClient.Conne
                         }
 
                     });
+        }
+    }
+
+    protected void setGooglePlusButtonText(SignInButton signInButton) {
+        for (int i = 0; i < signInButton.getChildCount(); i++) {
+            View v = signInButton.getChildAt(i);
+            if (v instanceof TextView) {
+                TextView mTextView = (TextView) v;
+                mTextView.setText(R.string.SignInWithGoogle);
+                mTextView.setTypeface(mTextView.getTypeface(), Typeface.BOLD);
+                return;
+            }
         }
     }
 }

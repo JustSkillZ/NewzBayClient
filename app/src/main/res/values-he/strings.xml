@@ -77,8 +77,8 @@
     <string name="section_format">Hello World from section: %1$d</string>
     <string name="title_activity_first_entrance">firstEntrance</string>
 
-    <string name="SignInAsGuest">היכנס כאורח</string>
-    <string name="SignInWithFacebook">היכנס באמצעות פייסבוק</string>
-    <string name="SignInWithGoogle">היכנס באמצעות גוגל</string>
-    <string name="title_activity_explore_articles">ExploreArticles</string>
+    <string name="SignInAsGuest">Sign in as Guest</string>
+    <string name="SignInWithFacebook">Sign in with Facebook</string>
+    <string name="SignInWithGoogle">Sign in with Google</string>
+
 </resources>

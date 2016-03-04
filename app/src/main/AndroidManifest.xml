@@ -32,31 +32,36 @@
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
         <activity
             android:name=".newsfeed_activity"
+            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:label="@string/title_activity_newsfeed_activity"
-            android:theme="@style/AppTheme_NoActionBar"
-            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"/>
+            android:theme="@style/AppTheme_NoActionBar" />
         <activity
             android:name=".settings_activity"
-            android:label="@string/title_activity_settings_activity"
-            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"/>
-        <activity android:name=".Splash"
+            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
+            android:label="@string/title_activity_settings_activity" />
+        <activity
+            android:name=".Splash"
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
+                <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
             android:name=".Explanation"
-            android:theme="@style/Transparent"
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait"
+            android:theme="@style/Transparent" />
         <activity
             android:name=".Explanation2"
-            android:theme="@style/Transparent"
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait"
+            android:theme="@style/Transparent" />
+        <activity
+            android:name=".ExploreArticles"
+            android:label="@string/title_activity_explore_articles"
+            android:theme="@style/AppTheme_NoActionBar"></activity>
     </application>
 
 </manifest>

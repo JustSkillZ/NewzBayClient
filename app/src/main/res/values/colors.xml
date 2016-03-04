@@ -3,7 +3,7 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
-    <color name="white">#FFFFFF</color>
+    <color name="white">#f8fcff</color>
     <color name="black">#000000</color>
     <color name="nb">#2c60b4</color>
     <color name="timeBar">#22498e</color>
@@ -14,4 +14,5 @@
     <color name="disabledButton">#c0c0c0</color>
     <color name="purple">#6c08d3</color>
     <color name="ExplanationBlue">#34cffc</color>
+    <color name="orange">#FBC723</color>
 </resources>

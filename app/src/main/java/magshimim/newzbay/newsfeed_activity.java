@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.NavigationView;
@@ -12,7 +13,11 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
+import android.util.Log;
 import android.view.KeyEvent;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.webkit.WebBackForwardList;
@@ -79,8 +84,11 @@ public class newsfeed_activity extends AppCompatActivity
         articles.add(new Article("Subject", "כותרת ראשית 1", "Second Headline", BitmapFactory.decodeResource(getResources(), R.drawable.anchor), null, "Site", "http://www.ynet.co.il/articles/0,7340,L-4740637,00.html", 605, 24, true));
         articles.add(new Article("Subject", "כותרת ראשית 2", "Second Headline", BitmapFactory.decodeResource(getResources(), R.drawable.anchor), null, "Site", "http://www.google.co.il", 524, 53, false));
         articles.add(new Article("Subject", "כותרת ראשית 3", "Second Headline", BitmapFactory.decodeResource(getResources(), R.drawable.anchor), null, "Site", "http://www.facebook.com", 106, 40, true));
+
+        Articles.setArticles(articles);
+
         listView_article = (ListView) findViewById(R.id.listView_articles);
-        listadapter = new ArticleAdapter(this, articles, web, toolbar_main, toolbar_web);
+        listadapter = new ArticleAdapter(this, web, toolbar_main, toolbar_web);
         listView_article.setAdapter(listadapter);
         createSwipeRefreshLayout();
 
@@ -100,12 +108,17 @@ public class newsfeed_activity extends AppCompatActivity
             public void onClick(View v) {
                 drawerHandler(drawer);
             }
+
         });
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        navigationView.getMenu().findItem(R.id.nav_hot_news).getIcon().setColorFilter(getResources().getColor(R.color.orange), PorterDuff.Mode.SRC_ATOP);
+        SpannableString spanString = new SpannableString(navigationView.getMenu().findItem(R.id.nav_hot_news).getTitle().toString());
+        spanString.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.orange)), 0, spanString.length(), 0); //fix the color to white
+        navigationView.getMenu().findItem(R.id.nav_hot_news).setTitle(spanString);
     }
 
     @Override
@@ -164,36 +177,16 @@ public class newsfeed_activity extends AppCompatActivity
         return super.onKeyLongPress(keyCode, event);
     }
 
-/** NOT NEEDED FOR NOW
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.newsfeed_activity, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-**/
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-
-        if (id == R.id.nav_news) {
+        if (id == R.id.nav_hot_news) {
+            Intent intent = new Intent(this, ExploreArticles.class);
+            startActivity(intent);
+            this.onStop();
+        } else if (id == R.id.nav_news) {
 
         } else if (id == R.id.nav_economy) {
 
@@ -220,10 +213,11 @@ public class newsfeed_activity extends AppCompatActivity
             startActivity(intent);
             finish();
         }
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
+
 
     private void drawerHandler(DrawerLayout drawer)
     {
@@ -234,9 +228,15 @@ public class newsfeed_activity extends AppCompatActivity
             drawer.openDrawer(GravityCompat.START);
         }
         TextView userFullName = (TextView) drawer.findViewById(R.id.tv_userFullName);
-        userFullName.setText(FacebookAndGoogle.getFullName());
+        if(userFullName != null)
+        {
+            userFullName.setText(FacebookAndGoogle.getFullName());
+        }
         ImageButton userPic = (ImageButton) drawer.findViewById(R.id.ib_userPic);
-        userPic.setImageBitmap(RoundedImageView.getCroppedBitmap(FacebookAndGoogle.getProfilePic(), 240));
+        if(userPic != null)
+        {
+            userPic.setImageBitmap(RoundedImageView.getCroppedBitmap(FacebookAndGoogle.getProfilePic(), 240));
+        }
     }
 
     private void createSwipeRefreshLayout()
@@ -262,7 +262,9 @@ public class newsfeed_activity extends AppCompatActivity
             articles.add(new Article("Subject", "כותרת ראשית 3", "Second Headline", BitmapFactory.decodeResource(getResources(), R.drawable.anchor), null, "Site", "http://www.facebook.com", 106, 40, true));
             articles.add(new Article("Subject", "כותרת ראשית 4", "Second Headline", BitmapFactory.decodeResource(getResources(), R.drawable.anchor), null, "Site", "http://www.youtube.com", 275, 404, true));
 
-            listadapter = new ArticleAdapter(newsfeed_activity.this, articles, web, toolbar_main, toolbar_web);
+            Articles.setArticles(articles);
+
+            listadapter = new ArticleAdapter(newsfeed_activity.this, web, toolbar_main, toolbar_web);
             listView_article.setAdapter(listadapter);
             refreshList.setRefreshing(false);
         }

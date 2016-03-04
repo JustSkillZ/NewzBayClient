@@ -1,0 +1,103 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="magshimim.newzbay.ExploreArticles$PlaceholderFragment">
+
+    <ImageButton
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/ib_article_pic"
+        android:background="@drawable/temp"
+        android:fadingEdge="horizontal"/>
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:id="@+id/iv_dimEffect"
+        android:background="@color/black"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:alpha="0.3"
+        android:layout_alignTop="@+id/tv_article_title" />
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:id="@+id/imageView6"
+        android:background="@color/black"
+        android:alpha="0.3"
+        android:layout_alignBottom="@+id/iv_category"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Here will be written the title of the article"
+        android:textStyle="bold"
+        android:textSize="25dp"
+        android:id="@+id/tv_article_title"
+        android:layout_above="@+id/tv_article_likes"
+        android:layout_alignParentStart="true"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Likes"
+        android:textStyle="bold"
+        android:textSize="17dp"
+        android:layout_marginBottom="10dp"
+        android:textColor="#FBC723"
+        android:id="@+id/tv_article_likes"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Source"
+        android:id="@+id/tv_article_site"
+        android:textStyle="bold"
+        android:textSize="17dp"
+        android:layout_marginBottom="10dp"
+        android:textColor="#FBC723"
+        android:layout_marginLeft="10dp"
+        android:layout_alignParentBottom="true"
+        android:layout_toEndOf="@+id/tv_article_likes" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="/ Time Ago"
+        android:id="@+id/tv_article_time"
+        android:textStyle="bold"
+        android:textSize="17dp"
+        android:layout_marginBottom="10dp"
+        android:textColor="#FBC723"
+        android:layout_marginLeft="10dp"
+        android:layout_alignParentBottom="true"
+        android:layout_toEndOf="@+id/tv_article_site" />
+
+    <ImageView
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:id="@+id/iv_category"
+        android:layout_alignParentTop="true"
+        android:background="@drawable/hot_news"
+        android:backgroundTint="#FBC723"
+        android:layout_centerHorizontal="true" />
+
+    <ImageButton
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:id="@+id/ib_like"
+        android:background="@drawable/like_hot_article"
+        android:layout_marginEnd="43dp"
+        android:layout_alignBottom="@+id/tv_article_time"
+        android:layout_alignParentEnd="true" />
+</RelativeLayout>

@@ -9,7 +9,7 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="magshimim.newzbay.entrance"
-    android:background="@drawable/temp">
+    android:background="@drawable/main_background">
 
     <TextView
         android:layout_width="wrap_content"
@@ -19,7 +19,7 @@
         android:id="@+id/tv_newzbay"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:textColor="@color/white"
+        android:textColor="@color/nb"
         android:textStyle="bold" />
 
     <TextView
@@ -29,13 +29,13 @@
         android:textSize="25sp"
         android:text="All News, Just Use"
         android:layout_centerHorizontal="true"
-        android:textColor="@color/white"
+        android:textColor="@color/nb"
         android:id="@+id/tv_EIOP"
         android:textStyle="bold" />
 
     <com.google.android.gms.common.SignInButton
         android:layout_width="wrap_content"
-        android:layout_height="69dp"
+        android:layout_height="59dp"
         android:id="@+id/btn_Google"
         android:layout_marginTop="43dp"
         android:layout_below="@+id/tv_EIOP"
@@ -45,10 +45,11 @@
 
     <Button
         android:layout_width="wrap_content"
-        android:layout_height="65dp"
+        android:layout_height="50dp"
         android:id="@+id/btn_NB"
-        android:drawableLeft="@drawable/anchor"
-        android:text="Sign in as Guest"
+        android:drawableLeft="@drawable/anchor_logo"
+        android:text="@string/SignInAsGuest"
+        android:textStyle="bold"
         android:textAllCaps="false"
         android:layout_below="@+id/btn_Facebook"
         android:layout_marginTop="25dp"
@@ -58,21 +59,12 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true" />
 
-    <ImageView
-        android:layout_width="250dp"
-        android:layout_height="69dp"
-        android:id="@+id/iv_magshimim"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:background="@drawable/magshimim"
-        android:layout_centerVertical="true" />
-
     <com.facebook.login.widget.LoginButton
         android:id="@+id/btn_Facebook"
         android:layout_width="wrap_content"
-        android:layout_height="67dp"
-        fb:com_facebook_login_text="Sign in with Facebook"
-        fb:com_facebook_logout_text=""
+        android:layout_height="47dp"
+        fb:com_facebook_login_text="@string/SignInWithFacebook"
+        fb:com_facebook_logout_text="@string/SignInWithFacebook"
         android:background="@drawable/button_rounded_corners_facebook"
         android:layout_marginTop="25dp"
         android:paddingBottom="23dp"

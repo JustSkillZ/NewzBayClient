@@ -18,7 +18,7 @@
         android:textSize="28sp"
         android:textStyle="bold" />
 
-    <Button
+    <ImageButton
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:background="@drawable/search_white"

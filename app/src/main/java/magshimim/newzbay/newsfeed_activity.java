@@ -56,11 +56,88 @@ public class newsfeed_activity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.newsfeed_activity);
+        //--------------------------------------------------------------------------------------------------TEST-------------------------------------------------------------------------------------------------------------------------------------------------
+        Vector<Article> articles = new Vector<Article>();
+        articles.add(new Article("Subject", "כותרת ראשית 1", "Second Headline", BitmapFactory.decodeResource(getResources(), R.drawable.anchor), null, "ynet", "http://www.ynet.co.il", 605, 24, true));
+        Categories.setNews(articles);
+        articles = new Vector<Article>();
+        articles.add(new Article("Subject", "כותרת ראשית 1", "Second Headline", BitmapFactory.decodeResource(getResources(), R.drawable.anchor), null, "ynet", "http://www.ynet.co.il", 605, 24, true));
+        articles.add(new Article("Subject", "כותרת ראשית 2", "Second Headline", BitmapFactory.decodeResource(getResources(), R.drawable.anchor), null, "ONE", "http://www.one.co.il", 524, 53, false));
+        Categories.setGlobalNews(articles);
+        articles = new Vector<Article>();
+        articles.add(new Article("Subject", "כותרת ראשית 1", "Second Headline", BitmapFactory.decodeResource(getResources(), R.drawable.anchor), null, "ynet", "http://www.ynet.co.il", 605, 24, true));
+        articles.add(new Article("Subject", "כותרת ראשית 2", "Second Headline", BitmapFactory.decodeResource(getResources(), R.drawable.anchor), null, "ONE", "http://www.one.co.il", 524, 53, false));
+        articles.add(new Article("Subject", "כותרת ראשית 3", "Second Headline", BitmapFactory.decodeResource(getResources(), R.drawable.anchor), null, "mako", "http://www.mako.co.il/", 106, 40, true));
+        Categories.setPolitics(articles);
+        articles = new Vector<Article>();
+        articles.add(new Article("Subject", "כותרת ראשית 1", "Second Headline", BitmapFactory.decodeResource(getResources(), R.drawable.anchor), null, "ynet", "http://www.ynet.co.il", 605, 24, true));
+        articles.add(new Article("Subject", "כותרת ראשית 2", "Second Headline", BitmapFactory.decodeResource(getResources(), R.drawable.anchor), null, "ONE", "http://www.one.co.il", 524, 53, false));
+        articles.add(new Article("Subject", "כותרת ראשית 3", "Second Headline", BitmapFactory.decodeResource(getResources(), R.drawable.anchor), null, "mako", "http://www.mako.co.il/", 106, 40, true));
+        articles.add(new Article("Subject", "כותרת ראשית 4", "Second Headline", BitmapFactory.decodeResource(getResources(), R.drawable.anchor), null, "9 канал", "http://9tv.co.il/", 106, 40, true));
+        Categories.setEconomy(articles);
+        articles = new Vector<Article>();
+        articles.add(new Article("Subject", "כותרת ראשית 1", "Second Headline", BitmapFactory.decodeResource(getResources(), R.drawable.anchor), null, "ynet", "http://www.ynet.co.il", 605, 24, true));
+        articles.add(new Article("Subject", "כותרת ראשית 2", "Second Headline", BitmapFactory.decodeResource(getResources(), R.drawable.anchor), null, "ONE", "http://www.one.co.il", 524, 53, false));
+        articles.add(new Article("Subject", "כותרת ראשית 3", "Second Headline", BitmapFactory.decodeResource(getResources(), R.drawable.anchor), null, "mako", "http://www.mako.co.il/", 106, 40, true));
+        articles.add(new Article("Subject", "כותרת ראשית 4", "Second Headline", BitmapFactory.decodeResource(getResources(), R.drawable.anchor), null, "9 канал", "http://9tv.co.il/", 106, 40, true));
+        articles.add(new Article("Subject", "כותרת ראשית 5", "Second Headline", BitmapFactory.decodeResource(getResources(), R.drawable.anchor), null, "נענע 10", "http://www.nana10.co.il/", 106, 40, true));
+        Categories.setSport(articles);
+        articles = new Vector<Article>();
+        articles.add(new Article("Subject", "כותרת ראשית 1", "Second Headline", BitmapFactory.decodeResource(getResources(), R.drawable.anchor), null, "ynet", "http://www.ynet.co.il", 605, 24, true));
+        articles.add(new Article("Subject", "כותרת ראשית 2", "Second Headline", BitmapFactory.decodeResource(getResources(), R.drawable.anchor), null, "ONE", "http://www.one.co.il", 524, 53, false));
+        articles.add(new Article("Subject", "כותרת ראשית 3", "Second Headline", BitmapFactory.decodeResource(getResources(), R.drawable.anchor), null, "mako", "http://www.mako.co.il/", 106, 40, true));
+        articles.add(new Article("Subject", "כותרת ראשית 4", "Second Headline", BitmapFactory.decodeResource(getResources(), R.drawable.anchor), null, "9 канал", "http://9tv.co.il/", 106, 40, true));
+        articles.add(new Article("Subject", "כותרת ראשית 5", "Second Headline", BitmapFactory.decodeResource(getResources(), R.drawable.anchor), null, "נענע 10", "http://www.nana10.co.il/", 106, 40, true));
+        articles.add(new Article("Subject", "כותרת ראשית 6", "Second Headline", BitmapFactory.decodeResource(getResources(), R.drawable.anchor), null, "Geektime", "http://www.geektime.co.il/", 106, 40, true));
+        Categories.setCulture(articles);
+        articles = new Vector<Article>();
+        articles.add(new Article("Subject", "כותרת ראשית 1", "Second Headline", BitmapFactory.decodeResource(getResources(), R.drawable.anchor), null, "ynet", "http://www.ynet.co.il", 605, 24, true));
+        articles.add(new Article("Subject", "כותרת ראשית 2", "Second Headline", BitmapFactory.decodeResource(getResources(), R.drawable.anchor), null, "ONE", "http://www.one.co.il", 524, 53, false));
+        articles.add(new Article("Subject", "כותרת ראשית 3", "Second Headline", BitmapFactory.decodeResource(getResources(), R.drawable.anchor), null, "mako", "http://www.mako.co.il/", 106, 40, true));
+        articles.add(new Article("Subject", "כותרת ראשית 4", "Second Headline", BitmapFactory.decodeResource(getResources(), R.drawable.anchor), null, "9 канал", "http://9tv.co.il/", 106, 40, true));
+        articles.add(new Article("Subject", "כותרת ראשית 5", "Second Headline", BitmapFactory.decodeResource(getResources(), R.drawable.anchor), null, "נענע 10", "http://www.nana10.co.il/", 106, 40, true));
+        articles.add(new Article("Subject", "כותרת ראשית 6", "Second Headline", BitmapFactory.decodeResource(getResources(), R.drawable.anchor), null, "Geektime", "http://www.geektime.co.il/", 106, 40, true));
+        articles.add(new Article("Subject", "כותרת ראשית 7", "Second Headline", BitmapFactory.decodeResource(getResources(), R.drawable.anchor), null, "NEXTER", "http://www.mako.co.il/nexter", 106, 40, true));
+        Categories.setCelebrities(articles);
+        articles = new Vector<Article>();
+        articles.add(new Article("Subject", "כותרת ראשית 1", "Second Headline", BitmapFactory.decodeResource(getResources(), R.drawable.anchor), null, "ynet", "http://www.ynet.co.il", 605, 24, true));
+        articles.add(new Article("Subject", "כותרת ראשית 2", "Second Headline", BitmapFactory.decodeResource(getResources(), R.drawable.anchor), null, "ONE", "http://www.one.co.il", 524, 53, false));
+        articles.add(new Article("Subject", "כותרת ראשית 3", "Second Headline", BitmapFactory.decodeResource(getResources(), R.drawable.anchor), null, "mako", "http://www.mako.co.il/", 106, 40, true));
+        articles.add(new Article("Subject", "כותרת ראשית 4", "Second Headline", BitmapFactory.decodeResource(getResources(), R.drawable.anchor), null, "9 канал", "http://9tv.co.il/", 106, 40, true));
+        articles.add(new Article("Subject", "כותרת ראשית 5", "Second Headline", BitmapFactory.decodeResource(getResources(), R.drawable.anchor), null, "נענע 10", "http://www.nana10.co.il/", 106, 40, true));
+        articles.add(new Article("Subject", "כותרת ראשית 6", "Second Headline", BitmapFactory.decodeResource(getResources(), R.drawable.anchor), null, "Geektime", "http://www.geektime.co.il/", 106, 40, true));
+        articles.add(new Article("Subject", "כותרת ראשית 7", "Second Headline", BitmapFactory.decodeResource(getResources(), R.drawable.anchor), null, "NEXTER", "http://www.mako.co.il/nexter", 106, 40, true));
+        articles.add(new Article("Subject", "כותרת ראשית 8", "Second Headline", BitmapFactory.decodeResource(getResources(), R.drawable.anchor), null, "ישראל היום", "http://www.israelhayom.co.il/", 106, 40, true));
+        Categories.setTechnology(articles);
+        articles = new Vector<Article>();
+        articles.add(new Article("Subject", "כותרת ראשית 1", "Second Headline", BitmapFactory.decodeResource(getResources(), R.drawable.anchor), null, "ynet", "http://www.ynet.co.il", 605, 24, true));
+        articles.add(new Article("Subject", "כותרת ראשית 2", "Second Headline", BitmapFactory.decodeResource(getResources(), R.drawable.anchor), null, "ONE", "http://www.one.co.il", 524, 53, false));
+        articles.add(new Article("Subject", "כותרת ראשית 3", "Second Headline", BitmapFactory.decodeResource(getResources(), R.drawable.anchor), null, "mako", "http://www.mako.co.il/", 106, 40, true));
+        articles.add(new Article("Subject", "כותרת ראשית 4", "Second Headline", BitmapFactory.decodeResource(getResources(), R.drawable.anchor), null, "9 канал", "http://9tv.co.il/", 106, 40, true));
+        articles.add(new Article("Subject", "כותרת ראשית 5", "Second Headline", BitmapFactory.decodeResource(getResources(), R.drawable.anchor), null, "נענע 10", "http://www.nana10.co.il/", 106, 40, true));
+        articles.add(new Article("Subject", "כותרת ראשית 6", "Second Headline", BitmapFactory.decodeResource(getResources(), R.drawable.anchor), null, "Geektime", "http://www.geektime.co.il/", 106, 40, true));
+        articles.add(new Article("Subject", "כותרת ראשית 7", "Second Headline", BitmapFactory.decodeResource(getResources(), R.drawable.anchor), null, "NEXTER", "http://www.mako.co.il/nexter", 106, 40, true));
+        articles.add(new Article("Subject", "כותרת ראשית 8", "Second Headline", BitmapFactory.decodeResource(getResources(), R.drawable.anchor), null, "ישראל היום", "http://www.israelhayom.co.il/", 106, 40, true));
+        articles.add(new Article("Subject", "כותרת ראשית 9", "Second Headline", BitmapFactory.decodeResource(getResources(), R.drawable.anchor), null, "כלכליסט", "http://www.calcalist.co.il/", 106, 40, true));
+        Categories.setScience(articles);
+        articles = new Vector<Article>();
+        articles.add(new Article("Subject", "כותרת ראשית 1", "Second Headline", BitmapFactory.decodeResource(getResources(), R.drawable.anchor), null, "ynet", "http://www.ynet.co.il", 605, 24, true));
+        articles.add(new Article("Subject", "כותרת ראשית 2", "Second Headline", BitmapFactory.decodeResource(getResources(), R.drawable.anchor), null, "ONE", "http://www.one.co.il", 524, 53, false));
+        articles.add(new Article("Subject", "כותרת ראשית 3", "Second Headline", BitmapFactory.decodeResource(getResources(), R.drawable.anchor), null, "mako", "http://www.mako.co.il/", 106, 40, true));
+        articles.add(new Article("Subject", "כותרת ראשית 4", "Second Headline", BitmapFactory.decodeResource(getResources(), R.drawable.anchor), null, "9 канал", "http://9tv.co.il/", 106, 40, true));
+        articles.add(new Article("Subject", "כותרת ראשית 5", "Second Headline", BitmapFactory.decodeResource(getResources(), R.drawable.anchor), null, "נענע 10", "http://www.nana10.co.il/", 106, 40, true));
+        articles.add(new Article("Subject", "כותרת ראשית 6", "Second Headline", BitmapFactory.decodeResource(getResources(), R.drawable.anchor), null, "Geektime", "http://www.geektime.co.il/", 106, 40, true));
+        articles.add(new Article("Subject", "כותרת ראשית 7", "Second Headline", BitmapFactory.decodeResource(getResources(), R.drawable.anchor), null, "NEXTER", "http://www.mako.co.il/nexter", 106, 40, true));
+        articles.add(new Article("Subject", "כותרת ראשית 8", "Second Headline", BitmapFactory.decodeResource(getResources(), R.drawable.anchor), null, "ישראל היום", "http://www.israelhayom.co.il/", 106, 40, true));
+        articles.add(new Article("Subject", "כותרת ראשית 9", "Second Headline", BitmapFactory.decodeResource(getResources(), R.drawable.anchor), null, "כלכליסט", "http://www.calcalist.co.il/", 106, 40, true));
+        articles.add(new Article("Subject", "כותרת ראשית 10", "Second Headline", BitmapFactory.decodeResource(getResources(), R.drawable.anchor), null, "וואלה!", "http://www.walla.co.il/", 106, 40, true));
+        Categories.setHotNews(articles);
+        //--------------------------------------------------------------------------------------------------TEST-------------------------------------------------------------------------------------------------------------------------------------------------
+        Categories.setCurrentlyInUseCategory(1, getApplicationContext());
 
+        setContentView(R.layout.newsfeed_activity);
         Intent welcome = new Intent(this,Explanation.class);
         startActivity(welcome);
-
         if(FacebookAndGoogle.isLoggedWithFacebook())
         {
             FacebookAndGoogle.getBitmapFromURL(FacebookAndGoogle.getCurrentFacebookProfile().getProfilePictureUri(500, 500).toString());
@@ -79,13 +156,15 @@ public class newsfeed_activity extends AppCompatActivity
         toolbar_main = (android.support.v7.widget.Toolbar) findViewById(R.id.toolbar_main);
         setSupportActionBar(toolbar_main);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
-        saveInInternalFolder("NewzBay", "check");
-        Vector<Article> articles = new Vector<Article>();
-        articles.add(new Article("Subject", "כותרת ראשית 1", "Second Headline", BitmapFactory.decodeResource(getResources(), R.drawable.anchor), null, "Site", "http://www.ynet.co.il/articles/0,7340,L-4740637,00.html", 605, 24, true));
-        articles.add(new Article("Subject", "כותרת ראשית 2", "Second Headline", BitmapFactory.decodeResource(getResources(), R.drawable.anchor), null, "Site", "http://www.google.co.il", 524, 53, false));
-        articles.add(new Article("Subject", "כותרת ראשית 3", "Second Headline", BitmapFactory.decodeResource(getResources(), R.drawable.anchor), null, "Site", "http://www.facebook.com", 106, 40, true));
 
-        Articles.setArticles(articles);
+        for (int i = 0; i <= toolbar_main.getChildCount(); i++) {
+            View v = toolbar_main.getChildAt(i);
+            if (v instanceof TextView) {
+                ((TextView) v).setText(Categories.getCurrentlyInUseCategory());
+            }
+        }
+
+        saveInInternalFolder("NewzBay", "check");
 
         listView_article = (ListView) findViewById(R.id.listView_articles);
         listadapter = new ArticleAdapter(this, web, toolbar_main, toolbar_web);
@@ -187,10 +266,49 @@ public class newsfeed_activity extends AppCompatActivity
             startActivity(intent);
             this.onStop();
         } else if (id == R.id.nav_news) {
+            Categories.setCurrentlyInUseCategory(1, getApplicationContext());
+            listadapter = new ArticleAdapter(newsfeed_activity.this, web, toolbar_main, toolbar_web);
+            listView_article.setAdapter(listadapter);
+
+        } else if (id == R.id.nav_global_news) {
+            Categories.setCurrentlyInUseCategory(2, getApplicationContext());
+            listadapter = new ArticleAdapter(newsfeed_activity.this, web, toolbar_main, toolbar_web);
+            listView_article.setAdapter(listadapter);
+
+        } else if (id == R.id.nav_politics) {
+            Categories.setCurrentlyInUseCategory(3, getApplicationContext());
+            listadapter = new ArticleAdapter(newsfeed_activity.this, web, toolbar_main, toolbar_web);
+            listView_article.setAdapter(listadapter);
 
         } else if (id == R.id.nav_economy) {
+            Categories.setCurrentlyInUseCategory(4, getApplicationContext());
+            listadapter = new ArticleAdapter(newsfeed_activity.this, web, toolbar_main, toolbar_web);
+            listView_article.setAdapter(listadapter);
 
         } else if (id == R.id.nav_sport) {
+            Categories.setCurrentlyInUseCategory(5, getApplicationContext());
+            listadapter = new ArticleAdapter(newsfeed_activity.this, web, toolbar_main, toolbar_web);
+            listView_article.setAdapter(listadapter);
+
+        } else if (id == R.id.nav_culture) {
+            Categories.setCurrentlyInUseCategory(6, getApplicationContext());
+            listadapter = new ArticleAdapter(newsfeed_activity.this, web, toolbar_main, toolbar_web);
+            listView_article.setAdapter(listadapter);
+
+        } else if (id == R.id.nav_celebrities) {
+            Categories.setCurrentlyInUseCategory(7, getApplicationContext());
+            listadapter = new ArticleAdapter(newsfeed_activity.this, web, toolbar_main, toolbar_web);
+            listView_article.setAdapter(listadapter);
+
+        } else if (id == R.id.nav_technology) {
+            Categories.setCurrentlyInUseCategory(8, getApplicationContext());
+            listadapter = new ArticleAdapter(newsfeed_activity.this, web, toolbar_main, toolbar_web);
+            listView_article.setAdapter(listadapter);
+
+        } else if (id == R.id.nav_science) {
+            Categories.setCurrentlyInUseCategory(9, getApplicationContext());
+            listadapter = new ArticleAdapter(newsfeed_activity.this, web, toolbar_main, toolbar_web);
+            listView_article.setAdapter(listadapter);
 
         } else if (id == R.id.nav_settings) {
             Intent settings = new Intent(this, settings_activity.class);
@@ -213,11 +331,15 @@ public class newsfeed_activity extends AppCompatActivity
             startActivity(intent);
             finish();
         }
+        for (int i = 0; i <= toolbar_main.getChildCount(); i++) {
+            View v = toolbar_main.getChildAt(i);
+            if (v instanceof TextView) {
+                ((TextView) v).setText(Categories.getCurrentlyInUseCategory());
+            }
+        }
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
-
-
 
     private void drawerHandler(DrawerLayout drawer)
     {
@@ -257,12 +379,13 @@ public class newsfeed_activity extends AppCompatActivity
     private final Runnable refreshListView = new Runnable(){
         public void run(){
             Vector<Article> articles = new Vector<Article>();
-            articles.add(new Article("Subject", "כותרת ראשית 1", "Second Headline", BitmapFactory.decodeResource(getResources(), R.drawable.anchor), null, "Site", "http://www.ynet.co.il/articles/0,7340,L-4740637,00.html", 605, 24, true));
-            articles.add(new Article("Subject", "כותרת ראשית 2", "Second Headline", BitmapFactory.decodeResource(getResources(), R.drawable.anchor), null, "Site", "http://www.google.co.il", 524, 53, false));
-            articles.add(new Article("Subject", "כותרת ראשית 3", "Second Headline", BitmapFactory.decodeResource(getResources(), R.drawable.anchor), null, "Site", "http://www.facebook.com", 106, 40, true));
-            articles.add(new Article("Subject", "כותרת ראשית 4", "Second Headline", BitmapFactory.decodeResource(getResources(), R.drawable.anchor), null, "Site", "http://www.youtube.com", 275, 404, true));
+            articles.add(new Article("Subject", "כותרת ראשית 1", "Second Headline", BitmapFactory.decodeResource(getResources(), R.drawable.anchor), null, "ynet", "http://www.ynet.co.il", 605, 24, true));
+            articles.add(new Article("Subject", "כותרת ראשית 2", "Second Headline", BitmapFactory.decodeResource(getResources(), R.drawable.anchor), null, "ONE", "http://www.one.co.il", 524, 53, false));
+            articles.add(new Article("Subject", "כותרת ראשית 3", "Second Headline", BitmapFactory.decodeResource(getResources(), R.drawable.anchor), null, "mako", "http://www.mako.co.il/", 106, 40, true));
+            articles.add(new Article("Subject", "כותרת ראשית 4", "Second Headline", BitmapFactory.decodeResource(getResources(), R.drawable.anchor), null, "9 канал", "http://9tv.co.il/", 106, 40, true));
 
-            Articles.setArticles(articles);
+            Categories.setNews(articles);
+            Categories.setCurrentlyInUseCategory(Categories.getCurrentCategoryID(), getApplicationContext());
 
             listadapter = new ArticleAdapter(newsfeed_activity.this, web, toolbar_main, toolbar_web);
             listView_article.setAdapter(listadapter);

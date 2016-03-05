@@ -87,15 +87,15 @@ public class ExploreArticles extends AppCompatActivity {
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_explore_articles, container, false);
             TextView source = (TextView) rootView.findViewById(R.id.tv_article_site);
-            source.setText(Articles.articles.get(getArguments().getInt("NB")).getSiteName());
+            source.setText(Categories.getHotNews().get(getArguments().getInt("NB")).getSiteName());
             ImageButton articlePic = (ImageButton) rootView.findViewById(R.id.ib_article_pic);
-            articlePic.setImageBitmap(Articles.articles.get(getArguments().getInt("NB")).getPicture());
+            articlePic.setImageBitmap(Categories.getHotNews().get(getArguments().getInt("NB")).getPicture());
             numberOfLikes = (TextView) rootView.findViewById(R.id.tv_article_likes);
-            numberOfLikes.setText(" " + Articles.articles.get(getArguments().getInt("NB")).getNumberOfLikes());
+            numberOfLikes.setText(" " + Categories.getHotNews().get(getArguments().getInt("NB")).getNumberOfLikes());
             ImageButton like = (ImageButton) rootView.findViewById(R.id.ib_like);
             if(like != null)
             {
-                if(Articles.articles.get(getArguments().getInt("NB")).getLiked())
+                if(Categories.getHotNews().get(getArguments().getInt("NB")).getLiked())
                 {
                     like.setBackground(getResources().getDrawable(R.drawable.hot_article_liked));
                 }
@@ -108,19 +108,19 @@ public class ExploreArticles extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     ImageButton like = (ImageButton) v.findViewById(R.id.ib_like);
-                    if(Articles.articles.get(getArguments().getInt("NB")).getLiked())
+                    if(Categories.getHotNews().get(getArguments().getInt("NB")).getLiked())
                     {
                         like.setBackground(getResources().getDrawable(R.drawable.like_hot_article));
-                        Articles.articles.get(getArguments().getInt("NB")).setLiked(false);
-                        Articles.articles.get(getArguments().getInt("NB")).decNumberOfLikes();
-                        numberOfLikes.setText(" " + Articles.articles.get(getArguments().getInt("NB")).getNumberOfLikes());
+                        Categories.getHotNews().get(getArguments().getInt("NB")).setLiked(false);
+                        Categories.getHotNews().get(getArguments().getInt("NB")).decNumberOfLikes();
+                        numberOfLikes.setText(" " + Categories.getHotNews().get(getArguments().getInt("NB")).getNumberOfLikes());
                     }
                     else
                     {
                         like.setBackground(getResources().getDrawable(R.drawable.hot_article_liked));
-                        Articles.articles.get(getArguments().getInt("NB")).setLiked(true);
-                        Articles.articles.get(getArguments().getInt("NB")).incNumberOfLikes();
-                        numberOfLikes.setText(" " + Articles.articles.get(getArguments().getInt("NB")).getNumberOfLikes());
+                        Categories.getHotNews().get(getArguments().getInt("NB")).setLiked(true);
+                        Categories.getHotNews().get(getArguments().getInt("NB")).incNumberOfLikes();
+                        numberOfLikes.setText(" " + Categories.getHotNews().get(getArguments().getInt("NB")).getNumberOfLikes());
                     }
                 }
             });
@@ -147,7 +147,7 @@ public class ExploreArticles extends AppCompatActivity {
 
         @Override
         public int getCount() {
-            return Articles.articles.size();
+            return Categories.getHotNews().size();
         }
 
         @Override

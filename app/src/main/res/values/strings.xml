@@ -81,4 +81,15 @@
     <string name="SignInWithFacebook">היכנס באמצעות פייסבוק</string>
     <string name="SignInWithGoogle">היכנס באמצעות גוגל</string>
     <string name="title_activity_explore_articles">ExploreArticles</string>
+
+    <string name="hotNews">חדשות חמות</string>
+    <string name="news">חדשות בארץ</string>
+    <string name="globalNews">חדשות בעולם</string>
+    <string name="politics">פוליטיקה</string>
+    <string name="economy">כלכלה</string>
+    <string name="sport">ספורט</string>
+    <string name="culture">תרבות</string>
+    <string name="celebrities">סלבס</string>
+    <string name="technology">טכנולוגיה</string>
+    <string name="science">מדע</string>
 </resources>

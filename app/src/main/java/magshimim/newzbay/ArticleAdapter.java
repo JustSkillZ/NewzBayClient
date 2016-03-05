@@ -34,7 +34,7 @@ public class ArticleAdapter  extends ArrayAdapter<Article>{
                           android.support.v7.widget.Toolbar toolbar_main,
                           android.support.v7.widget.Toolbar toolbar_web)
     {
-        super(context, R.layout.listview_articles, Articles.articles);
+        super(context, R.layout.listview_articles, Categories.getCurrentlyInUse());
         this.web = web;
         this.toolbar_main = toolbar_main;
         this.toolbar_web = toolbar_web;
@@ -73,7 +73,7 @@ public class ArticleAdapter  extends ArrayAdapter<Article>{
         else
         {
             like = (Button) view.findViewById(R.id.btn_like);
-            if(Articles.articles.get(position).getLiked())
+            if(Categories.getCurrentlyInUse().get(position).getLiked())
             {
                 like.setText("Unlike");
             }
@@ -88,37 +88,39 @@ public class ArticleAdapter  extends ArrayAdapter<Article>{
                     like = (Button) v.findViewById(R.id.btn_like);
                     ViewGroup item = (ViewGroup)v.getParent().getParent();
                     countLikes = (TextView) item.findViewById(R.id.tv_likes);
-                    if (Articles.articles.get(position).getLiked()) {
+                    if (Categories.getCurrentlyInUse().get(position).getLiked()) {
                         like.setText("Like");
-                        Articles.articles.get(position).setLiked(false);
-                        Articles.articles.get(position).decNumberOfLikes();
-                        countLikes.setText(Articles.articles.get(position).getNumberOfLikes() + " Likes");
+                        Categories.getCurrentlyInUse().get(position).setLiked(false);
+                        Categories.getCurrentlyInUse().get(position).decNumberOfLikes();
+                        countLikes.setText(Categories.getCurrentlyInUse().get(position).getNumberOfLikes() + " Likes");
 
                     }
                     else {
                         like.setText("Unlike");
-                        Articles.articles.get(position).setLiked(true);
-                        Articles.articles.get(position).incNumberOfLikes();
-                        countLikes.setText(Articles.articles.get(position).getNumberOfLikes() + " Likes");
+                        Categories.getCurrentlyInUse().get(position).setLiked(true);
+                        Categories.getCurrentlyInUse().get(position).incNumberOfLikes();
+                        countLikes.setText(Categories.getCurrentlyInUse().get(position).getNumberOfLikes() + " Likes");
                     }
                 }
             });
         }
         TextView mainHeadline = (TextView) view.findViewById(R.id.tv_mainHeadline);
-        mainHeadline.setText(Articles.articles.elementAt(position).getMainHeadline());
+        mainHeadline.setText(Categories.getCurrentlyInUse().elementAt(position).getMainHeadline());
+        TextView site = (TextView) view.findViewById(R.id.tv_site);
+        site.setText(Categories.getCurrentlyInUse().elementAt(position).getSiteName());
         countLikes = (TextView) view.findViewById(R.id.tv_likes);
-        countLikes.setText(Articles.articles.get(position).getNumberOfLikes() + " Likes");
+        countLikes.setText(Categories.getCurrentlyInUse().get(position).getNumberOfLikes() + " Likes");
         countComments = (TextView) view.findViewById(R.id.tv_comments);
-        countComments.setText("    " + Articles.articles.get(position).getNumberOfComments() + " Comments");
+        countComments.setText("    " + Categories.getCurrentlyInUse().get(position).getNumberOfComments() + " Comments");
         picture = (ImageButton) view.findViewById(R.id.ib_picture);
-        picture.setImageBitmap(Articles.articles.get(position).getPicture());
+        picture.setImageBitmap(Categories.getCurrentlyInUse().get(position).getPicture());
         picture.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 View parentRow = (View) v.getParent();
                 listView = (ListView) parentRow.getParent();
                 int position = listView.getPositionForView(parentRow);
-                web.loadUrl(Articles.articles.elementAt(position).getUrl());
+                web.loadUrl(Categories.getCurrentlyInUse().elementAt(position).getUrl());
                 toolbar_main.setVisibility(View.GONE);
                 toolbar_web.setVisibility(View.VISIBLE);
                 web.setVisibility(View.VISIBLE);

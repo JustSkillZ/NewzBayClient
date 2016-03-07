@@ -41,7 +41,8 @@
             android:label="@string/title_activity_settings_activity" />
         <activity
             android:name=".Splash"
-            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation">
+            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -61,7 +62,10 @@
         <activity
             android:name=".ExploreArticles"
             android:label="@string/title_activity_explore_articles"
-            android:theme="@style/AppTheme_NoActionBar"></activity>
+            android:theme="@style/AppTheme_NoActionBar" />
+        <activity android:name=".InnerWeb"
+            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation">
+        </activity>
     </application>
 
 </manifest>

@@ -44,13 +44,10 @@ public class newsfeed_activity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     private android.support.v7.widget.Toolbar toolbar_main;
-    private android.support.v7.widget.Toolbar toolbar_web;
     private ListAdapter listadapter;
     private SwipeRefreshLayout refreshList;
     private ListView listView_article;
     private Handler handler = new Handler();
-    private WebView web;
-    private WebBackForwardList webBackForwardList;
     private DrawerLayout drawer;
 
     @Override
@@ -148,11 +145,6 @@ public class newsfeed_activity extends AppCompatActivity
             FacebookAndGoogle.getBitmapFromURL(FacebookAndGoogle.getCurrentGoogleProfile().getImage().getUrl().replace("sz=50", "sz=500").toString());
             FacebookAndGoogle.setFullName(FacebookAndGoogle.getCurrentGoogleProfile().getDisplayName());
         }
-        createWebView();
-        toolbar_web = (android.support.v7.widget.Toolbar) findViewById(R.id.toolbar_web);
-        setSupportActionBar(toolbar_web);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
-        toolbar_web.setVisibility(View.GONE);
         toolbar_main = (android.support.v7.widget.Toolbar) findViewById(R.id.toolbar_main);
         setSupportActionBar(toolbar_main);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
@@ -167,7 +159,7 @@ public class newsfeed_activity extends AppCompatActivity
         saveInInternalFolder("NewzBay", "check");
 
         listView_article = (ListView) findViewById(R.id.listView_articles);
-        listadapter = new ArticleAdapter(this, web, toolbar_main, toolbar_web);
+        listadapter = new ArticleAdapter(this);
         listView_article.setAdapter(listadapter);
         createSwipeRefreshLayout();
 
@@ -201,59 +193,15 @@ public class newsfeed_activity extends AppCompatActivity
     }
 
     @Override
-    protected void onPause() {
-        super.onPause();
-        web.onPause();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        web.onResume();
-    }
-
-    @Override
     public void onBackPressed() {
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         }
-
-        else if(web.getVisibility() != View.GONE) {
-            if(web.canGoBack()) {
-                webBackForwardList = web.copyBackForwardList();
-                if(webBackForwardList.getCurrentIndex() == 1)
-                {
-                    closeWeb(null);
-                }
-                else
-                {
-                    web.goBack();
-                }
-            }
-            else
-            {
-                closeWeb(null);
-            }
-        }
-
         else {
             super.onBackPressed();
         }
-    }
-
-    @Override
-    public boolean onKeyLongPress(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK)
-        {
-            if(web.getVisibility() != View.GONE)
-            {
-                closeWeb(null);
-            }
-            return true;
-        }
-        return super.onKeyLongPress(keyCode, event);
     }
 
     @SuppressWarnings("StatementWithEmptyBody")
@@ -267,47 +215,47 @@ public class newsfeed_activity extends AppCompatActivity
             this.onStop();
         } else if (id == R.id.nav_news) {
             Categories.setCurrentlyInUseCategory(1, getApplicationContext());
-            listadapter = new ArticleAdapter(newsfeed_activity.this, web, toolbar_main, toolbar_web);
+            listadapter = new ArticleAdapter(newsfeed_activity.this);
             listView_article.setAdapter(listadapter);
 
         } else if (id == R.id.nav_global_news) {
             Categories.setCurrentlyInUseCategory(2, getApplicationContext());
-            listadapter = new ArticleAdapter(newsfeed_activity.this, web, toolbar_main, toolbar_web);
+            listadapter = new ArticleAdapter(newsfeed_activity.this);
             listView_article.setAdapter(listadapter);
 
         } else if (id == R.id.nav_politics) {
             Categories.setCurrentlyInUseCategory(3, getApplicationContext());
-            listadapter = new ArticleAdapter(newsfeed_activity.this, web, toolbar_main, toolbar_web);
+            listadapter = new ArticleAdapter(newsfeed_activity.this);
             listView_article.setAdapter(listadapter);
 
         } else if (id == R.id.nav_economy) {
             Categories.setCurrentlyInUseCategory(4, getApplicationContext());
-            listadapter = new ArticleAdapter(newsfeed_activity.this, web, toolbar_main, toolbar_web);
+            listadapter = new ArticleAdapter(newsfeed_activity.this);
             listView_article.setAdapter(listadapter);
 
         } else if (id == R.id.nav_sport) {
             Categories.setCurrentlyInUseCategory(5, getApplicationContext());
-            listadapter = new ArticleAdapter(newsfeed_activity.this, web, toolbar_main, toolbar_web);
+            listadapter = new ArticleAdapter(newsfeed_activity.this);
             listView_article.setAdapter(listadapter);
 
         } else if (id == R.id.nav_culture) {
             Categories.setCurrentlyInUseCategory(6, getApplicationContext());
-            listadapter = new ArticleAdapter(newsfeed_activity.this, web, toolbar_main, toolbar_web);
+            listadapter = new ArticleAdapter(newsfeed_activity.this);
             listView_article.setAdapter(listadapter);
 
         } else if (id == R.id.nav_celebrities) {
             Categories.setCurrentlyInUseCategory(7, getApplicationContext());
-            listadapter = new ArticleAdapter(newsfeed_activity.this, web, toolbar_main, toolbar_web);
+            listadapter = new ArticleAdapter(newsfeed_activity.this);
             listView_article.setAdapter(listadapter);
 
         } else if (id == R.id.nav_technology) {
             Categories.setCurrentlyInUseCategory(8, getApplicationContext());
-            listadapter = new ArticleAdapter(newsfeed_activity.this, web, toolbar_main, toolbar_web);
+            listadapter = new ArticleAdapter(newsfeed_activity.this);
             listView_article.setAdapter(listadapter);
 
         } else if (id == R.id.nav_science) {
             Categories.setCurrentlyInUseCategory(9, getApplicationContext());
-            listadapter = new ArticleAdapter(newsfeed_activity.this, web, toolbar_main, toolbar_web);
+            listadapter = new ArticleAdapter(newsfeed_activity.this);
             listView_article.setAdapter(listadapter);
 
         } else if (id == R.id.nav_settings) {
@@ -387,7 +335,7 @@ public class newsfeed_activity extends AppCompatActivity
             Categories.setNews(articles);
             Categories.setCurrentlyInUseCategory(Categories.getCurrentCategoryID(), getApplicationContext());
 
-            listadapter = new ArticleAdapter(newsfeed_activity.this, web, toolbar_main, toolbar_web);
+            listadapter = new ArticleAdapter(newsfeed_activity.this);
             listView_article.setAdapter(listadapter);
             refreshList.setRefreshing(false);
         }
@@ -427,88 +375,6 @@ public class newsfeed_activity extends AppCompatActivity
             Toast.makeText(this, "Error read internals", Toast.LENGTH_SHORT).show();
             e.printStackTrace();
             return "";
-        }
-    }
-
-    private void createWebView()
-    {
-        web = (WebView) findViewById(R.id.wv_article);
-        web.getSettings().setJavaScriptEnabled(true);
-        web.getSettings().setBuiltInZoomControls(true);
-        web.getSettings().setDisplayZoomControls(false);
-        web.setWebViewClient(new WebViewClient() {
-
-            @Override
-            public void onPageFinished(WebView view, String url) {
-                super.onPageFinished(view, url);
-                if (web.getVisibility() == View.GONE) {
-                    web.clearHistory();
-                }
-                treatPageControllers();
-            }
-
-            @Override
-            public void onLoadResource(WebView view, String url) {
-                super.onLoadResource(view, url);
-                treatPageControllers();
-            }
-        });
-        web.loadUrl("about:blank");
-    }
-
-
-    public void closeWeb(View v)
-    {
-        toolbar_web.setVisibility(View.GONE);
-        toolbar_main.setVisibility(View.VISIBLE);
-        web.setVisibility(View.GONE);
-        web.loadUrl("about:blank");
-    }
-
-    public void treatPageControllers()
-    {
-        webBackForwardList = web.copyBackForwardList();
-        Button previousPage = (Button) toolbar_web.findViewById(R.id.btn_previousPage);
-        Button nextPage = (Button) toolbar_web.findViewById(R.id.btn_nextPage);
-        if (webBackForwardList.getCurrentIndex() <= 1) {
-            previousPage.setAlpha((float) 0.65);
-            previousPage.getBackground().setColorFilter(getResources().getColor(R.color.disabledButton), PorterDuff.Mode.MULTIPLY);
-        } else {
-            previousPage.setAlpha((float) 1);
-            previousPage.getBackground().setColorFilter(null);
-        }
-
-        if (webBackForwardList.getCurrentIndex() == webBackForwardList.getSize() - 1) {
-            nextPage.setAlpha((float) 0.65);
-            nextPage.getBackground().setColorFilter(getResources().getColor(R.color.disabledButton), PorterDuff.Mode.MULTIPLY);
-        } else {
-            nextPage.setAlpha((float) 1);
-            nextPage.getBackground().setColorFilter(null);
-        }
-    }
-
-    public void reloadWebPage(View v)
-    {
-        web.reload();
-    }
-
-    public void previousPage(View v)
-    {
-        if(web.canGoBack())
-        {
-            webBackForwardList = web.copyBackForwardList();
-            if(webBackForwardList.getCurrentIndex() > 1)
-            {
-                web.goBack();
-            }
-        }
-    }
-
-    public void nextPage(View v)
-    {
-        if(web.canGoForward())
-        {
-            web.goForward();
         }
     }
 }

@@ -24,20 +24,11 @@ public class ArticleAdapter  extends ArrayAdapter<Article>{
     private Button comment;
     private TextView countComments;
     private ImageButton picture;
-    private WebView web;
-    private android.support.v7.widget.Toolbar toolbar_main;
-    private android.support.v7.widget.Toolbar toolbar_web;
-    private WebBackForwardList webBackForwardList;
     private Context context;
 
-    public ArticleAdapter(Context context, WebView web,
-                          android.support.v7.widget.Toolbar toolbar_main,
-                          android.support.v7.widget.Toolbar toolbar_web)
+    public ArticleAdapter(Context context)
     {
         super(context, R.layout.listview_articles, Categories.getCurrentlyInUse());
-        this.web = web;
-        this.toolbar_main = toolbar_main;
-        this.toolbar_web = toolbar_web;
         this.context = context;
     }
 
@@ -120,12 +111,9 @@ public class ArticleAdapter  extends ArrayAdapter<Article>{
                 View parentRow = (View) v.getParent();
                 listView = (ListView) parentRow.getParent();
                 int position = listView.getPositionForView(parentRow);
-                web.loadUrl(Categories.getCurrentlyInUse().elementAt(position).getUrl());
-                toolbar_main.setVisibility(View.GONE);
-                toolbar_web.setVisibility(View.VISIBLE);
-                web.setVisibility(View.VISIBLE);
-                Intent intent = new Intent(context,Explanation2.class);
-                context.startActivity(intent);
+                Categories.setCurrentlyOpenURL(Categories.getCurrentlyInUse().elementAt(position).getUrl());
+                Intent web = new Intent(context,InnerWeb.class);
+                context.startActivity(web);
             }
         });
         return view;

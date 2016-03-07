@@ -19,6 +19,15 @@ public class Categories {
     private static Vector<Article> currentlyInUse;
     private static String currentlyInUseCategory;
     private static int CurrentCategoryID;
+    private static String currentlyOpenURL;
+
+    public static String getCurrentlyOpenURL() {
+        return currentlyOpenURL;
+    }
+
+    public static void setCurrentlyOpenURL(String currentlyOpenURL) {
+        Categories.currentlyOpenURL = currentlyOpenURL;
+    }
 
     public static void setCurrentlyInUseCategory(String currentlyInUseCategory) {
         Categories.currentlyInUseCategory = currentlyInUseCategory;

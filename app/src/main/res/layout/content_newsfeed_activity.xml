@@ -10,18 +10,6 @@
     tools:context="magshimim.newzbay.newsfeed_activity"
     tools:showIn="@layout/app_bar_newsfeed_activity">
 
-<include
-    android:id="@+id/toolbar_web"
-    layout="@layout/toolbar_web">
-</include>
-
-<WebView
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:visibility="gone"
-    android:id="@+id/wv_article">
-</WebView>
-
 <android.support.v4.widget.SwipeRefreshLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"

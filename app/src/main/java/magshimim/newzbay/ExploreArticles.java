@@ -5,6 +5,7 @@ import android.graphics.BitmapFactory;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.TintManager;
 import android.support.v7.widget.Toolbar;
 
 import android.support.v4.app.Fragment;
@@ -47,7 +48,6 @@ public class ExploreArticles extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_explore_articles);
-
         // Create the adapter that will return a fragment for each of the primary sections of the activity.
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
@@ -81,7 +81,6 @@ public class ExploreArticles extends AppCompatActivity {
             fragment.setArguments(args);
             return fragment;
         }
-
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
@@ -90,40 +89,63 @@ public class ExploreArticles extends AppCompatActivity {
             source.setText(Categories.getHotNews().get(getArguments().getInt("NB")).getSiteName());
             ImageButton articlePic = (ImageButton) rootView.findViewById(R.id.ib_article_pic);
             articlePic.setImageBitmap(Categories.getHotNews().get(getArguments().getInt("NB")).getPicture());
+            articlePic.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Categories.setCurrentlyOpenURL(Categories.getHotNews().get(getArguments().getInt("NB")).getUrl());
+                    Intent web = new Intent(getActivity(),InnerWeb.class);
+                    startActivity(web);
+                }
+            });
             numberOfLikes = (TextView) rootView.findViewById(R.id.tv_article_likes);
             numberOfLikes.setText(" " + Categories.getHotNews().get(getArguments().getInt("NB")).getNumberOfLikes());
             ImageButton like = (ImageButton) rootView.findViewById(R.id.ib_like);
             if(like != null)
             {
-                if(Categories.getHotNews().get(getArguments().getInt("NB")).getLiked())
+                if(!FacebookAndGoogle.isLoggedWithGoogle() && !FacebookAndGoogle.isLoggedWithFacebook())
                 {
                     like.setBackground(getResources().getDrawable(R.drawable.hot_article_liked));
+                    like.setAlpha((float) 0.3);
+                    like.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Toast toast = Toast.makeText(getContext(), "רק משתמשים מחוברים יכולים לעשות לייק", Toast.LENGTH_LONG);
+                            toast.show();
+                        }
+                    });
                 }
                 else
                 {
-                    like.setBackground(getResources().getDrawable(R.drawable.like_hot_article));
-                }
-            }
-            like.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    ImageButton like = (ImageButton) v.findViewById(R.id.ib_like);
                     if(Categories.getHotNews().get(getArguments().getInt("NB")).getLiked())
                     {
-                        like.setBackground(getResources().getDrawable(R.drawable.like_hot_article));
-                        Categories.getHotNews().get(getArguments().getInt("NB")).setLiked(false);
-                        Categories.getHotNews().get(getArguments().getInt("NB")).decNumberOfLikes();
-                        numberOfLikes.setText(" " + Categories.getHotNews().get(getArguments().getInt("NB")).getNumberOfLikes());
+                        like.setBackground(getResources().getDrawable(R.drawable.hot_article_liked));
                     }
                     else
                     {
-                        like.setBackground(getResources().getDrawable(R.drawable.hot_article_liked));
-                        Categories.getHotNews().get(getArguments().getInt("NB")).setLiked(true);
-                        Categories.getHotNews().get(getArguments().getInt("NB")).incNumberOfLikes();
-                        numberOfLikes.setText(" " + Categories.getHotNews().get(getArguments().getInt("NB")).getNumberOfLikes());
+                        like.setBackground(getResources().getDrawable(R.drawable.like_hot_article));
                     }
+                    like.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            ImageButton like = (ImageButton) v.findViewById(R.id.ib_like);
+                            if(Categories.getHotNews().get(getArguments().getInt("NB")).getLiked())
+                            {
+                                like.setBackground(getResources().getDrawable(R.drawable.like_hot_article));
+                                Categories.getHotNews().get(getArguments().getInt("NB")).setLiked(false);
+                                Categories.getHotNews().get(getArguments().getInt("NB")).decNumberOfLikes();
+                                numberOfLikes.setText(" " + Categories.getHotNews().get(getArguments().getInt("NB")).getNumberOfLikes());
+                            }
+                            else
+                            {
+                                like.setBackground(getResources().getDrawable(R.drawable.hot_article_liked));
+                                Categories.getHotNews().get(getArguments().getInt("NB")).setLiked(true);
+                                Categories.getHotNews().get(getArguments().getInt("NB")).incNumberOfLikes();
+                                numberOfLikes.setText(" " + Categories.getHotNews().get(getArguments().getInt("NB")).getNumberOfLikes());
+                            }
+                        }
+                    });
                 }
-            });
+            }
             return rootView;
         }
     }

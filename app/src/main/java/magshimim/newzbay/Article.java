@@ -11,6 +11,7 @@ public class Article {
     private String mainHeadline;
     private String secondHeadline;
     private Bitmap picture;
+    private String picURL;
     private Date date;
     private String siteName;
     private String url;
@@ -18,18 +19,19 @@ public class Article {
     private int numberOfComments;
     private boolean liked;
 
-    public Article(String subject, String mainHeadline, String secondHeadline, Bitmap picture, Date date, String siteName, String url, int numberOfLikes, int numberOfComments, boolean liked)
+    public Article(String subject, String mainHeadline, String secondHeadline, String picURL, Date date, String siteName, String url, int numberOfLikes, int numberOfComments, boolean liked)
     {
         this.subject = subject;
         this.mainHeadline = mainHeadline;
         this.secondHeadline = secondHeadline;
-        this.picture = picture;
+        this.picURL = picURL;
         this.date = date;
         this.siteName = siteName;
         this.url = url;
         this.numberOfLikes = numberOfLikes;
         this.numberOfComments = numberOfComments;
         this.liked = liked;
+        picture = null;
     }
 
     public String getSubject()
@@ -95,5 +97,53 @@ public class Article {
     public void decNumberOfLikes()
     {
         numberOfLikes--;
+    }
+
+    public void setSubject(String subject) {
+        this.subject = subject;
+    }
+
+    public void setMainHeadline(String mainHeadline) {
+        this.mainHeadline = mainHeadline;
+    }
+
+    public void setSecondHeadline(String secondHeadline) {
+        this.secondHeadline = secondHeadline;
+    }
+
+    public void setPicture(Bitmap picture) {
+        this.picture = picture;
+    }
+
+    public String getPicURL() {
+        return picURL;
+    }
+
+    public void setPicURL(String picURL) {
+        this.picURL = picURL;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
+    }
+
+    public void setSiteName(String siteName) {
+        this.siteName = siteName;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public void setNumberOfLikes(int numberOfLikes) {
+        this.numberOfLikes = numberOfLikes;
+    }
+
+    public void setNumberOfComments(int numberOfComments) {
+        this.numberOfComments = numberOfComments;
+    }
+
+    public boolean isLiked() {
+        return liked;
     }
 }

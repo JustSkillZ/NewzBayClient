@@ -3,6 +3,9 @@ package magshimim.newzbay;
 import android.content.Context;
 import android.graphics.BitmapFactory;
 
+import com.facebook.Profile;
+
+import java.util.Map;
 import java.util.Vector;
 
 public class Categories {
@@ -16,10 +19,14 @@ public class Categories {
     private static Vector<Article> celebrities; //ID = 7
     private static Vector<Article> technology; //ID = 8
     private static Vector<Article> science; //ID = 9
-    private static Vector<Article> currentlyInUse;
-    private static String currentlyInUseCategory;
+    private static Vector<Article> currentlyInUse = new Vector<Article>();
+    private static String currentlyInUseCategory = "";
     private static int CurrentCategoryID;
     private static String currentlyOpenURL;
+
+    private static Vector<String> idOfRSS;
+    private static Vector<String> subject;
+    private static Vector<String> site;
 
     public static String getCurrentlyOpenURL() {
         return currentlyOpenURL;
@@ -42,6 +49,25 @@ public class Categories {
     }
 
     public static String getCurrentlyInUseCategory() {
+        if (currentlyInUseCategory.equals(""))
+        {
+            if(FacebookAndGoogle.isLoggedWithGoogle())
+            {
+                switch(FacebookAndGoogle.getCurrentGoogleProfile().getGender())
+                {
+                    case 0:
+                        return "ברוך הבא";
+                    case 1:
+                        return "ברוכה הבאה";
+                    case 2:
+                        return "ברוך/ה הבא/ה";
+                }
+            }
+            else
+            {
+                return "ברוך/ה הבא/ה";
+            }
+        }
         return currentlyInUseCategory;
     }
 
@@ -51,43 +77,43 @@ public class Categories {
         {
             case 0:
                 currentlyInUseCategory = context.getResources().getString(R.string.hotNews);
-                currentlyInUse = hotNews;
+                hotNews = currentlyInUse;
                 break;
             case 1:
                 currentlyInUseCategory = context.getResources().getString(R.string.news);
-                currentlyInUse = news;
+                news = currentlyInUse;
                 break;
             case 2:
                 currentlyInUseCategory = context.getResources().getString(R.string.globalNews);
-                currentlyInUse = globalNews;
+                globalNews = currentlyInUse;
                 break;
             case 3:
                 currentlyInUseCategory = context.getResources().getString(R.string.politics);
-                currentlyInUse = politics;
+                politics = currentlyInUse;
                 break;
             case 4:
                 currentlyInUseCategory = context.getResources().getString(R.string.economy);
-                currentlyInUse = economy;
+                economy = currentlyInUse;
                 break;
             case 5:
                 currentlyInUseCategory = context.getResources().getString(R.string.sport);
-                currentlyInUse = sport;
+                sport = currentlyInUse;
                 break;
             case 6:
                 currentlyInUseCategory = context.getResources().getString(R.string.culture);
-                currentlyInUse = culture;
+                culture = currentlyInUse;
                 break;
             case 7:
                 currentlyInUseCategory = context.getResources().getString(R.string.celebrities);
-                currentlyInUse = celebrities;
+                celebrities = currentlyInUse;
                 break;
             case 8:
                 currentlyInUseCategory = context.getResources().getString(R.string.technology);
-                currentlyInUse = technology;
+                technology = currentlyInUse;
                 break;
             case 9:
                 currentlyInUseCategory = context.getResources().getString(R.string.science);
-                currentlyInUse = science;
+                science = currentlyInUse;
                 break;
         }
 
@@ -180,5 +206,29 @@ public class Categories {
 
     public static void setScience(Vector<Article> science) {
         Categories.science = science;
+    }
+
+    public static Vector<String> getIdOfRSS() {
+        return idOfRSS;
+    }
+
+    public static void setIdOfRSS(Vector<String> idOfRSS) {
+        Categories.idOfRSS = idOfRSS;
+    }
+
+    public static Vector<String> getSubject() {
+        return subject;
+    }
+
+    public static void setSubject(Vector<String> subject) {
+        Categories.subject = subject;
+    }
+
+    public static Vector<String> getSite() {
+        return site;
+    }
+
+    public static void setSite(Vector<String> site) {
+        Categories.site = site;
     }
 }

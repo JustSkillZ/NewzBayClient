@@ -20,7 +20,8 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:textColor="@color/nb"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:background="@color/transparent"/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -31,7 +32,8 @@
         android:layout_centerHorizontal="true"
         android:textColor="@color/nb"
         android:id="@+id/tv_EIOP"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:background="@color/transparent"/>
 
     <com.google.android.gms.common.SignInButton
         android:layout_width="wrap_content"
@@ -40,22 +42,21 @@
         android:layout_marginTop="43dp"
         android:layout_below="@+id/tv_EIOP"
         android:layout_alignParentEnd="true"
-        android:layout_alignParentStart="true" />
-
+        android:layout_alignParentStart="true"
+        android:background="@color/transparent"/>
 
     <Button
         android:layout_width="wrap_content"
-        android:layout_height="52dp"
+        android:layout_height="51dp"
         android:id="@+id/btn_NB"
         android:drawableLeft="@drawable/anchor_logo"
         android:text="@string/SignInAsGuest"
         android:textStyle="bold"
         android:textAllCaps="false"
         android:layout_below="@+id/btn_Facebook"
-        android:layout_marginTop="25dp"
+        android:layout_marginTop="27dp"
         android:background="@drawable/button_rounded_corners"
         android:onClick="signInAsGuest"
-        android:clickable="true"
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true" />
 
@@ -66,11 +67,20 @@
         fb:com_facebook_login_text="@string/SignInWithFacebook"
         fb:com_facebook_logout_text="@string/SignInWithFacebook"
         android:background="@drawable/button_rounded_corners_facebook"
-        android:layout_marginTop="25dp"
+        android:layout_marginTop="27dp"
         android:paddingTop="18dp"
-        android:paddingBottom="17dp"
+        android:paddingBottom="18dp"
         android:layout_below="@+id/btn_Google"
         android:layout_alignParentEnd="true"
         android:layout_alignParentStart="true" />
+
+    <ImageView
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:id="@+id/iv_nb_loading"
+        android:background="@drawable/anchor_big"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:visibility="gone"/>
 
 </RelativeLayout>

@@ -1,5 +1,6 @@
 package magshimim.newzbay;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
@@ -23,6 +24,9 @@ public class FacebookAndGoogle {
     private static Bitmap profilePic = null;
     private static String picURL = "";
     private static String fullName = "Guest";
+    private static String facebookUserEmail = "";
+
+    private static Communication communication = null;
 
     public static void reset(Bitmap bm)
     {
@@ -35,6 +39,8 @@ public class FacebookAndGoogle {
         picURL = "";
         Random r = new Random();
         fullName = "Guest" + Integer.toString(r.nextInt(999999999));
+        facebookUserEmail = "";
+        communication = null;
     }
 
     public static GoogleApiClient getmGoogleApiClient() {
@@ -97,6 +103,7 @@ public class FacebookAndGoogle {
     {
         currentFacebookProfile = currentFacebookProfile1;
     }
+
     public static Bitmap getBitmapFromURL(String src) {
         picURL = src;
         Runnable runnable = new Runnable() {
@@ -117,5 +124,29 @@ public class FacebookAndGoogle {
         Thread t = new Thread(runnable);
         t.start();
         return profilePic;
+    }
+
+    public static String getPicURL() {
+        return picURL;
+    }
+
+    public static void setPicURL(String picURL) {
+        FacebookAndGoogle.picURL = picURL;
+    }
+
+    public static String getFacebookUserEmail() {
+        return facebookUserEmail;
+    }
+
+    public static void setFacebookUserEmail(String facebookUserEmail) {
+        FacebookAndGoogle.facebookUserEmail = facebookUserEmail;
+    }
+
+    public static Communication getCommunication() {
+        return communication;
+    }
+
+    public static void setCommunication(Communication communication) {
+        FacebookAndGoogle.communication = communication;
     }
 }

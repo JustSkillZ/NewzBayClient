@@ -28,6 +28,8 @@ import com.google.android.gms.common.api.Scope;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.plus.Plus;
 
+import java.util.Arrays;
+
 public class entrance extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, View.OnClickListener {
 
     private LoginButton facebook_loginButton;
@@ -53,25 +55,48 @@ public class entrance extends AppCompatActivity implements GoogleApiClient.Conne
         FacebookSdk.sdkInitialize(getApplicationContext());
         callbackManager = CallbackManager.Factory.create();
         setContentView(R.layout.activity_entrance);
-//        communication = new Communication();
-//        new Thread(communication).start();
+        communication = new Communication();
+        FacebookAndGoogle.setCommunication(communication);
+        Thread t = new Thread(communication);
+        t.start();
 //        while(!communication.getIsConnect())
 //        {
+//            final ImageView loading = (ImageView) findViewById(R.id.iv_nb_loading);
+//            loading.setVisibility(View.VISIBLE);
+//            final Animation an = AnimationUtils.loadAnimation(getBaseContext(), R.anim.rotate);
+//            final Animation an2 = AnimationUtils.loadAnimation(getBaseContext(), R.anim.abc_fade_out);
 //
+//            loading.startAnimation(an);
+//            an.setAnimationListener(new Animation.AnimationListener() {
+//                @Override
+//                public void onAnimationStart(Animation animation) {
+//
+//                }
+//
+//                @Override
+//                public void onAnimationEnd(Animation animation) {
+//                    loading.startAnimation(an2);
+//                    loading.setVisibility(View.GONE);
+//                }
+//
+//                @Override
+//                public void onAnimationRepeat(Animation animation) {
+//
+//                }
+//            });
 //        }
+
         facebook_login();
         if (Profile.getCurrentProfile() != null) {
             Log.d(TAG, "facebook login");
             FacebookAndGoogle.setLoggedWithFacebook(true);
             FacebookAndGoogle.setCurrentFacebookProfile(Profile.getCurrentProfile());
             FacebookAndGoogle.setFullName(FacebookAndGoogle.getCurrentFacebookProfile().getName());
-//            communication.clientSend("First name: " + Profile.getCurrentProfile().getFirstName());
             moveToNewsFeed();
         }
         else
         {
             buildNewGoogleApiClient();
-            //Customize sign-in button.a red button may be displayed when Google+ scopes are requested
             customizeSignBtn();
             setBtnClickListeners();
             mProgressDialog = new ProgressDialog(this);
@@ -97,25 +122,34 @@ public class entrance extends AppCompatActivity implements GoogleApiClient.Conne
 
     public void signInAsGuest(View v) {
         Log.d(TAG, "guest login");
-//        communication.clientSend("First name: guest");
         FacebookAndGoogle.reset(BitmapFactory.decodeResource(getResources(), R.drawable.user_icon));
         moveToNewsFeed();
     }
 
     public void moveToNewsFeed() {
+        if(FacebookAndGoogle.isLoggedWithFacebook())
+        {
+            //communication.clientSend("102&" + FacebookAndGoogle.getFacebookUserEmail() + "&" + FacebookAndGoogle.getCurrentFacebookProfile().getFirstName() + "#");
+            Log.d("Server", FacebookAndGoogle.getFacebookUserEmail());
+        }
+        else if(FacebookAndGoogle.isLoggedWithGoogle())
+        {
+            communication.clientSend("102&"+Plus.AccountApi.getAccountName(mGoogleApiClient)+"&"+FacebookAndGoogle.getCurrentGoogleProfile().getName().getGivenName()+"#");
+            Log.d("Server", "102&"+Plus.AccountApi.getAccountName(mGoogleApiClient)+"&"+FacebookAndGoogle.getCurrentGoogleProfile().getName().getGivenName()+"#");
+        }
         Intent nfScreen = new Intent(this, newsfeed_activity.class);
         startActivity(nfScreen);
         finish();
     }
 
-    public void facebook_login()
-    {
+    public void facebook_login() {
         facebook_loginButton = (LoginButton) findViewById(R.id.btn_Facebook);
+        facebook_loginButton.setReadPermissions(Arrays.asList("email", "user_friends"));
+
         facebook_loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
                 Log.d(TAG, "facebook login");
-//                communication.clientSend("First name: " + Profile.getCurrentProfile().getFirstName());
                 FacebookAndGoogle.setLoggedWithFacebook(true);
                 FacebookAndGoogle.setCurrentFacebookProfile(Profile.getCurrentProfile());
                 FacebookAndGoogle.setFullName(FacebookAndGoogle.getCurrentFacebookProfile().getName());
@@ -131,7 +165,6 @@ public class entrance extends AppCompatActivity implements GoogleApiClient.Conne
             public void onError(FacebookException e) {
                 FacebookAndGoogle.setLoggedWithFacebook(false);
             }
-
         });
     }
 
@@ -270,7 +303,7 @@ public class entrance extends AppCompatActivity implements GoogleApiClient.Conne
         if (!mGoogleApiClient.isConnecting()) {
             Log.d("user connected","connected");
             is_signInBtn_clicked = true;
-            mProgressDialog.show();
+//            mProgressDialog.show();
             resolveSignInError();
 
         }

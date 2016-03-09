@@ -1,6 +1,8 @@
 package magshimim.newzbay;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -17,14 +19,26 @@ public class InnerWeb extends AppCompatActivity {
     private WebBackForwardList webBackForwardList;
     private android.support.v7.widget.Toolbar toolbar_web;
 
+    private static final String explanationPref = "magshimim.newzbay.ExplanationPref" ;
+    private static final String isExplanation2 = "isExplanation2";
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_inner_web);
 
-        Intent explanation = new Intent(this,Explanation2.class);
-        startActivity(explanation);
+        if (!getSharedPreferences(explanationPref, Context.MODE_PRIVATE).getBoolean(isExplanation2, false))
+        {
+            Intent explanation2 = new Intent(this,Explanation2.class);
+            startActivity(explanation2);
 
+            SharedPreferences sharedpreferences = getSharedPreferences(explanationPref, Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedpreferences.edit();
+            editor.putBoolean(isExplanation2, true);
+            editor.commit();
+        }
         createWebView();
         toolbar_web = (android.support.v7.widget.Toolbar) findViewById(R.id.toolbar_web);
         setSupportActionBar(toolbar_web);

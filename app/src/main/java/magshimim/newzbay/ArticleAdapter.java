@@ -1,19 +1,33 @@
 package magshimim.newzbay;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebBackForwardList;
 import android.webkit.WebView;
 import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.wallet.wobs.TimeInterval;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.Date;
 import java.util.Vector;
 
 public class ArticleAdapter  extends ArrayAdapter<Article>{
@@ -25,11 +39,20 @@ public class ArticleAdapter  extends ArrayAdapter<Article>{
     private TextView countComments;
     private ImageButton picture;
     private Context context;
+    private ListAdapter adapter;
+    private Activity activity;
 
-    public ArticleAdapter(Context context)
+    public ArticleAdapter(Context context, Activity act)
     {
         super(context, R.layout.listview_articles, Categories.getCurrentlyInUse());
         this.context = context;
+        adapter = this;
+        activity = act;
+    }
+
+    @Override
+    public void notifyDataSetChanged() {
+        super.notifyDataSetChanged();
     }
 
     @Override
@@ -84,27 +107,42 @@ public class ArticleAdapter  extends ArrayAdapter<Article>{
                         Categories.getCurrentlyInUse().get(position).setLiked(false);
                         Categories.getCurrentlyInUse().get(position).decNumberOfLikes();
                         countLikes.setText(Categories.getCurrentlyInUse().get(position).getNumberOfLikes() + " Likes");
-
+                        FacebookAndGoogle.getCommunication().clientSend("112&" + Categories.getCurrentlyInUse().get(position).getUrl() + "#");
                     }
                     else {
                         like.setText("Unlike");
                         Categories.getCurrentlyInUse().get(position).setLiked(true);
                         Categories.getCurrentlyInUse().get(position).incNumberOfLikes();
                         countLikes.setText(Categories.getCurrentlyInUse().get(position).getNumberOfLikes() + " Likes");
+                        FacebookAndGoogle.getCommunication().clientSend("110&" + Categories.getCurrentlyInUse().get(position).getUrl() + "#");
                     }
                 }
             });
         }
         TextView mainHeadline = (TextView) view.findViewById(R.id.tv_mainHeadline);
         mainHeadline.setText(Categories.getCurrentlyInUse().elementAt(position).getMainHeadline());
+        TextView secondHeadLine = (TextView) view.findViewById(R.id.tv_secondHeadline);
+        secondHeadLine.setText(Categories.getCurrentlyInUse().elementAt(position).getSecondHeadline());
         TextView site = (TextView) view.findViewById(R.id.tv_site);
         site.setText(Categories.getCurrentlyInUse().elementAt(position).getSiteName());
+        TextView date = (TextView) view.findViewById(R.id.tv_date);
+        if(Categories.getCurrentlyInUse().elementAt(position).getDate() != null)
+        {
+            Date d = new Date();
+            date.setText((String) DateUtils.getRelativeTimeSpanString(Categories.getCurrentlyInUse().elementAt(position).getDate().getTime(), d.getTime(), 0));
+        }
         countLikes = (TextView) view.findViewById(R.id.tv_likes);
         countLikes.setText(Categories.getCurrentlyInUse().get(position).getNumberOfLikes() + " Likes");
         countComments = (TextView) view.findViewById(R.id.tv_comments);
         countComments.setText("    " + Categories.getCurrentlyInUse().get(position).getNumberOfComments() + " Comments");
         picture = (ImageButton) view.findViewById(R.id.ib_picture);
-        picture.setImageBitmap(Categories.getCurrentlyInUse().get(position).getPicture());
+        if(Categories.getCurrentlyInUse().get(position).getPicture() == null)
+        {
+            getBitmapFromURL(picture, position, context);
+        }
+        else {
+            picture.setImageBitmap(Categories.getCurrentlyInUse().get(position).getPicture());
+        }
         picture.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -117,5 +155,43 @@ public class ArticleAdapter  extends ArrayAdapter<Article>{
             }
         });
         return view;
+    }
+
+    public void getBitmapFromURL(ImageButton ib, int position, Context context1) {
+        final int position1 = position;
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    URL url = new URL((Categories.getCurrentlyInUse().get(position1).getPicURL()));
+                    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                    connection.setDoInput(true);
+                    connection.connect();
+                    InputStream input = connection.getInputStream();
+                    Categories.getCurrentlyInUse().get(position1).setPicture(BitmapFactory.decodeStream(input));
+                    activity.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            ((BaseAdapter) adapter).notifyDataSetChanged();
+                        }
+                    });
+
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        };
+        Thread t = new Thread(runnable);
+        t.start();
+        if(Categories.getCurrentlyInUse().get(position).getPicURL().equals("null"))
+        {
+            ib.setImageBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.anchor));
+        }
+        else
+        {
+            ib.setImageBitmap(Categories.getCurrentlyInUse().get(position).getPicture());
+        }
     }
 }

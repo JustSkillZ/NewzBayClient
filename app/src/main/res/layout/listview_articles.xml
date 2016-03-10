@@ -26,7 +26,8 @@
         android:textSize="18sp"
         android:textColor="@color/grey"
         android:textStyle="bold"
-        android:maxLength="100"
+        android:ellipsize="end"
+        android:maxLines="2"
         android:id="@+id/tv_secondHeadline"
         android:layout_gravity="right"
         android:gravity="center"/>

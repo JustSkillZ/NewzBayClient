@@ -64,29 +64,29 @@ public class newsfeed_activity extends AppCompatActivity
 
         setContentView(R.layout.newsfeed_activity);
 
-        final ImageView loading = (ImageView) findViewById(R.id.iv_nb_loading);
-        loading.setVisibility(View.VISIBLE);
-        final Animation an = AnimationUtils.loadAnimation(getBaseContext(), R.anim.rotate);
-        final Animation an2 = AnimationUtils.loadAnimation(getBaseContext(), R.anim.abc_fade_out);
-
-        loading.startAnimation(an);
-        an.setAnimationListener(new Animation.AnimationListener() {
-            @Override
-            public void onAnimationStart(Animation animation) {
-
-            }
-
-            @Override
-            public void onAnimationEnd(Animation animation) {
-                loading.startAnimation(an2);
-                loading.setVisibility(View.GONE);
-            }
-
-            @Override
-            public void onAnimationRepeat(Animation animation) {
-
-            }
-        });
+//        final ImageView loading = (ImageView) findViewById(R.id.iv_nb_loading);
+//        loading.setVisibility(View.VISIBLE);
+//        final Animation an = AnimationUtils.loadAnimation(getBaseContext(), R.anim.rotate);
+//        final Animation an2 = AnimationUtils.loadAnimation(getBaseContext(), R.anim.abc_fade_out);
+//
+//        loading.startAnimation(an);
+//        an.setAnimationListener(new Animation.AnimationListener() {
+//            @Override
+//            public void onAnimationStart(Animation animation) {
+//
+//            }
+//
+//            @Override
+//            public void onAnimationEnd(Animation animation) {
+//                loading.startAnimation(an2);
+//                loading.setVisibility(View.GONE);
+//            }
+//
+//            @Override
+//            public void onAnimationRepeat(Animation animation) {
+//
+//            }
+//        });
 
         SharedPreferences sharedpreferences = getSharedPreferences(explanationPref, Context.MODE_PRIVATE);
         if (!getSharedPreferences(explanationPref, Context.MODE_PRIVATE).getBoolean(isExplanation1, false))
@@ -183,78 +183,70 @@ public class newsfeed_activity extends AppCompatActivity
             Categories.setCurrentlyInUse(null);
             FacebookAndGoogle.getCommunication().clientSend("114&israelNewz#");
             Categories.setCurrentlyInUseCategory(1, getApplicationContext());
-            while(Categories.getCurrentlyInUse() == null)
-            {
-                final ImageView loading = (ImageView) findViewById(R.id.iv_nb_loading);
-                loading.setVisibility(View.VISIBLE);
-                final Animation an = AnimationUtils.loadAnimation(getBaseContext(), R.anim.rotate);
-                final Animation an2 = AnimationUtils.loadAnimation(getBaseContext(), R.anim.abc_fade_out);
-
-                loading.startAnimation(an);
-                an.setAnimationListener(new Animation.AnimationListener() {
-                    @Override
-                    public void onAnimationStart(Animation animation) {
-
-                    }
-
-                    @Override
-                    public void onAnimationEnd(Animation animation) {
-                        loading.startAnimation(an2);
-                        loading.setVisibility(View.GONE);
-                    }
-
-                    @Override
-                    public void onAnimationRepeat(Animation animation) {
-
-                    }
-                });
-            }
+            while(Categories.getCurrentlyInUse() == null) {}
             listadapter = new ArticleAdapter(newsfeed_activity.this, this);
             listView_article.setAdapter(listadapter);
 
         } else if (id == R.id.nav_global_news) {
+            Categories.setCurrentlyInUse(null);
             FacebookAndGoogle.getCommunication().clientSend("114&worldNewz#");
             Categories.setCurrentlyInUseCategory(2, getApplicationContext());
+            while(Categories.getCurrentlyInUse() == null) {}
+            listadapter = new ArticleAdapter(newsfeed_activity.this, this);
+            listView_article.setAdapter(listadapter);
 
         } else if (id == R.id.nav_politics) {
+            Categories.setCurrentlyInUse(null);
             FacebookAndGoogle.getCommunication().clientSend("114&politics#");
             Categories.setCurrentlyInUseCategory(3, getApplicationContext());
+            while(Categories.getCurrentlyInUse() == null) {}
             listadapter = new ArticleAdapter(newsfeed_activity.this, this);
             listView_article.setAdapter(listadapter);
 
         } else if (id == R.id.nav_economy) {
+            Categories.setCurrentlyInUse(null);
             FacebookAndGoogle.getCommunication().clientSend("114&economy#");
             Categories.setCurrentlyInUseCategory(4, getApplicationContext());
+            while(Categories.getCurrentlyInUse() == null) {}
             listadapter = new ArticleAdapter(newsfeed_activity.this, this);
             listView_article.setAdapter(listadapter);
-
         } else if (id == R.id.nav_sport) {
+            Categories.setCurrentlyInUse(null);
             FacebookAndGoogle.getCommunication().clientSend("114&sport#");
             Categories.setCurrentlyInUseCategory(5, getApplicationContext());
+            while(Categories.getCurrentlyInUse() == null) {}
             listadapter = new ArticleAdapter(newsfeed_activity.this, this);
             listView_article.setAdapter(listadapter);
 
         } else if (id == R.id.nav_culture) {
+            Categories.setCurrentlyInUse(null);
             FacebookAndGoogle.getCommunication().clientSend("114&culture#");
             Categories.setCurrentlyInUseCategory(6, getApplicationContext());
+            while(Categories.getCurrentlyInUse() == null) {}
             listadapter = new ArticleAdapter(newsfeed_activity.this, this);
             listView_article.setAdapter(listadapter);
 
         } else if (id == R.id.nav_celebrities) {
+            Categories.setCurrentlyInUse(null);
             FacebookAndGoogle.getCommunication().clientSend("114&celebs#");
             Categories.setCurrentlyInUseCategory(7, getApplicationContext());
+            while(Categories.getCurrentlyInUse() == null) {}
             listadapter = new ArticleAdapter(newsfeed_activity.this, this);
             listView_article.setAdapter(listadapter);
 
         } else if (id == R.id.nav_technology) {
-            FacebookAndGoogle.getCommunication().clientSend("114&technology)#");
+            Categories.setCurrentlyInUse(null);
+            FacebookAndGoogle.getCommunication().clientSend("114&technology#");
             Categories.setCurrentlyInUseCategory(8, getApplicationContext());
+            while(Categories.getCurrentlyInUse() == null) {}
             listadapter = new ArticleAdapter(newsfeed_activity.this, this);
             listView_article.setAdapter(listadapter);
 
         } else if (id == R.id.nav_science) {
-            FacebookAndGoogle.getCommunication().clientSend("114&technology)#");
+            Categories.setCurrentlyInUse(null);
+            FacebookAndGoogle.getCommunication().clientSend("114&technology#");
             Categories.setCurrentlyInUseCategory(9, getApplicationContext());
+            while(Categories.getCurrentlyInUse() == null) {}
             listadapter = new ArticleAdapter(newsfeed_activity.this, this);
             listView_article.setAdapter(listadapter);
 
@@ -328,8 +320,10 @@ public class newsfeed_activity extends AppCompatActivity
 
     private final Runnable refreshListView = new Runnable(){
         public void run(){
-
-            ((BaseAdapter)listadapter).notifyDataSetChanged();
+            Categories.setCurrentlyInUse(null);
+            FacebookAndGoogle.getCommunication().clientSend("114&" + Categories.getCurrentlyInUseCategoryServer() + "#"); //FIX IT
+            Categories.setCurrentlyInUseCategory(Categories.getCurrentCategoryID(), getApplicationContext());
+            while(Categories.getCurrentlyInUse() == null) {}
             listadapter = new ArticleAdapter(newsfeed_activity.this, newsfeed_activity.this);
             listView_article.setAdapter(listadapter);
             refreshList.setRefreshing(false);

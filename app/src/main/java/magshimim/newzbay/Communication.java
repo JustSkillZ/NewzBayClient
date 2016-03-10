@@ -26,11 +26,11 @@ public class Communication implements Runnable {
     private Socket serverSocket;
     private String serverIP;
     private int dstport;
-    private boolean isConnect;
+    private static boolean isConnect;
 
     @Override
     public void run() {
-        serverIP = "109.67.98.96";
+        serverIP = "109.65.174.197";
         isConnect = false;
         dstport = 4444;
         try {

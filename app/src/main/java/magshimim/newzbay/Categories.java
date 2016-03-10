@@ -21,6 +21,7 @@ public class Categories {
     private static Vector<Article> science; //ID = 9
     private static Vector<Article> currentlyInUse = new Vector<Article>();
     private static String currentlyInUseCategory = "";
+    private static String currentlyInUseCategoryServer = "";
     private static int CurrentCategoryID;
     private static String currentlyOpenURL;
 
@@ -81,38 +82,47 @@ public class Categories {
                 break;
             case 1:
                 currentlyInUseCategory = context.getResources().getString(R.string.news);
+                currentlyInUseCategoryServer = "israelNewz";
                 news = currentlyInUse;
                 break;
             case 2:
                 currentlyInUseCategory = context.getResources().getString(R.string.globalNews);
+                currentlyInUseCategoryServer = "worldNewz";
                 globalNews = currentlyInUse;
                 break;
             case 3:
                 currentlyInUseCategory = context.getResources().getString(R.string.politics);
+                currentlyInUseCategoryServer = "politics";
                 politics = currentlyInUse;
                 break;
             case 4:
                 currentlyInUseCategory = context.getResources().getString(R.string.economy);
+                currentlyInUseCategoryServer = "economy";
                 economy = currentlyInUse;
                 break;
             case 5:
                 currentlyInUseCategory = context.getResources().getString(R.string.sport);
+                currentlyInUseCategoryServer = "sport";
                 sport = currentlyInUse;
                 break;
             case 6:
                 currentlyInUseCategory = context.getResources().getString(R.string.culture);
+                currentlyInUseCategoryServer = "culture";
                 culture = currentlyInUse;
                 break;
             case 7:
                 currentlyInUseCategory = context.getResources().getString(R.string.celebrities);
+                currentlyInUseCategoryServer = "celebs";
                 celebrities = currentlyInUse;
                 break;
             case 8:
                 currentlyInUseCategory = context.getResources().getString(R.string.technology);
+                currentlyInUseCategoryServer = "technology";
                 technology = currentlyInUse;
                 break;
             case 9:
                 currentlyInUseCategory = context.getResources().getString(R.string.science);
+                currentlyInUseCategoryServer = "science";
                 science = currentlyInUse;
                 break;
         }
@@ -230,5 +240,13 @@ public class Categories {
 
     public static void setSite(Vector<String> site) {
         Categories.site = site;
+    }
+
+    public static String getCurrentlyInUseCategoryServer() {
+        return currentlyInUseCategoryServer;
+    }
+
+    public static void setCurrentlyInUseCategoryServer(String currentlyInUseCategoryServer) {
+        Categories.currentlyInUseCategoryServer = currentlyInUseCategoryServer;
     }
 }

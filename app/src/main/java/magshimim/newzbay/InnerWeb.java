@@ -19,7 +19,7 @@ public class InnerWeb extends AppCompatActivity {
     private WebBackForwardList webBackForwardList;
     private android.support.v7.widget.Toolbar toolbar_web;
 
-    private static final String explanationPref = "magshimim.newzbay.ExplanationPref" ;
+    private static final String prefsConnection = "magshimim.newzbay.ConnectionPrefs";
     private static final String isExplanation2 = "isExplanation2";
 
 
@@ -29,12 +29,12 @@ public class InnerWeb extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_inner_web);
 
-        if (!getSharedPreferences(explanationPref, Context.MODE_PRIVATE).getBoolean(isExplanation2, false))
+        if (!getSharedPreferences(prefsConnection, Context.MODE_PRIVATE).getBoolean(isExplanation2, false))
         {
             Intent explanation2 = new Intent(this,Explanation2.class);
             startActivity(explanation2);
 
-            SharedPreferences sharedpreferences = getSharedPreferences(explanationPref, Context.MODE_PRIVATE);
+            SharedPreferences sharedpreferences = getSharedPreferences(prefsConnection, Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedpreferences.edit();
             editor.putBoolean(isExplanation2, true);
             editor.commit();

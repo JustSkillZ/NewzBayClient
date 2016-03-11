@@ -21,6 +21,7 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewConfiguration;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.webkit.WebBackForwardList;
@@ -124,6 +125,7 @@ public class newsfeed_activity extends AppCompatActivity
         saveInInternalFolder("NewzBay", "check");
 
         listView_article = (ListView) findViewById(R.id.listView_articles);
+        listView_article.setFriction(ViewConfiguration.getScrollFriction() * (float)3);
         listadapter = new ArticleAdapter(this, this);
         listView_article.setAdapter(listadapter);
         ((BaseAdapter)listadapter).notifyDataSetChanged();
@@ -263,10 +265,10 @@ public class newsfeed_activity extends AppCompatActivity
             }
             else if(FacebookAndGoogle.isLoggedWithFacebook())
             {
-                FacebookAndGoogle.reset(BitmapFactory.decodeResource(getResources(), R.drawable.user_icon));
                 LoginManager.getInstance().logOut();
             }
             FacebookAndGoogle.getCommunication().clientSend("500#"); //Disconnect from the server
+            FacebookAndGoogle.getCommunication().setIsConnect(0);
             Log.d("Server", "500#");
             FacebookAndGoogle.reset(BitmapFactory.decodeResource(getResources(), R.drawable.user_icon));
             Intent intent = new Intent(this, entrance.class);

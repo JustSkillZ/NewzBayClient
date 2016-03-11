@@ -1,11 +1,17 @@
 package magshimim.newzbay;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.support.annotation.NonNull;
+import android.util.ArraySet;
 
 import com.facebook.Profile;
 
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.Vector;
 
 public class Categories {
@@ -25,9 +31,14 @@ public class Categories {
     private static int CurrentCategoryID;
     private static String currentlyOpenURL;
 
+    //-----------------Priority---------------------
     private static Vector<String> idOfRSS;
     private static Vector<String> subject;
     private static Vector<String> site;
+    //----------------------------------------------
+
+    private static HashMap<String, Bitmap> downloadedPics = new HashMap<>();
+
 
     public static String getCurrentlyOpenURL() {
         return currentlyOpenURL;
@@ -248,5 +259,13 @@ public class Categories {
 
     public static void setCurrentlyInUseCategoryServer(String currentlyInUseCategoryServer) {
         Categories.currentlyInUseCategoryServer = currentlyInUseCategoryServer;
+    }
+
+    public static HashMap<String, Bitmap> getDownloadedPics() {
+        return downloadedPics;
+    }
+
+    public static void setDownloadedPics(HashMap<String, Bitmap> downloadedPics) {
+        Categories.downloadedPics = downloadedPics;
     }
 }

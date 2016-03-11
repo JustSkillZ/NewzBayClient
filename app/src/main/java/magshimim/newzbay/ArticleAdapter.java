@@ -28,6 +28,7 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Vector;
 
 public class ArticleAdapter  extends ArrayAdapter<Article>{
@@ -107,7 +108,7 @@ public class ArticleAdapter  extends ArrayAdapter<Article>{
                         Categories.getCurrentlyInUse().get(position).setLiked(false);
                         Categories.getCurrentlyInUse().get(position).decNumberOfLikes();
                         countLikes.setText(Categories.getCurrentlyInUse().get(position).getNumberOfLikes() + " Likes");
-                        FacebookAndGoogle.getCommunication().clientSend("112&" + Categories.getCurrentlyInUse().get(position).getUrl() + "#");
+                        FacebookAndGoogle.getCommunication().clientSend("110&" + Categories.getCurrentlyInUse().get(position).getUrl() + "#");
                     }
                     else {
                         like.setText("Unlike");
@@ -136,12 +137,15 @@ public class ArticleAdapter  extends ArrayAdapter<Article>{
         countComments = (TextView) view.findViewById(R.id.tv_comments);
         countComments.setText("    " + Categories.getCurrentlyInUse().get(position).getNumberOfComments() + " Comments");
         picture = (ImageButton) view.findViewById(R.id.ib_picture);
-        if(Categories.getCurrentlyInUse().get(position).getPicture() == null)
+        if(!Categories.getCurrentlyInUse().get(position).getPicURL().equals("null"))
         {
-            getBitmapFromURL(picture, position, context);
-        }
-        else {
-            picture.setImageBitmap(Categories.getCurrentlyInUse().get(position).getPicture());
+            if(Categories.getCurrentlyInUse().get(position).getPicture() == null)
+            {
+                getBitmapFromURL(picture, position);
+            }
+            else {
+                picture.setImageBitmap(Categories.getCurrentlyInUse().get(position).getPicture());
+            }
         }
         picture.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -157,7 +161,7 @@ public class ArticleAdapter  extends ArrayAdapter<Article>{
         return view;
     }
 
-    public void getBitmapFromURL(ImageButton ib, int position, Context context1) {
+    public void getBitmapFromURL(ImageButton ib, int position) {
         final int position1 = position;
         Runnable runnable = new Runnable() {
             @Override
@@ -168,7 +172,9 @@ public class ArticleAdapter  extends ArrayAdapter<Article>{
                     connection.setDoInput(true);
                     connection.connect();
                     InputStream input = connection.getInputStream();
-                    Categories.getCurrentlyInUse().get(position1).setPicture(BitmapFactory.decodeStream(input));
+                    Bitmap b = BitmapFactory.decodeStream(input);
+                    Categories.getCurrentlyInUse().get(position1).setPicture(b);
+                    Categories.getDownloadedPics().put(Categories.getCurrentlyInUse().get(position1).getPicURL(), b);
                     activity.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -183,15 +189,10 @@ public class ArticleAdapter  extends ArrayAdapter<Article>{
             }
 
         };
-        Thread t = new Thread(runnable);
-        t.start();
-        if(Categories.getCurrentlyInUse().get(position).getPicURL().equals("null"))
+        if(!Categories.getCurrentlyInUse().get(position).getPicURL().equals("null"))
         {
-            ib.setImageBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.anchor));
-        }
-        else
-        {
-            ib.setImageBitmap(Categories.getCurrentlyInUse().get(position).getPicture());
+            Thread t = new Thread(runnable);
+            t.start();
         }
     }
 }

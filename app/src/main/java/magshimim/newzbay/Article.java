@@ -1,12 +1,11 @@
 package magshimim.newzbay;
 
 import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
+import android.graphics.BitmapFactory;
 
 import java.util.Date;
 
-public class Article {
+public class Article implements Comparable<Article> {
     private String subject;
     private String mainHeadline;
     private String secondHeadline;
@@ -31,7 +30,13 @@ public class Article {
         this.numberOfLikes = numberOfLikes;
         this.numberOfComments = numberOfComments;
         this.liked = liked;
-        picture = null;
+        if(Categories.getDownloadedPics().containsKey(picURL))
+        {
+            picture = Categories.getDownloadedPics().get(picURL);
+        }
+        else {
+            picture = null;
+        }
     }
 
     public String getSubject()
@@ -145,5 +150,10 @@ public class Article {
 
     public boolean isLiked() {
         return liked;
+    }
+
+    @Override
+    public int compareTo(Article another) {
+        return another.getDate().compareTo(getDate());
     }
 }

@@ -63,8 +63,9 @@
         android:id="@+id/ib_picture"
         android:background="@drawable/buttonborder"
         android:adjustViewBounds="true"
-        android:scaleType="fitCenter"
-        android:src="@drawable/anchor_big"/>
+        android:minHeight="150dp"
+        android:src="@drawable/not_found"
+        android:scaleType="fitCenter"/>
 
     <LinearLayout
         android:layout_width="match_parent"

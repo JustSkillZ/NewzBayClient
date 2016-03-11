@@ -25,6 +25,7 @@ public class FacebookAndGoogle {
     private static String picURL = "";
     private static String fullName = "Guest";
     private static String facebookUserEmail = "";
+    private static Context appContext;
 
     private static Communication communication = null;
 
@@ -148,5 +149,13 @@ public class FacebookAndGoogle {
 
     public static void setCommunication(Communication communication) {
         FacebookAndGoogle.communication = communication;
+    }
+
+    public static Context getAppContext() {
+        return appContext;
+    }
+
+    public static void setAppContext(Context appContext) {
+        FacebookAndGoogle.appContext = appContext;
     }
 }

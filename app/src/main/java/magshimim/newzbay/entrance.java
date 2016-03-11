@@ -1,20 +1,26 @@
 package magshimim.newzbay;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
+import android.content.SharedPreferences;
 import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
 import com.facebook.Profile;
 import com.facebook.appevents.AppEventsLogger;
 import com.facebook.login.LoginResult;
@@ -27,6 +33,9 @@ import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Scope;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.plus.Plus;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.Arrays;
 
@@ -46,7 +55,8 @@ public class entrance extends AppCompatActivity implements GoogleApiClient.Conne
     private boolean is_intent_inprogress;
     private boolean is_signInBtn_clicked;
 
-
+    private static final String prefsConnection = "magshimim.newzbay.ConnectionPrefs";
+    private static final String facebookEmail = "facebookEmail";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,39 +69,25 @@ public class entrance extends AppCompatActivity implements GoogleApiClient.Conne
         FacebookAndGoogle.setCommunication(communication);
         Thread t = new Thread(communication);
         t.start();
-//        while(!communication.getIsConnect())
-//        {
-//            final ImageView loading = (ImageView) findViewById(R.id.iv_nb_loading);
-//            loading.setVisibility(View.VISIBLE);
-//            final Animation an = AnimationUtils.loadAnimation(getBaseContext(), R.anim.rotate);
-//            final Animation an2 = AnimationUtils.loadAnimation(getBaseContext(), R.anim.abc_fade_out);
-//
-//            loading.startAnimation(an);
-//            an.setAnimationListener(new Animation.AnimationListener() {
-//                @Override
-//                public void onAnimationStart(Animation animation) {
-//
-//                }
-//
-//                @Override
-//                public void onAnimationEnd(Animation animation) {
-//                    loading.startAnimation(an2);
-//                    loading.setVisibility(View.GONE);
-//                }
-//
-//                @Override
-//                public void onAnimationRepeat(Animation animation) {
-//
-//                }
-//            });
-//        }
+        while(communication.isConnect() != 1)
+        {
+            while(communication.isConnect() == 0) {}
 
+            if(communication.isConnect() == -1)
+            {
+
+            }
+        }
+        FacebookAndGoogle.setAppContext(getApplicationContext());
         facebook_login();
         if (Profile.getCurrentProfile() != null) {
             Log.d(TAG, "facebook login");
+            SharedPreferences sharedpreferences = getSharedPreferences(prefsConnection, Context.MODE_PRIVATE);
+            FacebookAndGoogle.setFacebookUserEmail(sharedpreferences.getString(facebookEmail, ""));
             FacebookAndGoogle.setLoggedWithFacebook(true);
             FacebookAndGoogle.setCurrentFacebookProfile(Profile.getCurrentProfile());
             FacebookAndGoogle.setFullName(FacebookAndGoogle.getCurrentFacebookProfile().getName());
+            communication.clientSend("102&" + FacebookAndGoogle.getFacebookUserEmail() + "&" + FacebookAndGoogle.getCurrentFacebookProfile().getFirstName() + "#");
             moveToNewsFeed();
         }
         else
@@ -123,16 +119,13 @@ public class entrance extends AppCompatActivity implements GoogleApiClient.Conne
     public void signInAsGuest(View v) {
         Log.d(TAG, "guest login");
         FacebookAndGoogle.reset(BitmapFactory.decodeResource(getResources(), R.drawable.user_icon));
+        FacebookAndGoogle.setCommunication(communication);
+        communication.clientSend("102&guest@guest.com&guest#");
         moveToNewsFeed();
     }
 
     public void moveToNewsFeed() {
-        if(FacebookAndGoogle.isLoggedWithFacebook())
-        {
-            //communication.clientSend("102&" + FacebookAndGoogle.getFacebookUserEmail() + "&" + FacebookAndGoogle.getCurrentFacebookProfile().getFirstName() + "#");
-            Log.d("Server", FacebookAndGoogle.getFacebookUserEmail());
-        }
-        else if(FacebookAndGoogle.isLoggedWithGoogle())
+        if(FacebookAndGoogle.isLoggedWithGoogle())
         {
             communication.clientSend("102&"+Plus.AccountApi.getAccountName(mGoogleApiClient)+"&"+FacebookAndGoogle.getCurrentGoogleProfile().getName().getGivenName()+"#");
             Log.d("Server", "102&"+Plus.AccountApi.getAccountName(mGoogleApiClient)+"&"+FacebookAndGoogle.getCurrentGoogleProfile().getName().getGivenName()+"#");
@@ -145,11 +138,36 @@ public class entrance extends AppCompatActivity implements GoogleApiClient.Conne
     public void facebook_login() {
         facebook_loginButton = (LoginButton) findViewById(R.id.btn_Facebook);
         facebook_loginButton.setReadPermissions(Arrays.asList("email", "user_friends"));
-
         facebook_loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
                 Log.d(TAG, "facebook login");
+
+                GraphRequest request = GraphRequest.newMeRequest(
+                        loginResult.getAccessToken(),
+                        new GraphRequest.GraphJSONObjectCallback() {
+                            @Override
+                            public void onCompleted(JSONObject object, GraphResponse response) {
+                                Log.v("LoginActivity", response.toString());
+                                try {
+                                    String email = object.getString("email");
+                                    FacebookAndGoogle.setFacebookUserEmail(email);
+
+                                    communication.clientSend("102&" + FacebookAndGoogle.getFacebookUserEmail() + "&" + FacebookAndGoogle.getCurrentFacebookProfile().getFirstName() + "#");
+                                    SharedPreferences sharedpreferences = getSharedPreferences(prefsConnection, Context.MODE_PRIVATE);
+                                    SharedPreferences.Editor editor = sharedpreferences.edit();
+                                    editor.putString(facebookEmail, email);
+                                    editor.commit();
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        });
+                Bundle parameters = new Bundle();
+                parameters.putString("fields", "id,name,email,gender, birthday");
+                request.setParameters(parameters);
+                request.executeAsync();
+
                 FacebookAndGoogle.setLoggedWithFacebook(true);
                 FacebookAndGoogle.setCurrentFacebookProfile(Profile.getCurrentProfile());
                 FacebookAndGoogle.setFullName(FacebookAndGoogle.getCurrentFacebookProfile().getName());

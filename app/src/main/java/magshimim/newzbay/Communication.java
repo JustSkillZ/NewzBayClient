@@ -1,20 +1,19 @@
 package magshimim.newzbay;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.app.Activity;
+import android.content.Context;
 import android.util.Log;
 import android.widget.Toast;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.net.HttpURLConnection;
+import java.net.InetSocketAddress;
 import java.net.Socket;
-import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Vector;
 
@@ -26,22 +25,23 @@ public class Communication implements Runnable {
     private Socket serverSocket;
     private String serverIP;
     private int dstport;
-    private static boolean isConnect;
+    private static int isConnect;
 
     @Override
     public void run() {
-        serverIP = "109.65.174.197";
-        isConnect = false;
+        serverIP = "109.65.174.197"; //109.65.174.197
+        isConnect = 0; // 0 - Initialize || 1 - Connected || (-1) - Connection Failed
         dstport = 4444;
         try {
-            serverSocket = new Socket(serverIP, dstport);
-            isConnect = true;
+            serverSocket = new Socket();
+            serverSocket.connect(new InetSocketAddress(serverIP, dstport), 5000);
+            isConnect = 1;
         } catch (IOException e) {
             e.printStackTrace();
             Log.d("check", "IO Exception");
-            isConnect = false;
+            isConnect = -1;
         }
-        if(isConnect)
+        if(isConnect == 1)
         {
             clientRead = new ClientRead(serverSocket);
             new Thread(clientRead).start();
@@ -75,13 +75,18 @@ public class Communication implements Runnable {
             System.out.println("Socket Close Error");
         }
     }//end finally*/
-    public boolean getIsConnect()
-    {
-        return isConnect;
-    }
+
     public void clientSend(String str)
     {
         clientRead.send(str);
+    }
+
+    public static int isConnect() {
+        return isConnect;
+    }
+
+    public static void setIsConnect(int isConnect) {
+        Communication.isConnect = isConnect;
     }
 }
 class ClientRead extends Thread {
@@ -162,6 +167,7 @@ class ClientRead extends Thread {
                     while (line.contains("|"))
                     {
                         String id, mainHeadLine, secondHeadLine, date, url, likes, imgURL;
+                        Boolean liked;
                         String temp = line.substring(0, line.indexOf("|"));
                         id = temp.substring(0, temp.indexOf("&"));
                         temp = temp.substring((temp.indexOf("&") + 1));
@@ -175,7 +181,16 @@ class ClientRead extends Thread {
                         temp = temp.substring(temp.indexOf("&") + 1);
                         imgURL = temp.substring(0, temp.indexOf("&"));
                         temp = temp.substring(temp.indexOf("&") + 1);
-                        likes = temp;
+                        likes = temp.substring(0, temp.indexOf("&"));
+                        temp = temp.substring(temp.indexOf("&") + 1);
+                        if((Integer.parseInt(temp)) == 1)
+                        {
+                            liked = true;
+                        }
+                        else
+                        {
+                            liked = false;
+                        }
                         line = line.substring(line.indexOf("|") + 1);
                         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                         Date dates = null;
@@ -188,9 +203,10 @@ class ClientRead extends Thread {
                         } catch (ParseException e) {
                             e.printStackTrace();
                         }
-                        Article article = new Article(Categories.getCurrentlyInUseCategory(), mainHeadLine, secondHeadLine, imgURL, dates, Categories.getSite().elementAt(Categories.getIdOfRSS().indexOf(id)), url, Integer.parseInt(likes), 0, false);
+                        Article article = new Article(Categories.getCurrentlyInUseCategory(), mainHeadLine, secondHeadLine, imgURL, dates, Categories.getSite().elementAt(Categories.getIdOfRSS().indexOf(id)), url, Integer.parseInt(likes), 0, liked);
                         subject.add(article);
                     }
+                    Collections.sort(subject);
                     Categories.setCurrentlyInUse(subject);
                 }
             }

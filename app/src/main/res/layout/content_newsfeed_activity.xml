@@ -1,16 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="@color/white"
+    android:background="@drawable/main_background"
     android:orientation="vertical"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="magshimim.newzbay.newsfeed_activity"
+    android:supportsRtl="true"
     tools:showIn="@layout/app_bar_newsfeed_activity">
 
-<android.support.v4.widget.SwipeRefreshLayout
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/nb"
+        android:id="@+id/tv_hello2"
+        android:textStyle="bold"
+        android:textSize="28dp"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="30dp"
+        android:text="לכתבות"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/nb"
+        android:textStyle="bold"
+        android:textSize="28dp"
+        android:id="@+id/tv_hello1"
+        android:layout_centerHorizontal="true"
+        android:layout_above="@id/tv_hello2"
+        android:text="ברוכים הבאים למפרץ"/>
+
+    <ImageButton
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:background="@drawable/swipe"
+        android:id="@+id/ib_swipeFinger"
+        android:layout_centerVertical="true"
+        android:layout_toLeftOf="@id/tv_hello2"/>
+
+    <ImageButton
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:background="@drawable/finger"
+        android:layout_centerVertical="true"
+        android:layout_toLeftOf="@id/ib_swipeFinger"/>
+
+    <android.support.v4.widget.SwipeRefreshLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:id="@+id/refresh_ListView">
@@ -23,5 +62,5 @@
     </ListView>
 </android.support.v4.widget.SwipeRefreshLayout>
 
-</LinearLayout>
+</RelativeLayout>
 

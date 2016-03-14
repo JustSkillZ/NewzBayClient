@@ -3,6 +3,7 @@ package magshimim.newzbay;
 import android.app.Activity;
 import android.content.Context;
 import android.util.Log;
+import android.widget.BaseAdapter;
 import android.widget.Toast;
 
 import java.io.BufferedReader;
@@ -29,7 +30,7 @@ public class Communication implements Runnable {
 
     @Override
     public void run() {
-        serverIP = "109.65.174.197"; //109.65.174.197
+        serverIP = "79.176.58.190";
         isConnect = 0; // 0 - Initialize || 1 - Connected || (-1) - Connection Failed
         dstport = 4444;
         try {
@@ -124,13 +125,6 @@ class ClientRead extends Thread {
             {
                 Log.d("check", "Response from server :  " + line);
                 line = in.readLine();
-                try {
-                    sleep(200);
-                }
-                catch (InterruptedException e)
-                {
-                    e.printStackTrace();
-                }
                 if(line.equals("101#"))
                 {
                     Log.d("Server", "101#");
@@ -169,20 +163,20 @@ class ClientRead extends Thread {
                         String id, mainHeadLine, secondHeadLine, date, url, likes, imgURL;
                         Boolean liked;
                         String temp = line.substring(0, line.indexOf("|"));
-                        id = temp.substring(0, temp.indexOf("&"));
-                        temp = temp.substring((temp.indexOf("&") + 1));
-                        mainHeadLine = temp.substring(0, temp.indexOf("&"));
-                        temp = temp.substring((temp.indexOf("&") + 1));
-                        secondHeadLine = temp.substring(0, temp.indexOf("&"));
-                        temp = temp.substring(temp.indexOf("&") + 1);
-                        date = temp.substring(0, temp.indexOf("&"));
-                        temp = temp.substring(temp.indexOf("&") + 1);
-                        url = temp.substring(0, temp.indexOf("&"));
-                        temp = temp.substring(temp.indexOf("&") + 1);
-                        imgURL = temp.substring(0, temp.indexOf("&"));
-                        temp = temp.substring(temp.indexOf("&") + 1);
-                        likes = temp.substring(0, temp.indexOf("&"));
-                        temp = temp.substring(temp.indexOf("&") + 1);
+                        id = temp.substring(0, temp.indexOf("☺"));
+                        temp = temp.substring((temp.indexOf("☺") + 1));
+                        mainHeadLine = temp.substring(0, temp.indexOf("☺"));
+                        temp = temp.substring((temp.indexOf("☺") + 1));
+                        secondHeadLine = temp.substring(0, temp.indexOf("☺"));
+                        temp = temp.substring(temp.indexOf("☺") + 1);
+                        date = temp.substring(0, temp.indexOf("☺"));
+                        temp = temp.substring(temp.indexOf("☺") + 1);
+                        url = temp.substring(0, temp.indexOf("☺"));
+                        temp = temp.substring(temp.indexOf("☺") + 1);
+                        imgURL = temp.substring(0, temp.indexOf("☺"));
+                        temp = temp.substring(temp.indexOf("☺") + 1);
+                        likes = temp.substring(0, temp.indexOf("☺"));
+                        temp = temp.substring(temp.indexOf("☺") + 1);
                         if((Integer.parseInt(temp)) == 1)
                         {
                             liked = true;
@@ -206,8 +200,53 @@ class ClientRead extends Thread {
                         Article article = new Article(Categories.getCurrentlyInUseCategory(), mainHeadLine, secondHeadLine, imgURL, dates, Categories.getSite().elementAt(Categories.getIdOfRSS().indexOf(id)), url, Integer.parseInt(likes), 0, liked);
                         subject.add(article);
                     }
-                    Collections.sort(subject);
                     Categories.setCurrentlyInUse(subject);
+                }
+                else if(line.contains("119|")) {
+                    line = line.substring(line.indexOf("|") + 1);
+                    while (line.contains("|"))
+                    {
+                        String id, mainHeadLine, secondHeadLine, date, url, likes, imgURL;
+                        Boolean liked;
+                        String temp = line.substring(0, line.indexOf("|"));
+                        id = temp.substring(0, temp.indexOf("☺"));
+                        temp = temp.substring((temp.indexOf("☺") + 1));
+                        mainHeadLine = temp.substring(0, temp.indexOf("☺"));
+                        temp = temp.substring((temp.indexOf("☺") + 1));
+                        secondHeadLine = temp.substring(0, temp.indexOf("☺"));
+                        temp = temp.substring(temp.indexOf("☺") + 1);
+                        date = temp.substring(0, temp.indexOf("☺"));
+                        temp = temp.substring(temp.indexOf("☺") + 1);
+                        url = temp.substring(0, temp.indexOf("☺"));
+                        temp = temp.substring(temp.indexOf("☺") + 1);
+                        imgURL = temp.substring(0, temp.indexOf("☺"));
+                        temp = temp.substring(temp.indexOf("☺") + 1);
+                        likes = temp.substring(0, temp.indexOf("☺"));
+                        temp = temp.substring(temp.indexOf("☺") + 1);
+                        if((Integer.parseInt(temp)) == 1)
+                        {
+                            liked = true;
+                        }
+                        else
+                        {
+                            liked = false;
+                        }
+                        line = line.substring(line.indexOf("|") + 1);
+                        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                        Date dates = null;
+                        try {
+
+                            dates = formatter.parse(date);
+                            System.out.println(dates);
+                            System.out.println(formatter.format(dates));
+
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+                        Article article = new Article(Categories.getCurrentlyInUseCategory(), mainHeadLine, secondHeadLine, imgURL, dates, Categories.getSite().elementAt(Categories.getIdOfRSS().indexOf(id)), url, Integer.parseInt(likes), 0, liked);
+                        Categories.getCurrentlyInUse().addElement(article);
+                    }
+                    Categories.setLoading(false);
                 }
             }
         } catch (IOException e) {

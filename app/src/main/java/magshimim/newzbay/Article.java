@@ -5,7 +5,7 @@ import android.graphics.BitmapFactory;
 
 import java.util.Date;
 
-public class Article implements Comparable<Article> {
+public class Article{
     private String subject;
     private String mainHeadline;
     private String secondHeadline;
@@ -150,10 +150,5 @@ public class Article implements Comparable<Article> {
 
     public boolean isLiked() {
         return liked;
-    }
-
-    @Override
-    public int compareTo(Article another) {
-        return another.getDate().compareTo(getDate());
     }
 }

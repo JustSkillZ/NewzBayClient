@@ -14,6 +14,7 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Random;
+import java.util.Vector;
 
 public class FacebookAndGoogle {
     private static boolean loggedWithFacebook = false;
@@ -42,6 +43,7 @@ public class FacebookAndGoogle {
         fullName = "Guest" + Integer.toString(r.nextInt(999999999));
         facebookUserEmail = "";
         communication = null;
+        Categories.reset();
     }
 
     public static GoogleApiClient getmGoogleApiClient() {

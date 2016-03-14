@@ -21,7 +21,7 @@
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="30dp"
-        android:text="לכתבות"/>
+        android:text=""/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -39,15 +39,20 @@
         android:layout_height="50dp"
         android:background="@drawable/swipe"
         android:id="@+id/ib_swipeFinger"
+        android:layout_marginLeft="-4dp"
         android:layout_centerVertical="true"
-        android:layout_toLeftOf="@id/tv_hello2"/>
+        android:layout_alignParentLeft="true"/>
 
     <ImageButton
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:background="@drawable/finger"
         android:layout_centerVertical="true"
-        android:layout_toLeftOf="@id/ib_swipeFinger"/>
+        android:layout_toRightOf="@id/ib_swipeFinger"
+        android:layout_marginTop="-20dp"
+        android:layout_marginLeft="-7dp"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@id/ib_swipeFinger"/>
 
     <android.support.v4.widget.SwipeRefreshLayout
     android:layout_width="match_parent"

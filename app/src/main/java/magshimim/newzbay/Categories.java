@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.annotation.NonNull;
 import android.util.ArraySet;
+import android.widget.ListAdapter;
 
 import com.facebook.Profile;
 
@@ -39,6 +40,15 @@ public class Categories {
 
     private static HashMap<String, Bitmap> downloadedPics = new HashMap<>();
 
+    private static boolean loading = false;
+
+    public static void reset()
+    {
+        currentlyInUse = new Vector<Article>();
+        currentlyInUseCategory = "";
+        currentlyInUseCategoryServer = "";
+        loading = false;
+    }
 
     public static String getCurrentlyOpenURL() {
         return currentlyOpenURL;
@@ -267,5 +277,13 @@ public class Categories {
 
     public static void setDownloadedPics(HashMap<String, Bitmap> downloadedPics) {
         Categories.downloadedPics = downloadedPics;
+    }
+
+    public static boolean isLoading() {
+        return loading;
+    }
+
+    public static void setLoading(boolean loading) {
+        Categories.loading = loading;
     }
 }

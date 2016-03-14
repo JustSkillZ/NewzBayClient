@@ -27,6 +27,7 @@ import android.view.animation.AnimationUtils;
 import android.webkit.WebBackForwardList;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.AbsListView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -128,7 +129,22 @@ public class newsfeed_activity extends AppCompatActivity
         listView_article.setFriction(ViewConfiguration.getScrollFriction() * (float)3);
         listadapter = new ArticleAdapter(this, this);
         listView_article.setAdapter(listadapter);
-        ((BaseAdapter)listadapter).notifyDataSetChanged();
+        listView_article.setOnScrollListener(new AbsListView.OnScrollListener() {
+
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+            }
+
+            public void onScroll(AbsListView view, int firstVisibleItem,
+                                 int visibleItemCount, int totalItemCount) {
+
+                if (firstVisibleItem + visibleItemCount == totalItemCount && totalItemCount != 0) {
+                    if (!Categories.isLoading()) {
+                        Categories.setLoading(true);
+                        FacebookAndGoogle.getCommunication().clientSend("118&" + Categories.getCurrentlyInUseCategoryServer() + "&" + Categories.getCurrentlyInUse().lastElement().getUrl() + "#");
+                    }
+                }
+            }
+        });
         createSwipeRefreshLayout();
 
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -281,6 +297,7 @@ public class newsfeed_activity extends AppCompatActivity
                 ((TextView) v).setText(Categories.getCurrentlyInUseCategory());
             }
         }
+        Categories.setLoading(false);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
@@ -322,12 +339,10 @@ public class newsfeed_activity extends AppCompatActivity
 
     private final Runnable refreshListView = new Runnable(){
         public void run(){
-            Categories.setCurrentlyInUse(null);
-            FacebookAndGoogle.getCommunication().clientSend("114&" + Categories.getCurrentlyInUseCategoryServer() + "#"); //FIX IT
-            Categories.setCurrentlyInUseCategory(Categories.getCurrentCategoryID(), getApplicationContext());
-            while(Categories.getCurrentlyInUse() == null) {}
-            listadapter = new ArticleAdapter(newsfeed_activity.this, newsfeed_activity.this);
-            listView_article.setAdapter(listadapter);
+            if(!Categories.getCurrentlyInUseCategoryServer().equals(""))
+            {
+                updateArticles();
+            }
             refreshList.setRefreshing(false);
         }
     };
@@ -367,5 +382,15 @@ public class newsfeed_activity extends AppCompatActivity
             e.printStackTrace();
             return "";
         }
+    }
+
+    private void updateArticles()
+    {
+        Categories.setCurrentlyInUse(null);
+        FacebookAndGoogle.getCommunication().clientSend("114&" + Categories.getCurrentlyInUseCategoryServer() + "#");
+        Categories.setCurrentlyInUseCategory(Categories.getCurrentCategoryID(), getApplicationContext());
+        while(Categories.getCurrentlyInUse() == null) {}
+        listadapter = new ArticleAdapter(newsfeed_activity.this, this);
+        listView_article.setAdapter(listadapter);
     }
 }

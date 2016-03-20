@@ -9,11 +9,11 @@ import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.format.Time;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
@@ -54,6 +54,8 @@ public class entrance extends AppCompatActivity implements GoogleApiClient.Conne
     private static final int SIGN_IN_CODE = 0;
     private boolean is_intent_inprogress;
     private boolean is_signInBtn_clicked;
+    private GlobalClass globalClass;
+    private User user;
 
     private static final String prefsConnection = "magshimim.newzbay.ConnectionPrefs";
     private static final String facebookEmail = "facebookEmail";
@@ -61,12 +63,26 @@ public class entrance extends AppCompatActivity implements GoogleApiClient.Conne
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        FacebookAndGoogle.reset(BitmapFactory.decodeResource(getResources(), R.drawable.user_icon));
+        ((GlobalClass) getApplicationContext()).initiateClass();
+        globalClass = ((GlobalClass)getApplicationContext());
         FacebookSdk.sdkInitialize(getApplicationContext());
         callbackManager = CallbackManager.Factory.create();
         setContentView(R.layout.activity_entrance);
-        communication = new Communication();
-        FacebookAndGoogle.setCommunication(communication);
+
+        Time now = new Time();
+        now.setToNow();
+        if(now.hour > 19 || now.hour >= 0 && now.hour <= 5)
+        {
+            RelativeLayout layout =(RelativeLayout)findViewById(R.id.entrance_layout);
+            layout.setBackground(getResources().getDrawable(R.drawable.main_background_night));
+            TextView newzBay = (TextView) findViewById(R.id.tv_newzbay);
+            newzBay.setTextColor(getResources().getColor(R.color.white));
+            TextView slogen = (TextView) findViewById(R.id.tv_slogen);
+            slogen.setTextColor(getResources().getColor(R.color.white));
+        }
+
+        communication = new Communication((GlobalClass)getApplicationContext());
+        globalClass.setCommunication(communication);
         Thread t = new Thread(communication);
         t.start();
         while(communication.isConnect() != 1)
@@ -78,16 +94,13 @@ public class entrance extends AppCompatActivity implements GoogleApiClient.Conne
 
             }
         }
-        FacebookAndGoogle.setAppContext(getApplicationContext());
         facebook_login();
         if (Profile.getCurrentProfile() != null) {
             Log.d(TAG, "facebook login");
             SharedPreferences sharedpreferences = getSharedPreferences(prefsConnection, Context.MODE_PRIVATE);
-            FacebookAndGoogle.setFacebookUserEmail(sharedpreferences.getString(facebookEmail, ""));
-            FacebookAndGoogle.setLoggedWithFacebook(true);
-            FacebookAndGoogle.setCurrentFacebookProfile(Profile.getCurrentProfile());
-            FacebookAndGoogle.setFullName(FacebookAndGoogle.getCurrentFacebookProfile().getName());
-            communication.clientSend("102&" + FacebookAndGoogle.getFacebookUserEmail() + "&" + FacebookAndGoogle.getCurrentFacebookProfile().getFirstName() + "#");
+            user = new FacebookUser(Profile.getCurrentProfile().getName(), Profile.getCurrentProfile().getProfilePictureUri(500, 500).toString(), null, Profile.getCurrentProfile(), sharedpreferences.getString(facebookEmail, ""));
+            globalClass.setUser(user);
+            communication.clientSend("102&" + ((FacebookUser) user).getFacebookUserEmail() + "&" + ((FacebookUser) user).getFacebookProfile().getFirstName() + "#");
             moveToNewsFeed();
         }
         else
@@ -118,17 +131,17 @@ public class entrance extends AppCompatActivity implements GoogleApiClient.Conne
 
     public void signInAsGuest(View v) {
         Log.d(TAG, "guest login");
-        FacebookAndGoogle.reset(BitmapFactory.decodeResource(getResources(), R.drawable.user_icon));
-        FacebookAndGoogle.setCommunication(communication);
+        user = new User("Guest", "", BitmapFactory.decodeResource(getResources(), R.drawable.user_icon), "Guest");
+        globalClass.setUser(user);
         communication.clientSend("102&guest@guest.com&guest#");
         moveToNewsFeed();
     }
 
     public void moveToNewsFeed() {
-        if(FacebookAndGoogle.isLoggedWithGoogle())
+        if(user.getConnectedVia().equals("Google"))
         {
-            communication.clientSend("102&"+Plus.AccountApi.getAccountName(mGoogleApiClient)+"&"+FacebookAndGoogle.getCurrentGoogleProfile().getName().getGivenName()+"#");
-            Log.d("Server", "102&"+Plus.AccountApi.getAccountName(mGoogleApiClient)+"&"+FacebookAndGoogle.getCurrentGoogleProfile().getName().getGivenName()+"#");
+            communication.clientSend("102&"+Plus.AccountApi.getAccountName(mGoogleApiClient)+"&"+((GoogleUser)user).getGoogleProfile().getName().getGivenName()+"#");
+            Log.d("Server", "102&"+Plus.AccountApi.getAccountName(mGoogleApiClient)+"&"+((GoogleUser)user).getGoogleProfile().getName().getGivenName()+"#");
         }
         Intent nfScreen = new Intent(this, newsfeed_activity.class);
         startActivity(nfScreen);
@@ -151,9 +164,9 @@ public class entrance extends AppCompatActivity implements GoogleApiClient.Conne
                                 Log.v("LoginActivity", response.toString());
                                 try {
                                     String email = object.getString("email");
-                                    FacebookAndGoogle.setFacebookUserEmail(email);
+                                    ((FacebookUser)user).setFacebookUserEmail(email);
 
-                                    communication.clientSend("102&" + FacebookAndGoogle.getFacebookUserEmail() + "&" + FacebookAndGoogle.getCurrentFacebookProfile().getFirstName() + "#");
+                                    communication.clientSend("102&" + ((FacebookUser)user).getFacebookUserEmail() + "&" + ((FacebookUser)user).getFacebookProfile().getFirstName() + "#");
                                     SharedPreferences sharedpreferences = getSharedPreferences(prefsConnection, Context.MODE_PRIVATE);
                                     SharedPreferences.Editor editor = sharedpreferences.edit();
                                     editor.putString(facebookEmail, email);
@@ -163,25 +176,23 @@ public class entrance extends AppCompatActivity implements GoogleApiClient.Conne
                                 }
                             }
                         });
+                user = new FacebookUser(Profile.getCurrentProfile().getName(), Profile.getCurrentProfile().getProfilePictureUri(500, 500).toString(), null, Profile.getCurrentProfile(), "");
+                globalClass.setUser(user);
                 Bundle parameters = new Bundle();
                 parameters.putString("fields", "id,name,email,gender, birthday");
                 request.setParameters(parameters);
                 request.executeAsync();
-
-                FacebookAndGoogle.setLoggedWithFacebook(true);
-                FacebookAndGoogle.setCurrentFacebookProfile(Profile.getCurrentProfile());
-                FacebookAndGoogle.setFullName(FacebookAndGoogle.getCurrentFacebookProfile().getName());
                 moveToNewsFeed();
             }
 
             @Override
             public void onCancel() {
-                FacebookAndGoogle.setLoggedWithFacebook(false);
+                globalClass.setUser(null);
             }
 
             @Override
             public void onError(FacebookException e) {
-                FacebookAndGoogle.setLoggedWithFacebook(false);
+                globalClass.setUser(null);
             }
         });
     }
@@ -285,10 +296,8 @@ public class entrance extends AppCompatActivity implements GoogleApiClient.Conne
     public void onConnected(Bundle arg0) {
         is_signInBtn_clicked = false;
         // Get user's information and set it into the layout
-        FacebookAndGoogle.setCurrentGoogleProfile(Plus.PeopleApi.getCurrentPerson(mGoogleApiClient));
-        FacebookAndGoogle.setmGoogleApiClient(mGoogleApiClient);
-        FacebookAndGoogle.setLoggedWithGoogle(true);
-        FacebookAndGoogle.setFullName(Plus.PeopleApi.getCurrentPerson(mGoogleApiClient).getDisplayName());
+        user = new GoogleUser(Plus.PeopleApi.getCurrentPerson(mGoogleApiClient).getDisplayName(), Plus.PeopleApi.getCurrentPerson(mGoogleApiClient).getImage().getUrl(), null, Plus.PeopleApi.getCurrentPerson(mGoogleApiClient), mGoogleApiClient);
+        globalClass.setUser(user);
         // Update the UI after signin
         moveToNewsFeed();
 
@@ -297,10 +306,8 @@ public class entrance extends AppCompatActivity implements GoogleApiClient.Conne
     @Override
     public void onConnectionSuspended(int arg0) {
         mGoogleApiClient.connect();
-        FacebookAndGoogle.setCurrentGoogleProfile(Plus.PeopleApi.getCurrentPerson(mGoogleApiClient));
-        FacebookAndGoogle.setmGoogleApiClient(mGoogleApiClient);
-        FacebookAndGoogle.setLoggedWithGoogle(true);
-        FacebookAndGoogle.setFullName(Plus.PeopleApi.getCurrentPerson(mGoogleApiClient).getDisplayName());
+        user = new GoogleUser(Plus.PeopleApi.getCurrentPerson(mGoogleApiClient).getDisplayName(), Plus.PeopleApi.getCurrentPerson(mGoogleApiClient).getImage().getUrl(), null, Plus.PeopleApi.getCurrentPerson(mGoogleApiClient), mGoogleApiClient);
+        globalClass.setUser(user);
         moveToNewsFeed();
     }
 

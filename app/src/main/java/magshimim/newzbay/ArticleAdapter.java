@@ -31,7 +31,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Vector;
 
-public class ArticleAdapter  extends ArrayAdapter<Article>{
+public class ArticleAdapter extends ArrayAdapter<Article>{
 
     private ListView listView;
     private Button like;
@@ -42,13 +42,19 @@ public class ArticleAdapter  extends ArrayAdapter<Article>{
     private Context context;
     private ListAdapter adapter;
     private Activity activity;
+    private CategoriesHandler categoriesHandler;
+    private Communication communication;
+    private User user;
 
-    public ArticleAdapter(Context context, Activity act)
+    public ArticleAdapter(Context context, Activity act, GlobalClass globalClass)
     {
-        super(context, R.layout.listview_articles, Categories.getCurrentlyInUse());
+        super(context, R.layout.listview_articles, globalClass.getCategoriesHandler().getCurrentlyInUse());
         this.context = context;
         adapter = this;
         activity = act;
+        categoriesHandler = globalClass.getCategoriesHandler();
+        user = globalClass.getUser();
+        this.communication = communication;
     }
 
     @Override
@@ -60,7 +66,7 @@ public class ArticleAdapter  extends ArrayAdapter<Article>{
     public View getView(final int position, View convertView, ViewGroup parent) {
         LayoutInflater layoutInflater = LayoutInflater.from(getContext());
         View view = layoutInflater.inflate(R.layout.listview_articles, parent, false);
-        if(!FacebookAndGoogle.isLoggedWithGoogle() && !FacebookAndGoogle.isLoggedWithFacebook())
+        if(user.getConnectedVia().equals("Guest"))
         {
             like = (Button) view.findViewById(R.id.btn_like);
             like.setBackgroundResource(R.drawable.buttonborder_disabled);
@@ -88,7 +94,7 @@ public class ArticleAdapter  extends ArrayAdapter<Article>{
         else
         {
             like = (Button) view.findViewById(R.id.btn_like);
-            if(Categories.getCurrentlyInUse().get(position).getLiked())
+            if(categoriesHandler.getCurrentlyInUse().get(position).getLiked())
             {
                 like.setText("Unlike");
             }
@@ -103,48 +109,48 @@ public class ArticleAdapter  extends ArrayAdapter<Article>{
                     like = (Button) v.findViewById(R.id.btn_like);
                     ViewGroup item = (ViewGroup)v.getParent().getParent();
                     countLikes = (TextView) item.findViewById(R.id.tv_likes);
-                    if (Categories.getCurrentlyInUse().get(position).getLiked()) {
+                    if (categoriesHandler.getCurrentlyInUse().get(position).getLiked()) {
                         like.setText("Like");
-                        Categories.getCurrentlyInUse().get(position).setLiked(false);
-                        Categories.getCurrentlyInUse().get(position).decNumberOfLikes();
-                        countLikes.setText(Categories.getCurrentlyInUse().get(position).getNumberOfLikes() + " Likes");
-                        FacebookAndGoogle.getCommunication().clientSend("110&" + Categories.getCurrentlyInUse().get(position).getUrl() + "#");
+                        categoriesHandler.getCurrentlyInUse().get(position).setLiked(false);
+                        categoriesHandler.getCurrentlyInUse().get(position).decNumberOfLikes();
+                        countLikes.setText(categoriesHandler.getCurrentlyInUse().get(position).getNumberOfLikes() + " Likes");
+                        communication.clientSend("110&" + categoriesHandler.getCurrentlyInUse().get(position).getUrl() + "#");
                     }
                     else {
                         like.setText("Unlike");
-                        Categories.getCurrentlyInUse().get(position).setLiked(true);
-                        Categories.getCurrentlyInUse().get(position).incNumberOfLikes();
-                        countLikes.setText(Categories.getCurrentlyInUse().get(position).getNumberOfLikes() + " Likes");
-                        FacebookAndGoogle.getCommunication().clientSend("110&" + Categories.getCurrentlyInUse().get(position).getUrl() + "#");
+                        categoriesHandler.getCurrentlyInUse().get(position).setLiked(true);
+                        categoriesHandler.getCurrentlyInUse().get(position).incNumberOfLikes();
+                        countLikes.setText(categoriesHandler.getCurrentlyInUse().get(position).getNumberOfLikes() + " Likes");
+                        communication.clientSend("110&" + categoriesHandler.getCurrentlyInUse().get(position).getUrl() + "#");
                     }
                 }
             });
         }
         TextView mainHeadline = (TextView) view.findViewById(R.id.tv_mainHeadline);
-        mainHeadline.setText(Categories.getCurrentlyInUse().elementAt(position).getMainHeadline());
+        mainHeadline.setText(categoriesHandler.getCurrentlyInUse().elementAt(position).getMainHeadline());
         TextView secondHeadLine = (TextView) view.findViewById(R.id.tv_secondHeadline);
-        secondHeadLine.setText(Categories.getCurrentlyInUse().elementAt(position).getSecondHeadline());
+        secondHeadLine.setText(categoriesHandler.getCurrentlyInUse().elementAt(position).getSecondHeadline());
         TextView site = (TextView) view.findViewById(R.id.tv_site);
-        site.setText(Categories.getCurrentlyInUse().elementAt(position).getSiteName());
+        site.setText(categoriesHandler.getCurrentlyInUse().elementAt(position).getSiteName());
         TextView date = (TextView) view.findViewById(R.id.tv_date);
-        if(Categories.getCurrentlyInUse().elementAt(position).getDate() != null)
+        if(categoriesHandler.getCurrentlyInUse().elementAt(position).getDate() != null)
         {
             Date d = new Date();
-            date.setText((String) DateUtils.getRelativeTimeSpanString(Categories.getCurrentlyInUse().elementAt(position).getDate().getTime(), d.getTime(), 0));
+            date.setText((String) DateUtils.getRelativeTimeSpanString(categoriesHandler.getCurrentlyInUse().elementAt(position).getDate().getTime(), d.getTime(), 0));
         }
         countLikes = (TextView) view.findViewById(R.id.tv_likes);
-        countLikes.setText(Categories.getCurrentlyInUse().get(position).getNumberOfLikes() + " Likes");
+        countLikes.setText(categoriesHandler.getCurrentlyInUse().get(position).getNumberOfLikes() + " Likes");
         countComments = (TextView) view.findViewById(R.id.tv_comments);
-        countComments.setText("    " + Categories.getCurrentlyInUse().get(position).getNumberOfComments() + " Comments");
+        countComments.setText("    " + categoriesHandler.getCurrentlyInUse().get(position).getNumberOfComments() + " Comments");
         picture = (ImageButton) view.findViewById(R.id.ib_picture);
-        if(!Categories.getCurrentlyInUse().get(position).getPicURL().equals("null"))
+        if(!categoriesHandler.getCurrentlyInUse().get(position).getPicURL().equals("null"))
         {
-            if(Categories.getCurrentlyInUse().get(position).getPicture() == null)
+            if(categoriesHandler.getCurrentlyInUse().get(position).getPicture() == null)
             {
                 getBitmapFromURL(picture, position);
             }
             else {
-                picture.setImageBitmap(Categories.getCurrentlyInUse().get(position).getPicture());
+                picture.setImageBitmap(categoriesHandler.getCurrentlyInUse().get(position).getPicture());
             }
         }
         picture.setOnClickListener(new View.OnClickListener() {
@@ -153,7 +159,7 @@ public class ArticleAdapter  extends ArrayAdapter<Article>{
                 View parentRow = (View) v.getParent();
                 listView = (ListView) parentRow.getParent();
                 int position = listView.getPositionForView(parentRow);
-                Categories.setCurrentlyOpenURL(Categories.getCurrentlyInUse().elementAt(position).getUrl());
+                categoriesHandler.setCurrentlyOpenURL(categoriesHandler.getCurrentlyInUse().elementAt(position).getUrl());
                 Intent web = new Intent(context,InnerWeb.class);
                 context.startActivity(web);
             }
@@ -167,14 +173,14 @@ public class ArticleAdapter  extends ArrayAdapter<Article>{
             @Override
             public void run() {
                 try {
-                    URL url = new URL((Categories.getCurrentlyInUse().get(position1).getPicURL()));
+                    URL url = new URL((categoriesHandler.getCurrentlyInUse().get(position1).getPicURL()));
                     HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                     connection.setDoInput(true);
                     connection.connect();
                     InputStream input = connection.getInputStream();
                     Bitmap b = BitmapFactory.decodeStream(input);
-                    Categories.getCurrentlyInUse().get(position1).setPicture(b);
-                    Categories.getDownloadedPics().put(Categories.getCurrentlyInUse().get(position1).getPicURL(), b);
+                    categoriesHandler.getCurrentlyInUse().get(position1).setPicture(b);
+                    categoriesHandler.getDownloadedPics().put(categoriesHandler.getCurrentlyInUse().get(position1).getPicURL(), b);
                     activity.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -189,7 +195,7 @@ public class ArticleAdapter  extends ArrayAdapter<Article>{
             }
 
         };
-        if(!Categories.getCurrentlyInUse().get(position).getPicURL().equals("null"))
+        if(!categoriesHandler.getCurrentlyInUse().get(position).getPicURL().equals("null"))
         {
             Thread t = new Thread(runnable);
             t.start();

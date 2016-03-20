@@ -20,7 +20,9 @@ import java.util.Vector;
 
 public class Communication implements Runnable {
     private ClientRead clientRead;
-    public Communication() {
+    private GlobalClass globalClass;
+    public Communication(GlobalClass globalClass) {
+        this.globalClass = globalClass;
     }
 
     private Socket serverSocket;
@@ -30,7 +32,7 @@ public class Communication implements Runnable {
 
     @Override
     public void run() {
-        serverIP = "79.176.58.190";
+        serverIP = "109.65.245.151";
         isConnect = 0; // 0 - Initialize || 1 - Connected || (-1) - Connection Failed
         dstport = 4444;
         try {
@@ -44,7 +46,7 @@ public class Communication implements Runnable {
         }
         if(isConnect == 1)
         {
-            clientRead = new ClientRead(serverSocket);
+            clientRead = new ClientRead(serverSocket, globalClass);
             new Thread(clientRead).start();
         }
     }
@@ -92,10 +94,15 @@ public class Communication implements Runnable {
 }
 class ClientRead extends Thread {
     private Socket serverSocket;
-    public PrintWriter out;
-    public BufferedReader in;
-    public ClientRead(Socket serverSocket) {
+    private PrintWriter out;
+    private BufferedReader in;
+    private GlobalClass globalClass;
+    private CategoriesHandler categoriesHandler;
+
+    public ClientRead(Socket serverSocket, GlobalClass globalClass) {
         this.serverSocket = serverSocket;
+        this.globalClass = globalClass;
+        categoriesHandler = globalClass.getCategoriesHandler();
     }
 
     @Override
@@ -123,8 +130,8 @@ class ClientRead extends Thread {
             String line = in.readLine();
             while (line.compareTo("501#") != 0)
             {
-                Log.d("check", "Response from server :  " + line);
                 line = in.readLine();
+                Log.d("check", "Response from server :  " + line);
                 if(line.equals("101#"))
                 {
                     Log.d("Server", "101#");
@@ -151,13 +158,13 @@ class ClientRead extends Thread {
                         site.add(temp);
                         line = line.substring(line.indexOf("|") + 1);
                     }
-                    Categories.setIdOfRSS(id);
-                    Categories.setSubject(subject);
-                    Categories.setSite(site);
+                    categoriesHandler.setIdOfRSS(id);
+                    categoriesHandler.setSubject(subject);
+                    categoriesHandler.setSite(site);
                 }
                 else if(line.contains("115|")) {
                     line = line.substring(line.indexOf("|") + 1);
-                    Vector<Article> subject = new Vector<Article>();
+                    categoriesHandler.getCurrentlyInUse().clear();
                     while (line.contains("|"))
                     {
                         String id, mainHeadLine, secondHeadLine, date, url, likes, imgURL;
@@ -197,12 +204,16 @@ class ClientRead extends Thread {
                         } catch (ParseException e) {
                             e.printStackTrace();
                         }
-                        Article article = new Article(Categories.getCurrentlyInUseCategory(), mainHeadLine, secondHeadLine, imgURL, dates, Categories.getSite().elementAt(Categories.getIdOfRSS().indexOf(id)), url, Integer.parseInt(likes), 0, liked);
-                        subject.add(article);
+                        Article article = new Article(categoriesHandler.getCurrentlyInUseCategory(globalClass.getUser()), mainHeadLine, secondHeadLine, imgURL, dates, categoriesHandler.getSite().elementAt(categoriesHandler.getIdOfRSS().indexOf(id)), url, Integer.parseInt(likes), 0, liked, globalClass);
+                        categoriesHandler.getCurrentlyInUse().add(article);
                     }
-                    Categories.setCurrentlyInUse(subject);
-                }
-                else if(line.contains("119|")) {
+                    categoriesHandler.getNewsfeed().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            ((BaseAdapter) categoriesHandler.getListAdapter()).notifyDataSetChanged();
+                        }
+                    });
+                } else if(line.contains("119|")) {
                     line = line.substring(line.indexOf("|") + 1);
                     while (line.contains("|"))
                     {
@@ -243,10 +254,16 @@ class ClientRead extends Thread {
                         } catch (ParseException e) {
                             e.printStackTrace();
                         }
-                        Article article = new Article(Categories.getCurrentlyInUseCategory(), mainHeadLine, secondHeadLine, imgURL, dates, Categories.getSite().elementAt(Categories.getIdOfRSS().indexOf(id)), url, Integer.parseInt(likes), 0, liked);
-                        Categories.getCurrentlyInUse().addElement(article);
+                        Article article = new Article(categoriesHandler.getCurrentlyInUseCategory(globalClass.getUser()), mainHeadLine, secondHeadLine, imgURL, dates, categoriesHandler.getSite().elementAt(categoriesHandler.getIdOfRSS().indexOf(id)), url, Integer.parseInt(likes), 0, liked, globalClass);
+                        categoriesHandler.getCurrentlyInUse().addElement(article);
                     }
-                    Categories.setLoading(false);
+                    categoriesHandler.getNewsfeed().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            ((BaseAdapter) categoriesHandler.getListAdapter()).notifyDataSetChanged();
+                        }
+                    });
+                    categoriesHandler.setLoading(false);
                 }
             }
         } catch (IOException e) {

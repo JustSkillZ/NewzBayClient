@@ -18,7 +18,7 @@ public class Article{
     private int numberOfComments;
     private boolean liked;
 
-    public Article(String subject, String mainHeadline, String secondHeadline, String picURL, Date date, String siteName, String url, int numberOfLikes, int numberOfComments, boolean liked)
+    public Article(String subject, String mainHeadline, String secondHeadline, String picURL, Date date, String siteName, String url, int numberOfLikes, int numberOfComments, boolean liked, GlobalClass globalClass)
     {
         this.subject = subject;
         this.mainHeadline = mainHeadline;
@@ -30,9 +30,9 @@ public class Article{
         this.numberOfLikes = numberOfLikes;
         this.numberOfComments = numberOfComments;
         this.liked = liked;
-        if(Categories.getDownloadedPics().containsKey(picURL))
+        if(globalClass.getCategoriesHandler().getDownloadedPics().containsKey(picURL))
         {
-            picture = Categories.getDownloadedPics().get(picURL);
+            picture = globalClass.getCategoriesHandler().getDownloadedPics().get(picURL);
         }
         else {
             picture = null;

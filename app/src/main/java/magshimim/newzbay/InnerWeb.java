@@ -18,6 +18,7 @@ public class InnerWeb extends AppCompatActivity {
     private WebView web;
     private WebBackForwardList webBackForwardList;
     private android.support.v7.widget.Toolbar toolbar_web;
+    private CategoriesHandler categoriesHandler;
 
     private static final String prefsConnection = "magshimim.newzbay.ConnectionPrefs";
     private static final String isExplanation2 = "isExplanation2";
@@ -28,6 +29,8 @@ public class InnerWeb extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_inner_web);
+
+        categoriesHandler = ((GlobalClass) getApplicationContext()).getCategoriesHandler();
 
         if (!getSharedPreferences(prefsConnection, Context.MODE_PRIVATE).getBoolean(isExplanation2, false))
         {
@@ -43,7 +46,7 @@ public class InnerWeb extends AppCompatActivity {
         toolbar_web = (android.support.v7.widget.Toolbar) findViewById(R.id.toolbar_web);
         setSupportActionBar(toolbar_web);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
-        web.loadUrl(Categories.getCurrentlyOpenURL());
+        web.loadUrl(categoriesHandler.getCurrentlyOpenURL());
     }
 
     @Override
@@ -120,7 +123,7 @@ public class InnerWeb extends AppCompatActivity {
 
     public void closeWeb(View v)
     {
-        Categories.setCurrentlyOpenURL("");
+        categoriesHandler.setCurrentlyOpenURL("");
         finish();
     }
 

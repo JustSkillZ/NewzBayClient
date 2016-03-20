@@ -1,5 +1,6 @@
 package magshimim.newzbay;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -12,9 +13,11 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v4.widget.ViewDragHelper;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.SpannableString;
+import android.text.format.Time;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -34,6 +37,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -45,6 +49,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.lang.reflect.Field;
 import java.util.Vector;
 
 public class newsfeed_activity extends AppCompatActivity
@@ -56,6 +61,10 @@ public class newsfeed_activity extends AppCompatActivity
     private ListView listView_article;
     private Handler handler = new Handler();
     private DrawerLayout drawer;
+    private GlobalClass globalClass;
+    private CategoriesHandler categoriesHandler;
+    private Communication communication;
+    private User user;
 
     private static final String explanationPref = "magshimim.newzbay.ExplanationPref" ;
     private static final String isExplanation1 = "isExplanation1";
@@ -65,6 +74,21 @@ public class newsfeed_activity extends AppCompatActivity
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.newsfeed_activity);
+
+        Time now = new Time();
+        now.setToNow();
+        if(now.hour > 19 || now.hour >= 0 && now.hour <= 5)
+        {
+            RelativeLayout layout =(RelativeLayout)findViewById(R.id.newsfeed_layout);
+            layout.setBackground(getResources().getDrawable(R.drawable.main_background_night));
+            TextView slogen = (TextView) findViewById(R.id.tv_hello1);
+            slogen.setTextColor(getResources().getColor(R.color.white));
+        }
+
+        globalClass = ((GlobalClass) getApplicationContext());
+        categoriesHandler = globalClass.getCategoriesHandler();
+        communication = globalClass.getCommunication();
+        user = globalClass.getUser();
 
 //        final ImageView loading = (ImageView) findViewById(R.id.iv_nb_loading);
 //        loading.setVisibility(View.VISIBLE);
@@ -102,16 +126,16 @@ public class newsfeed_activity extends AppCompatActivity
             editor.commit();
         }
 
-        if(FacebookAndGoogle.isLoggedWithFacebook())
+        if(user.getConnectedVia().equals("Facebook"))
         {
-            FacebookAndGoogle.getBitmapFromURL(FacebookAndGoogle.getCurrentFacebookProfile().getProfilePictureUri(500, 500).toString());
-            FacebookAndGoogle.setFullName(FacebookAndGoogle.getCurrentFacebookProfile().getName());
+            user.getBitmapFromURL(((FacebookUser) user).getFacebookProfile().getProfilePictureUri(500, 500).toString());
+            user.setFullName(((FacebookUser) user).getFacebookProfile().getName());
         }
-        else if(FacebookAndGoogle.isLoggedWithGoogle())
-        {
-            FacebookAndGoogle.getBitmapFromURL(FacebookAndGoogle.getCurrentGoogleProfile().getImage().getUrl().replace("sz=50", "sz=500").toString());
-            FacebookAndGoogle.setFullName(FacebookAndGoogle.getCurrentGoogleProfile().getDisplayName());
+        else if(user.getConnectedVia().equals("Google")) {
+            user.getBitmapFromURL(((GoogleUser) user).getGoogleProfile().getImage().getUrl().replace("sz=50", "sz=500").toString());
+            user.setFullName(((GoogleUser) user).getGoogleProfile().getDisplayName());
         }
+
         toolbar_main = (android.support.v7.widget.Toolbar) findViewById(R.id.toolbar_main);
         setSupportActionBar(toolbar_main);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
@@ -119,7 +143,7 @@ public class newsfeed_activity extends AppCompatActivity
         for (int i = 0; i <= toolbar_main.getChildCount(); i++) {
             View v = toolbar_main.getChildAt(i);
             if (v instanceof TextView) {
-                ((TextView) v).setText(Categories.getCurrentlyInUseCategory());
+                ((TextView) v).setText(categoriesHandler.getCurrentlyInUseCategory(user));
             }
         }
 
@@ -127,8 +151,12 @@ public class newsfeed_activity extends AppCompatActivity
 
         listView_article = (ListView) findViewById(R.id.listView_articles);
         listView_article.setFriction(ViewConfiguration.getScrollFriction() * (float)3);
-        listadapter = new ArticleAdapter(this, this);
+        listadapter = new ArticleAdapter(newsfeed_activity.this, this, (GlobalClass)getApplicationContext());
         listView_article.setAdapter(listadapter);
+
+        categoriesHandler.setListAdapter(listadapter);
+        categoriesHandler.setNewsfeed(this);
+
         listView_article.setOnScrollListener(new AbsListView.OnScrollListener() {
 
             public void onScrollStateChanged(AbsListView view, int scrollState) {
@@ -138,9 +166,9 @@ public class newsfeed_activity extends AppCompatActivity
                                  int visibleItemCount, int totalItemCount) {
 
                 if (firstVisibleItem + visibleItemCount == totalItemCount && totalItemCount != 0) {
-                    if (!Categories.isLoading()) {
-                        Categories.setLoading(true);
-                        FacebookAndGoogle.getCommunication().clientSend("118&" + Categories.getCurrentlyInUseCategoryServer() + "&" + Categories.getCurrentlyInUse().lastElement().getUrl() + "#");
+                    if (!categoriesHandler.isLoading()) {
+                        categoriesHandler.setLoading(true);
+                        communication.clientSend("118&" + categoriesHandler.getCurrentlyInUseCategoryServer() + "&" + categoriesHandler.getCurrentlyInUse().lastElement().getUrl() + "#");
                     }
                 }
             }
@@ -148,6 +176,42 @@ public class newsfeed_activity extends AppCompatActivity
         createSwipeRefreshLayout();
 
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        Field mDragger = null;//mRightDragger for right obviously
+        try {
+            mDragger = drawer.getClass().getDeclaredField(
+                    "mLeftDragger");
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
+        }
+        mDragger.setAccessible(true);
+        ViewDragHelper draggerObj = null;
+        try {
+            draggerObj = (ViewDragHelper) mDragger
+                    .get(drawer);
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+
+        Field mEdgeSize = null;
+        try {
+            mEdgeSize = draggerObj.getClass().getDeclaredField(
+                    "mEdgeSize");
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
+        }
+        mEdgeSize.setAccessible(true);
+        int edge = 0;
+        try {
+            edge = mEdgeSize.getInt(draggerObj);
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            mEdgeSize.setInt(draggerObj, edge * 5); //optimal value as for me, you may set any constant in dp
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar_main, R.string.navigation_drawer_open, R.string.navigation_drawer_close) {
             @Override
@@ -194,79 +258,34 @@ public class newsfeed_activity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
         if (id == R.id.nav_hot_news) {
-            Intent intent = new Intent(this, ExploreArticles.class);
-            startActivity(intent);
-            this.onStop();
+//            Intent intent = new Intent(this, ExploreArticles.class);
+//            startActivity(intent);
+//            this.onStop();
         } else if (id == R.id.nav_news) {
-            Categories.setCurrentlyInUse(null);
-            FacebookAndGoogle.getCommunication().clientSend("114&israelNewz#");
-            Categories.setCurrentlyInUseCategory(1, getApplicationContext());
-            while(Categories.getCurrentlyInUse() == null) {}
-            listadapter = new ArticleAdapter(newsfeed_activity.this, this);
-            listView_article.setAdapter(listadapter);
+            changeCategory(1);
 
         } else if (id == R.id.nav_global_news) {
-            Categories.setCurrentlyInUse(null);
-            FacebookAndGoogle.getCommunication().clientSend("114&worldNewz#");
-            Categories.setCurrentlyInUseCategory(2, getApplicationContext());
-            while(Categories.getCurrentlyInUse() == null) {}
-            listadapter = new ArticleAdapter(newsfeed_activity.this, this);
-            listView_article.setAdapter(listadapter);
+            changeCategory(2);
 
         } else if (id == R.id.nav_politics) {
-            Categories.setCurrentlyInUse(null);
-            FacebookAndGoogle.getCommunication().clientSend("114&politics#");
-            Categories.setCurrentlyInUseCategory(3, getApplicationContext());
-            while(Categories.getCurrentlyInUse() == null) {}
-            listadapter = new ArticleAdapter(newsfeed_activity.this, this);
-            listView_article.setAdapter(listadapter);
+            changeCategory(3);
 
         } else if (id == R.id.nav_economy) {
-            Categories.setCurrentlyInUse(null);
-            FacebookAndGoogle.getCommunication().clientSend("114&economy#");
-            Categories.setCurrentlyInUseCategory(4, getApplicationContext());
-            while(Categories.getCurrentlyInUse() == null) {}
-            listadapter = new ArticleAdapter(newsfeed_activity.this, this);
-            listView_article.setAdapter(listadapter);
+            changeCategory(4);
         } else if (id == R.id.nav_sport) {
-            Categories.setCurrentlyInUse(null);
-            FacebookAndGoogle.getCommunication().clientSend("114&sport#");
-            Categories.setCurrentlyInUseCategory(5, getApplicationContext());
-            while(Categories.getCurrentlyInUse() == null) {}
-            listadapter = new ArticleAdapter(newsfeed_activity.this, this);
-            listView_article.setAdapter(listadapter);
+            changeCategory(5);
 
         } else if (id == R.id.nav_culture) {
-            Categories.setCurrentlyInUse(null);
-            FacebookAndGoogle.getCommunication().clientSend("114&culture#");
-            Categories.setCurrentlyInUseCategory(6, getApplicationContext());
-            while(Categories.getCurrentlyInUse() == null) {}
-            listadapter = new ArticleAdapter(newsfeed_activity.this, this);
-            listView_article.setAdapter(listadapter);
+            changeCategory(6);
 
         } else if (id == R.id.nav_celebrities) {
-            Categories.setCurrentlyInUse(null);
-            FacebookAndGoogle.getCommunication().clientSend("114&celebs#");
-            Categories.setCurrentlyInUseCategory(7, getApplicationContext());
-            while(Categories.getCurrentlyInUse() == null) {}
-            listadapter = new ArticleAdapter(newsfeed_activity.this, this);
-            listView_article.setAdapter(listadapter);
+            changeCategory(7);
 
         } else if (id == R.id.nav_technology) {
-            Categories.setCurrentlyInUse(null);
-            FacebookAndGoogle.getCommunication().clientSend("114&technology#");
-            Categories.setCurrentlyInUseCategory(8, getApplicationContext());
-            while(Categories.getCurrentlyInUse() == null) {}
-            listadapter = new ArticleAdapter(newsfeed_activity.this, this);
-            listView_article.setAdapter(listadapter);
+            changeCategory(8);
 
         } else if (id == R.id.nav_science) {
-            Categories.setCurrentlyInUse(null);
-            FacebookAndGoogle.getCommunication().clientSend("114&technology#");
-            Categories.setCurrentlyInUseCategory(9, getApplicationContext());
-            while(Categories.getCurrentlyInUse() == null) {}
-            listadapter = new ArticleAdapter(newsfeed_activity.this, this);
-            listView_article.setAdapter(listadapter);
+            //changeCategory(9);
 
         } else if (id == R.id.nav_settings) {
             Intent settings = new Intent(this, settings_activity.class);
@@ -274,19 +293,18 @@ public class newsfeed_activity extends AppCompatActivity
             this.onStop();
         }
         else if (id == R.id.nav_discconect) {
-            if (FacebookAndGoogle.isLoggedWithGoogle()) {
-                Plus.AccountApi.clearDefaultAccount(FacebookAndGoogle.getmGoogleApiClient());
-                FacebookAndGoogle.getmGoogleApiClient().disconnect();
-                FacebookAndGoogle.getmGoogleApiClient().connect();
+            if (user.getConnectedVia().equals("Google")) {
+                Plus.AccountApi.clearDefaultAccount(((GoogleUser) user).getmGoogleApiClient());
+                ((GoogleUser) user).getmGoogleApiClient().disconnect();
+                ((GoogleUser) user).getmGoogleApiClient().connect();
             }
-            else if(FacebookAndGoogle.isLoggedWithFacebook())
+            else if(user.getConnectedVia().equals("Facebook"))
             {
                 LoginManager.getInstance().logOut();
             }
-            FacebookAndGoogle.getCommunication().clientSend("500#"); //Disconnect from the server
-            FacebookAndGoogle.getCommunication().setIsConnect(0);
+            communication.clientSend("500#"); //Disconnect from the server
+            communication.setIsConnect(0);
             Log.d("Server", "500#");
-            FacebookAndGoogle.reset(BitmapFactory.decodeResource(getResources(), R.drawable.user_icon));
             Intent intent = new Intent(this, entrance.class);
             startActivity(intent);
             finish();
@@ -294,10 +312,10 @@ public class newsfeed_activity extends AppCompatActivity
         for (int i = 0; i <= toolbar_main.getChildCount(); i++) {
             View v = toolbar_main.getChildAt(i);
             if (v instanceof TextView) {
-                ((TextView) v).setText(Categories.getCurrentlyInUseCategory());
+                ((TextView) v).setText(categoriesHandler.getCurrentlyInUseCategory(user));
             }
         }
-        Categories.setLoading(false);
+        categoriesHandler.setLoading(false);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
@@ -313,12 +331,18 @@ public class newsfeed_activity extends AppCompatActivity
         TextView userFullName = (TextView) drawer.findViewById(R.id.tv_userFullName);
         if(userFullName != null)
         {
-            userFullName.setText(FacebookAndGoogle.getFullName());
+            userFullName.setText(user.getFullName());
         }
         ImageButton userPic = (ImageButton) drawer.findViewById(R.id.ib_userPic);
         if(userPic != null)
         {
-            userPic.setImageBitmap(RoundedImageView.getCroppedBitmap(FacebookAndGoogle.getProfilePic(), 240));
+            if(user.getProfilePic() != null) {
+                userPic.setImageBitmap(RoundedImageView.getCroppedBitmap(user.getProfilePic(), 240));
+            }
+            else
+            {
+                userPic.setImageBitmap(RoundedImageView.getCroppedBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.user_icon), 240));
+            }
         }
     }
 
@@ -339,7 +363,7 @@ public class newsfeed_activity extends AppCompatActivity
 
     private final Runnable refreshListView = new Runnable(){
         public void run(){
-            if(!Categories.getCurrentlyInUseCategoryServer().equals(""))
+            if(!categoriesHandler.getCurrentlyInUseCategoryServer().equals(""))
             {
                 updateArticles();
             }
@@ -386,11 +410,17 @@ public class newsfeed_activity extends AppCompatActivity
 
     private void updateArticles()
     {
-        Categories.setCurrentlyInUse(null);
-        FacebookAndGoogle.getCommunication().clientSend("114&" + Categories.getCurrentlyInUseCategoryServer() + "#");
-        Categories.setCurrentlyInUseCategory(Categories.getCurrentCategoryID(), getApplicationContext());
-        while(Categories.getCurrentlyInUse() == null) {}
-        listadapter = new ArticleAdapter(newsfeed_activity.this, this);
-        listView_article.setAdapter(listadapter);
+        categoriesHandler.getCurrentlyInUse().clear();
+        communication.clientSend("114&" + categoriesHandler.getCurrentlyInUseCategoryServer() + "#");
+        categoriesHandler.setCurrentlyInUseCategory(categoriesHandler.getCurrentCategoryID(), this);
+        while(categoriesHandler.getCurrentlyInUse().size() == 0) {}
+    }
+
+    private void changeCategory(int categoryID)
+    {
+        categoriesHandler.getCurrentlyInUse().clear();
+        communication.clientSend("114&" + categoriesHandler.getCategoriesForServer().get(categoryID) + "#");
+        categoriesHandler.setCurrentlyInUseCategory(categoryID, this);
+        while(categoriesHandler.getCurrentlyInUse().size() == 0) {}
     }
 }

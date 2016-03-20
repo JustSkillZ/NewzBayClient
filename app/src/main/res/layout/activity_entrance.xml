@@ -9,7 +9,8 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="magshimim.newzbay.entrance"
-    android:background="@drawable/main_background">
+    android:background="@drawable/main_background"
+    android:id="@+id/entrance_layout">
 
     <TextView
         android:layout_width="wrap_content"
@@ -31,7 +32,7 @@
         android:text="All News, Just Use"
         android:layout_centerHorizontal="true"
         android:textColor="@color/nb"
-        android:id="@+id/tv_EIOP"
+        android:id="@+id/tv_slogen"
         android:textStyle="bold"
         android:background="@color/transparent"/>
 
@@ -40,7 +41,7 @@
         android:layout_height="60dp"
         android:id="@+id/btn_Google"
         android:layout_marginTop="43dp"
-        android:layout_below="@+id/tv_EIOP"
+        android:layout_below="@+id/tv_slogen"
         android:layout_alignParentEnd="true"
         android:layout_alignParentStart="true"
         android:background="@color/transparent"/>

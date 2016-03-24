@@ -11,7 +11,9 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.format.Time;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -63,15 +65,35 @@ public class entrance extends AppCompatActivity implements GoogleApiClient.Conne
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         ((GlobalClass) getApplicationContext()).initiateClass();
         globalClass = ((GlobalClass)getApplicationContext());
+        LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        globalClass.getErrorHandler().setPopupWindowView_noConnectionWithServer(inflater.inflate(R.layout.popup_no_connection, null, false));
+        globalClass.getErrorHandler().handleNoConnectionToTheServer(globalClass, entrance.this);
         FacebookSdk.sdkInitialize(getApplicationContext());
         callbackManager = CallbackManager.Factory.create();
         setContentView(R.layout.activity_entrance);
 
+        Button guestLoginBtn = (Button) findViewById(R.id.btn_NB);
+        guestLoginBtn.setBackground(getResources().getDrawable(R.drawable.disabled_button_rounded_corners));
+        guestLoginBtn.setTextColor(getResources().getColor(R.color.grey));
+        guestLoginBtn.setAlpha((float)0.1);
+        guestLoginBtn.setEnabled(false);
+
+        LoginButton facebookLoginBtn = (LoginButton) findViewById(R.id.btn_Facebook);
+        facebookLoginBtn.setBackground(getResources().getDrawable(R.drawable.disabled_button_rounded_corners));
+        facebookLoginBtn.setTextColor(getResources().getColor(R.color.grey));
+        facebookLoginBtn.setAlpha((float)0.1);
+        facebookLoginBtn.setEnabled(false);
+
+        SignInButton googleLoginBtn = (SignInButton) findViewById(R.id.btn_Google);
+        googleLoginBtn.setEnabled(false);
+
+
         Time now = new Time();
         now.setToNow();
-        if(now.hour > 19 || now.hour >= 0 && now.hour <= 5)
+        if(now.hour >= 19 || now.hour >= 0 && now.hour <= 5)
         {
             RelativeLayout layout =(RelativeLayout)findViewById(R.id.entrance_layout);
             layout.setBackground(getResources().getDrawable(R.drawable.main_background_night));
@@ -81,36 +103,10 @@ public class entrance extends AppCompatActivity implements GoogleApiClient.Conne
             slogen.setTextColor(getResources().getColor(R.color.white));
         }
 
-        communication = new Communication((GlobalClass)getApplicationContext());
+        communication = new Communication((GlobalClass)getApplicationContext(), entrance.this);
         globalClass.setCommunication(communication);
         Thread t = new Thread(communication);
         t.start();
-        while(communication.isConnect() != 1)
-        {
-            while(communication.isConnect() == 0) {}
-
-            if(communication.isConnect() == -1)
-            {
-
-            }
-        }
-        facebook_login();
-        if (Profile.getCurrentProfile() != null) {
-            Log.d(TAG, "facebook login");
-            SharedPreferences sharedpreferences = getSharedPreferences(prefsConnection, Context.MODE_PRIVATE);
-            user = new FacebookUser(Profile.getCurrentProfile().getName(), Profile.getCurrentProfile().getProfilePictureUri(500, 500).toString(), null, Profile.getCurrentProfile(), sharedpreferences.getString(facebookEmail, ""));
-            globalClass.setUser(user);
-            communication.clientSend("102&" + ((FacebookUser) user).getFacebookUserEmail() + "&" + ((FacebookUser) user).getFacebookProfile().getFirstName() + "#");
-            moveToNewsFeed();
-        }
-        else
-        {
-            buildNewGoogleApiClient();
-            customizeSignBtn();
-            setBtnClickListeners();
-            mProgressDialog = new ProgressDialog(this);
-            mProgressDialog.setMessage("Loading...");
-        }
     }
 
     @Override
@@ -133,14 +129,14 @@ public class entrance extends AppCompatActivity implements GoogleApiClient.Conne
         Log.d(TAG, "guest login");
         user = new User("Guest", "", BitmapFactory.decodeResource(getResources(), R.drawable.user_icon), "Guest");
         globalClass.setUser(user);
-        communication.clientSend("102&guest@guest.com&guest#");
+        globalClass.getCommunication().clientSend("102&guest@guest.com&guest#");
         moveToNewsFeed();
     }
 
     public void moveToNewsFeed() {
         if(user.getConnectedVia().equals("Google"))
         {
-            communication.clientSend("102&"+Plus.AccountApi.getAccountName(mGoogleApiClient)+"&"+((GoogleUser)user).getGoogleProfile().getName().getGivenName()+"#");
+            globalClass.getCommunication().clientSend("102&" + Plus.AccountApi.getAccountName(mGoogleApiClient) + "&" + ((GoogleUser) user).getGoogleProfile().getName().getGivenName() + "#");
             Log.d("Server", "102&"+Plus.AccountApi.getAccountName(mGoogleApiClient)+"&"+((GoogleUser)user).getGoogleProfile().getName().getGivenName()+"#");
         }
         Intent nfScreen = new Intent(this, newsfeed_activity.class);
@@ -166,7 +162,7 @@ public class entrance extends AppCompatActivity implements GoogleApiClient.Conne
                                     String email = object.getString("email");
                                     ((FacebookUser)user).setFacebookUserEmail(email);
 
-                                    communication.clientSend("102&" + ((FacebookUser)user).getFacebookUserEmail() + "&" + ((FacebookUser)user).getFacebookProfile().getFirstName() + "#");
+                                    globalClass.getCommunication().clientSend("102&" + ((FacebookUser) user).getFacebookUserEmail() + "&" + ((FacebookUser) user).getFacebookProfile().getFirstName() + "#");
                                     SharedPreferences sharedpreferences = getSharedPreferences(prefsConnection, Context.MODE_PRIVATE);
                                     SharedPreferences.Editor editor = sharedpreferences.edit();
                                     editor.putString(facebookEmail, email);
@@ -242,7 +238,7 @@ public class entrance extends AppCompatActivity implements GoogleApiClient.Conne
 
     protected void onStart() {
         super.onStart();
-        mGoogleApiClient.connect();
+//        mGoogleApiClient.connect();
     }
 
     @Override
@@ -381,5 +377,27 @@ public class entrance extends AppCompatActivity implements GoogleApiClient.Conne
                 return;
             }
         }
+    }
+
+    public void connectToSocialNets()
+    {
+        facebook_login();
+        if (Profile.getCurrentProfile() != null) {
+            Log.d(TAG, "facebook login");
+            SharedPreferences sharedpreferences = getSharedPreferences(prefsConnection, Context.MODE_PRIVATE);
+            user = new FacebookUser(Profile.getCurrentProfile().getName(), Profile.getCurrentProfile().getProfilePictureUri(500, 500).toString(), null, Profile.getCurrentProfile(), sharedpreferences.getString(facebookEmail, ""));
+            globalClass.setUser(user);
+            globalClass.getCommunication().clientSend("102&" + ((FacebookUser) user).getFacebookUserEmail() + "&" + ((FacebookUser) user).getFacebookProfile().getFirstName() + "#");
+            moveToNewsFeed();
+        }
+        else
+        {
+            buildNewGoogleApiClient();
+            customizeSignBtn();
+            setBtnClickListeners();
+            mProgressDialog = new ProgressDialog(this);
+            mProgressDialog.setMessage("Loading...");
+        }
+        mGoogleApiClient.connect();
     }
 }

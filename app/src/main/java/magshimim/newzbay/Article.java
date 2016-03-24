@@ -1,7 +1,6 @@
 package magshimim.newzbay;
 
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 
 import java.util.Date;
 

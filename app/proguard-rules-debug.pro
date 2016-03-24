@@ -16,6 +16,7 @@
 #   public *;
 #}
 
+#-dontobfuscate
 -dontnote com.google.vending.licensing.ILicensingService
 -dontnote com.android.vending.licensing.ILicensingService
 -keepattributes magshimim.newzbay.GlobalClass

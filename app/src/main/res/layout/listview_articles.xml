@@ -44,6 +44,7 @@
             android:textSize="16sp"
             android:textColor="@color/grey"
             android:id="@+id/tv_site"
+            android:textStyle="bold"
             android:layout_marginRight="70dp"/>
 
         <TextView
@@ -54,6 +55,7 @@
             android:textColor="@color/grey"
             android:id="@+id/tv_date"
             android:layout_alignTop="@+id/tv_site"
+            android:textStyle="bold"
             android:layout_alignParentRight="true"/>
     </RelativeLayout>
 

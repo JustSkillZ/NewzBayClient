@@ -15,4 +15,5 @@
     <color name="purple">#6c08d3</color>
     <color name="ExplanationBlue">#34cffc</color>
     <color name="orange">#FBC723</color>
+    <color name="GoogleDisabledButtonText">#8d8d8d</color>
 </resources>

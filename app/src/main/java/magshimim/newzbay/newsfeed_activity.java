@@ -1,12 +1,10 @@
 package magshimim.newzbay;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.BitmapFactory;
 import android.graphics.PorterDuff;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.NavigationView;
@@ -20,21 +18,11 @@ import android.text.SpannableString;
 import android.text.format.Time;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
-import android.view.KeyEvent;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewConfiguration;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.webkit.WebBackForwardList;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
 import android.widget.AbsListView;
-import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
@@ -50,7 +38,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.reflect.Field;
-import java.util.Vector;
 
 public class newsfeed_activity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -66,6 +53,8 @@ public class newsfeed_activity extends AppCompatActivity
     private Communication communication;
     private User user;
 
+    boolean doubleBackToExitPressedOnce = false;
+
     private static final String explanationPref = "magshimim.newzbay.ExplanationPref" ;
     private static final String isExplanation1 = "isExplanation1";
 
@@ -77,7 +66,7 @@ public class newsfeed_activity extends AppCompatActivity
 
         Time now = new Time();
         now.setToNow();
-        if(now.hour > 19 || now.hour >= 0 && now.hour <= 5)
+        if(now.hour >= 19 || now.hour >= 0 && now.hour <= 5)
         {
             RelativeLayout layout =(RelativeLayout)findViewById(R.id.newsfeed_layout);
             layout.setBackground(getResources().getDrawable(R.drawable.main_background_night));
@@ -247,9 +236,23 @@ public class newsfeed_activity extends AppCompatActivity
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         }
-        else {
-            super.onBackPressed();
+        else
+        {
+            if (doubleBackToExitPressedOnce) {
+                super.onBackPressed();
+            }
+            this.doubleBackToExitPressedOnce = true;
+            Toast.makeText(this, "יש ללחוץ פעם נוספת בשביל לצאת", Toast.LENGTH_SHORT).show();
+
+            new Handler().postDelayed(new Runnable() {
+
+                @Override
+                public void run() {
+                    doubleBackToExitPressedOnce=false;
+                }
+            }, 2000);
         }
+
     }
 
     @SuppressWarnings("StatementWithEmptyBody")
@@ -305,6 +308,7 @@ public class newsfeed_activity extends AppCompatActivity
             communication.clientSend("500#"); //Disconnect from the server
             communication.setIsConnect(0);
             Log.d("Server", "500#");
+            globalClass.endClass();
             Intent intent = new Intent(this, entrance.class);
             startActivity(intent);
             finish();

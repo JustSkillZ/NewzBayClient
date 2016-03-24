@@ -1,10 +1,12 @@
 package magshimim.newzbay;
 
+import java.security.NoSuchAlgorithmException;
+
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
+
 //import javax.xml.bind.DatatypeConverter;
-import java.security.NoSuchAlgorithmException;
 
 public class AESEncryption
 {

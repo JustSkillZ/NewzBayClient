@@ -17,12 +17,6 @@ public class CategoriesHandler {
     private int currentCategoryID;
     private String currentlyOpenURL;
 
-    //-----------------Priority---------------------
-    private Vector<String> idOfRSS;
-    private Vector<String> subject;
-    private Vector<String> site;
-    //----------------------------------------------
-
     private HashMap<String, Bitmap> downloadedPics = new HashMap<>();
     private boolean loadingArticles = false;
     private List<String> categoriesForServer = Arrays.asList("", "israelNewz", "worldNewz", "politics", "economy", "sport", "culture", "celebs", "technology");
@@ -140,30 +134,6 @@ public class CategoriesHandler {
 
     public void setCurrentlyInUse(Vector<Article> currentlyInUse) {
         this.currentlyInUse = currentlyInUse;
-    }
-
-    public Vector<String> getIdOfRSS() {
-        return idOfRSS;
-    }
-
-    public void setIdOfRSS(Vector<String> idOfRSS) {
-        this.idOfRSS = idOfRSS;
-    }
-
-    public Vector<String> getSubject() {
-        return subject;
-    }
-
-    public void setSubject(Vector<String> subject) {
-        this.subject = subject;
-    }
-
-    public Vector<String> getSite() {
-        return site;
-    }
-
-    public void setSite(Vector<String> site) {
-        this.site = site;
     }
 
     public String getCurrentlyInUseCategoryServer() {

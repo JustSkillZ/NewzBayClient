@@ -7,6 +7,7 @@ public class GlobalClass extends Application {
     private CategoriesHandler categoriesHandler;
     private Communication communication;
     private ErrorHandler errorHandler;
+    private PriorityHandler priorityHandler;
     private User user;
 
     public void initiateClass()
@@ -14,6 +15,7 @@ public class GlobalClass extends Application {
         categoriesHandler= new CategoriesHandler(null, "", "", false);
         errorHandler = new ErrorHandler();
         user = null;
+        priorityHandler = new PriorityHandler();
     }
 
     public void endClass()
@@ -54,5 +56,13 @@ public class GlobalClass extends Application {
 
     public void setErrorHandler(ErrorHandler errorHandler) {
         this.errorHandler = errorHandler;
+    }
+
+    public PriorityHandler getPriorityHandler() {
+        return priorityHandler;
+    }
+
+    public void setPriorityHandler(PriorityHandler priorityHandler) {
+        this.priorityHandler = priorityHandler;
     }
 }

@@ -47,7 +47,7 @@ public class ArticleAdapter extends ArrayAdapter<Article>{
         activity = act;
         categoriesHandler = globalClass.getCategoriesHandler();
         user = globalClass.getUser();
-        this.communication = communication;
+        this.communication = globalClass.getCommunication();
     }
 
     @Override

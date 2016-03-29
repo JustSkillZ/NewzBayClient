@@ -67,7 +67,7 @@ public class entrance extends AppCompatActivity implements GoogleApiClient.Conne
         super.onCreate(savedInstanceState);
 
         ((GlobalClass) getApplicationContext()).initiateClass();
-        globalClass = ((GlobalClass)getApplicationContext());
+        globalClass = ((GlobalClass) getApplicationContext());
         LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         globalClass.getErrorHandler().setPopupWindowView_noConnectionWithServer(inflater.inflate(R.layout.popup_no_connection, null, false));
         globalClass.getErrorHandler().handleNoConnectionToTheServer(globalClass, entrance.this);
@@ -78,13 +78,13 @@ public class entrance extends AppCompatActivity implements GoogleApiClient.Conne
         Button guestLoginBtn = (Button) findViewById(R.id.btn_NB);
         guestLoginBtn.setBackground(getResources().getDrawable(R.drawable.disabled_button_rounded_corners));
         guestLoginBtn.setTextColor(getResources().getColor(R.color.grey));
-        guestLoginBtn.setAlpha((float)0.1);
+        guestLoginBtn.setAlpha((float) 0.1);
         guestLoginBtn.setEnabled(false);
 
         LoginButton facebookLoginBtn = (LoginButton) findViewById(R.id.btn_Facebook);
         facebookLoginBtn.setBackground(getResources().getDrawable(R.drawable.disabled_button_rounded_corners));
         facebookLoginBtn.setTextColor(getResources().getColor(R.color.grey));
-        facebookLoginBtn.setAlpha((float)0.1);
+        facebookLoginBtn.setAlpha((float) 0.1);
         facebookLoginBtn.setEnabled(false);
 
         SignInButton googleLoginBtn = (SignInButton) findViewById(R.id.btn_Google);
@@ -93,9 +93,8 @@ public class entrance extends AppCompatActivity implements GoogleApiClient.Conne
 
         Time now = new Time();
         now.setToNow();
-        if(now.hour >= 19 || now.hour >= 0 && now.hour <= 5)
-        {
-            RelativeLayout layout =(RelativeLayout)findViewById(R.id.entrance_layout);
+        if (now.hour >= 19 || now.hour >= 0 && now.hour <= 5) {
+            RelativeLayout layout = (RelativeLayout) findViewById(R.id.entrance_layout);
             layout.setBackground(getResources().getDrawable(R.drawable.main_background_night));
             TextView newzBay = (TextView) findViewById(R.id.tv_newzbay);
             newzBay.setTextColor(getResources().getColor(R.color.white));
@@ -103,10 +102,13 @@ public class entrance extends AppCompatActivity implements GoogleApiClient.Conne
             slogen.setTextColor(getResources().getColor(R.color.white));
         }
 
-        communication = new Communication((GlobalClass)getApplicationContext(), entrance.this);
+        communication = new Communication((GlobalClass) getApplicationContext(), entrance.this);
         globalClass.setCommunication(communication);
         Thread t = new Thread(communication);
         t.start();
+
+//        Intent priority = new Intent(this,Priority.class);
+//        startActivity(priority);
     }
 
     @Override

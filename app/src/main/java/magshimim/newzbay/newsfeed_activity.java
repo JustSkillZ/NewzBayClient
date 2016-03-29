@@ -55,14 +55,28 @@ public class newsfeed_activity extends AppCompatActivity
 
     boolean doubleBackToExitPressedOnce = false;
 
-    private static final String explanationPref = "magshimim.newzbay.ExplanationPref" ;
-    private static final String isExplanation1 = "isExplanation1";
+    private final String explanationPref = "magshimim.newzbay.ExplanationPref" ;
+    private final String prefsConnection = "magshimim.newzbay.ConnectionPrefs";
+    private final String isExplanation1 = "isExplanation1";
+    private final String isPrioritized = "isPrioritized";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.newsfeed_activity);
+
+        SharedPreferences sharedpreferences = getSharedPreferences(prefsConnection, Context.MODE_PRIVATE);
+        if (!sharedpreferences.getBoolean(isPrioritized, false))
+        {
+            Intent priority = new Intent(this,Priority.class);
+            startActivity(priority);
+
+            sharedpreferences = getSharedPreferences(prefsConnection, Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedpreferences.edit();
+            editor.putBoolean(isPrioritized, true);
+            editor.commit();
+        }
 
         Time now = new Time();
         now.setToNow();
@@ -103,7 +117,7 @@ public class newsfeed_activity extends AppCompatActivity
 //            }
 //        });
 
-        SharedPreferences sharedpreferences = getSharedPreferences(explanationPref, Context.MODE_PRIVATE);
+        sharedpreferences = getSharedPreferences(explanationPref, Context.MODE_PRIVATE);
         if (!getSharedPreferences(explanationPref, Context.MODE_PRIVATE).getBoolean(isExplanation1, false))
         {
             Intent welcome = new Intent(this,Explanation.class);

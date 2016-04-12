@@ -195,9 +195,11 @@ public class newsfeed_activity extends AppCompatActivity
                 if(!recycling && !categoriesHandler.isLoading()) {
                     if (mIsScrollingUp) {
                         recycling = true;
-                        for (int i = lastVisibleRow + 7; i < categoriesHandler.getCurrentlyInUse().size(); i++) {
+                        Log.d("Recycling", "below");
+                        int numberOfArticles = categoriesHandler.getCurrentlyInUse().size();
+                        for (int i = lastVisibleRow + 7; i < numberOfArticles; i++) {
                             Article current = categoriesHandler.getCurrentlyInUse().get(i);
-                            if (current.getPicture() != null && current.isPictureIsDawnloaded() && !current.getPicture().isRecycled()) {
+                            if (current.getPicture() != null && current.isPictureIsDawnloaded()) {
                                 if(!current.getPicture().isRecycled())
                                 {
                                     current.getPicture().recycle();
@@ -209,9 +211,10 @@ public class newsfeed_activity extends AppCompatActivity
                         recycling = false;
                     } else {
                         recycling = true;
+                        Log.d("Recycling", "above");
                         for (int i = firstVisibleItem - 7; i >= 0; i--) {
                             Article current = categoriesHandler.getCurrentlyInUse().get(i);
-                            if (current.getPicture() != null && current.isPictureIsDawnloaded() && !current.getPicture().isRecycled()) {
+                            if (current.getPicture() != null && current.isPictureIsDawnloaded()) {
                                 if(!current.getPicture().isRecycled())
                                 {
                                     current.getPicture().recycle();

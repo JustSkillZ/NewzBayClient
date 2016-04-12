@@ -3,12 +3,15 @@ package magshimim.newzbay;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.Button;
@@ -38,6 +41,7 @@ public class ArticleAdapter extends ArrayAdapter<Article>{
     private CategoriesHandler categoriesHandler;
     private Communication communication;
     private User user;
+    private Resources resources;
 
     public ArticleAdapter(Context context, Activity act, GlobalClass globalClass)
     {
@@ -48,11 +52,13 @@ public class ArticleAdapter extends ArrayAdapter<Article>{
         categoriesHandler = globalClass.getCategoriesHandler();
         user = globalClass.getUser();
         this.communication = globalClass.getCommunication();
+        this.resources = globalClass.getResources();
     }
 
     @Override
     public void notifyDataSetChanged() {
         super.notifyDataSetChanged();
+        categoriesHandler.setLoading(false);
     }
 
     @Override
@@ -138,9 +144,11 @@ public class ArticleAdapter extends ArrayAdapter<Article>{
         picture = (ImageButton) view.findViewById(R.id.ib_picture);
         if(!categoriesHandler.getCurrentlyInUse().get(position).getPicURL().equals("null"))
         {
-            if(categoriesHandler.getCurrentlyInUse().get(position).getPicture() == null)
+            if(!categoriesHandler.getCurrentlyInUse().get(position).isPictureIsDawnloaded())
             {
+                categoriesHandler.getCurrentlyInUse().get(position).setPictureIsDawnloaded(true);
                 getBitmapFromURL(picture, position);
+                picture.setImageBitmap(categoriesHandler.getCurrentlyInUse().get(position).getPicture());
             }
             else {
                 picture.setImageBitmap(categoriesHandler.getCurrentlyInUse().get(position).getPicture());
@@ -162,6 +170,10 @@ public class ArticleAdapter extends ArrayAdapter<Article>{
 
     public void getBitmapFromURL(ImageButton ib, int position) {
         final int position1 = position;
+        if(categoriesHandler.getDownloadedPics().size() >= 20)
+        {
+            categoriesHandler.getDownloadedPics().clear();
+        }
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
@@ -173,7 +185,8 @@ public class ArticleAdapter extends ArrayAdapter<Article>{
                     InputStream input = connection.getInputStream();
                     Bitmap b = BitmapFactory.decodeStream(input);
                     categoriesHandler.getCurrentlyInUse().get(position1).setPicture(b);
-                    categoriesHandler.getDownloadedPics().put(categoriesHandler.getCurrentlyInUse().get(position1).getPicURL(), b);
+//                  categoriesHandler.getDownloadedPics().put(categoriesHandler.getCurrentlyInUse().get(position1).getPicURL(), b);
+                    while(categoriesHandler.isLoading()){}
                     activity.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -181,17 +194,13 @@ public class ArticleAdapter extends ArrayAdapter<Article>{
                         }
                     });
 
-
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
 
         };
-        if(!categoriesHandler.getCurrentlyInUse().get(position).getPicURL().equals("null"))
-        {
-            Thread t = new Thread(runnable);
-            t.start();
-        }
+        Thread t = new Thread(runnable);
+        t.start();
     }
 }

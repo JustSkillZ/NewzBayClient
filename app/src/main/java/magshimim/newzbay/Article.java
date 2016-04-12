@@ -1,6 +1,7 @@
 package magshimim.newzbay;
 
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 
 import java.util.Date;
 
@@ -9,6 +10,7 @@ public class Article{
     private String mainHeadline;
     private String secondHeadline;
     private Bitmap picture;
+    private boolean pictureIsDawnloaded;
     private String picURL;
     private Date date;
     private String siteName;
@@ -19,23 +21,22 @@ public class Article{
 
     public Article(String subject, String mainHeadline, String secondHeadline, String picURL, Date date, String siteName, String url, int numberOfLikes, int numberOfComments, boolean liked, GlobalClass globalClass)
     {
+        this.pictureIsDawnloaded = false;
         this.subject = subject;
         this.mainHeadline = mainHeadline;
         this.secondHeadline = secondHeadline;
         this.picURL = picURL;
         this.date = date;
         this.siteName = siteName;
+        this.picture = globalClass.getCategoriesHandler().getSiteLogo().get(getSiteName());
         this.url = url;
         this.numberOfLikes = numberOfLikes;
         this.numberOfComments = numberOfComments;
         this.liked = liked;
-        if(globalClass.getCategoriesHandler().getDownloadedPics().containsKey(picURL))
-        {
-            picture = globalClass.getCategoriesHandler().getDownloadedPics().get(picURL);
-        }
-        else {
-            picture = null;
-        }
+//        if(globalClass.getCategoriesHandler().getDownloadedPics().containsKey(picURL))
+//        {
+//            picture = globalClass.getCategoriesHandler().getDownloadedPics().get(picURL);
+//        }
     }
 
     public String getSubject()
@@ -115,9 +116,7 @@ public class Article{
         this.secondHeadline = secondHeadline;
     }
 
-    public void setPicture(Bitmap picture) {
-        this.picture = picture;
-    }
+    public void setPicture(Bitmap picture) { this.picture = picture; }
 
     public String getPicURL() {
         return picURL;
@@ -149,5 +148,13 @@ public class Article{
 
     public boolean isLiked() {
         return liked;
+    }
+
+    public boolean isPictureIsDawnloaded() {
+        return pictureIsDawnloaded;
+    }
+
+    public void setPictureIsDawnloaded(boolean pictureIsDawnloaded) {
+        this.pictureIsDawnloaded = pictureIsDawnloaded;
     }
 }

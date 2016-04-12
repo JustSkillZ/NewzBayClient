@@ -3,6 +3,7 @@ package magshimim.newzbay;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
@@ -117,7 +118,6 @@ public class newsfeed_activity extends AppCompatActivity
 //            }
 //        });
 
-        sharedpreferences = getSharedPreferences(explanationPref, Context.MODE_PRIVATE);
         if (!getSharedPreferences(explanationPref, Context.MODE_PRIVATE).getBoolean(isExplanation1, false))
         {
             Intent welcome = new Intent(this,Explanation.class);
@@ -162,11 +162,54 @@ public class newsfeed_activity extends AppCompatActivity
 
         listView_article.setOnScrollListener(new AbsListView.OnScrollListener() {
 
+            int mLastFirstVisibleItem = 0;
+            boolean mIsScrollingUp = false;
+            boolean recycling = false;
+
             public void onScrollStateChanged(AbsListView view, int scrollState) {
+
+                if (view.getId() == listView_article.getId())
+                {
+                    final int currentFirstVisibleItem = listView_article.getFirstVisiblePosition();
+
+                    if (currentFirstVisibleItem > mLastFirstVisibleItem) {
+                        mIsScrollingUp = false;
+                    } else if (currentFirstVisibleItem < mLastFirstVisibleItem) {
+                        mIsScrollingUp = true;
+                    }
+                    mLastFirstVisibleItem = currentFirstVisibleItem;
+                }
             }
 
             public void onScroll(AbsListView view, int firstVisibleItem,
                                  int visibleItemCount, int totalItemCount) {
+
+                int lastVisibleRow = listView_article.getLastVisiblePosition();
+                if(!recycling && !categoriesHandler.isLoading()) {
+                    if (mIsScrollingUp) {
+                        recycling = true;
+                        for (int i = lastVisibleRow + 10; i < categoriesHandler.getCurrentlyInUse().size(); i++) {
+                            Article current = categoriesHandler.getCurrentlyInUse().get(i);
+                            if (current.getPicture() != null) {
+                                current.getPicture().recycle();
+                                current.setPicture(globalClass.getCategoriesHandler().getSiteLogo().get(current.getSiteName()));
+                                current.setPictureIsDawnloaded(false);
+                            }
+                        }
+                        recycling = false;
+                    } else {
+                        recycling = true;
+                        for (int i = firstVisibleItem - 10; i >= 0; i--) {
+                            Article current = categoriesHandler.getCurrentlyInUse().get(i);
+                            if (current.getPicture() != null) {
+                                current.getPicture().recycle();
+                                current.setPicture(globalClass.getCategoriesHandler().getSiteLogo().get(current.getSiteName()));
+                                current.setPictureIsDawnloaded(false);
+                            }
+                        }
+                        recycling = false;
+                    }
+                }
 
                 if (firstVisibleItem + visibleItemCount == totalItemCount && totalItemCount != 0) {
                     if (!categoriesHandler.isLoading()) {

@@ -3,6 +3,7 @@ package magshimim.newzbay;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.widget.ListAdapter;
 
 import java.util.Arrays;
@@ -17,14 +18,17 @@ public class CategoriesHandler {
     private int currentCategoryID;
     private String currentlyOpenURL;
 
-    private HashMap<String, Bitmap> downloadedPics = new HashMap<>();
+    private HashMap<String, Bitmap> downloadedPics;
+    private HashMap<String, Bitmap> siteLogo;
     private boolean loadingArticles = false;
     private List<String> categoriesForServer = Arrays.asList("", "israelNewz", "worldNewz", "politics", "economy", "sport", "culture", "celebs", "technology");
     private ListAdapter listAdapter;
     private Activity newsfeed;
+    private GlobalClass globalClass;
 
-    public CategoriesHandler(Vector<Article> currentlyInUse, String currentlyInUseCategory, String currentlyInUseCategoryServer, boolean loadingArticles)
+    public CategoriesHandler(Vector<Article> currentlyInUse, String currentlyInUseCategory, String currentlyInUseCategoryServer, boolean loadingArticles, GlobalClass globalClass)
     {
+        this.globalClass = globalClass;
         if(currentlyInUse == null)
         {
             this.currentlyInUse = new Vector<Article>();
@@ -36,6 +40,16 @@ public class CategoriesHandler {
         this.currentlyInUseCategory = currentlyInUseCategory;
         this.currentlyInUseCategoryServer = currentlyInUseCategoryServer;
         this.loadingArticles = loadingArticles;
+        downloadedPics = new HashMap<>();
+        siteLogo = new HashMap<>();
+        siteLogo.put("ynet", BitmapFactory.decodeResource(globalClass.getResources(), R.drawable.site_ynet));
+        siteLogo.put("one", BitmapFactory.decodeResource(globalClass.getResources(), R.drawable.site_one));
+        siteLogo.put("walla", BitmapFactory.decodeResource(globalClass.getResources(), R.drawable.site_walla));
+        siteLogo.put("nrg", BitmapFactory.decodeResource(globalClass.getResources(), R.drawable.site_nrg));
+        siteLogo.put("mako", BitmapFactory.decodeResource(globalClass.getResources(), R.drawable.site_mako));
+        siteLogo.put("nana10", BitmapFactory.decodeResource(globalClass.getResources(), R.drawable.site_nana10));
+        siteLogo.put("9tv", BitmapFactory.decodeResource(globalClass.getResources(), R.drawable.site_9tv));
+        siteLogo.put("calcalist", BitmapFactory.decodeResource(globalClass.getResources(), R.drawable.site_calcalist));
     }
 
     public String getCurrentlyOpenURL() {
@@ -186,5 +200,13 @@ public class CategoriesHandler {
 
     public void setNewsfeed(Activity newsfeed) {
         this.newsfeed = newsfeed;
+    }
+
+    public HashMap<String, Bitmap> getSiteLogo() {
+        return siteLogo;
+    }
+
+    public void setSiteLogo(HashMap<String, Bitmap> siteLogo) {
+        this.siteLogo = siteLogo;
     }
 }

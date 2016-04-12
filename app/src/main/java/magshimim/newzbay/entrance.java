@@ -66,7 +66,10 @@ public class entrance extends AppCompatActivity implements GoogleApiClient.Conne
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        ((GlobalClass) getApplicationContext()).initiateClass();
+//        Intent priority = new Intent(this,ChoosePriority.class);
+//        startActivity(priority);
+
+        ((GlobalClass) getApplicationContext()).initiateClass(getResources());
         globalClass = ((GlobalClass) getApplicationContext());
         LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         globalClass.getErrorHandler().setPopupWindowView_noConnectionWithServer(inflater.inflate(R.layout.popup_no_connection, null, false));

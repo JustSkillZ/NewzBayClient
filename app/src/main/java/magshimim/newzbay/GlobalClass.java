@@ -1,6 +1,7 @@
 package magshimim.newzbay;
 
 import android.app.Application;
+import android.content.res.Resources;
 
 public class GlobalClass extends Application {
 
@@ -9,10 +10,12 @@ public class GlobalClass extends Application {
     private ErrorHandler errorHandler;
     private PriorityHandler priorityHandler;
     private User user;
+    private Resources resources;
 
-    public void initiateClass()
+    public void initiateClass(Resources resources)
     {
-        categoriesHandler= new CategoriesHandler(null, "", "", false);
+        this.resources = resources;
+        categoriesHandler= new CategoriesHandler(null, "", "", false, this);
         errorHandler = new ErrorHandler();
         user = null;
         priorityHandler = new PriorityHandler();
@@ -64,5 +67,9 @@ public class GlobalClass extends Application {
 
     public void setPriorityHandler(PriorityHandler priorityHandler) {
         this.priorityHandler = priorityHandler;
+    }
+
+    public Resources getAppResources() {
+        return resources;
     }
 }

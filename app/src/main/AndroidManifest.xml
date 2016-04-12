@@ -69,7 +69,11 @@
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme_NoActionBar" />
-        <activity android:name=".ChoosePriority"></activity>
+        <activity
+            android:name=".ChoosePriority"
+            android:theme="@style/AppTheme_NoActionBar"
+            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>

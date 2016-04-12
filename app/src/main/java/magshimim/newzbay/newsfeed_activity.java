@@ -184,37 +184,43 @@ public class newsfeed_activity extends AppCompatActivity
             public void onScroll(AbsListView view, int firstVisibleItem,
                                  int visibleItemCount, int totalItemCount) {
 
+                if (firstVisibleItem + visibleItemCount == totalItemCount && totalItemCount != 0) {
+                    if (!categoriesHandler.isLoading()) {
+                        categoriesHandler.setLoading(true);
+                        communication.clientSend("118&" + categoriesHandler.getCurrentlyInUseCategoryServer() + "&" + categoriesHandler.getCurrentlyInUse().lastElement().getUrl() + "#");
+                    }
+                }
+
                 int lastVisibleRow = listView_article.getLastVisiblePosition();
                 if(!recycling && !categoriesHandler.isLoading()) {
                     if (mIsScrollingUp) {
                         recycling = true;
-                        for (int i = lastVisibleRow + 10; i < categoriesHandler.getCurrentlyInUse().size(); i++) {
+                        for (int i = lastVisibleRow + 7; i < categoriesHandler.getCurrentlyInUse().size(); i++) {
                             Article current = categoriesHandler.getCurrentlyInUse().get(i);
-                            if (current.getPicture() != null) {
-                                current.getPicture().recycle();
-                                current.setPicture(globalClass.getCategoriesHandler().getSiteLogo().get(current.getSiteName()));
-                                current.setPictureIsDawnloaded(false);
+                            if (current.getPicture() != null && current.isPictureIsDawnloaded() && !current.getPicture().isRecycled()) {
+                                if(!current.getPicture().isRecycled())
+                                {
+                                    current.getPicture().recycle();
+                                    current.setPicture(globalClass.getCategoriesHandler().getSiteLogo().get(current.getSiteName()));
+                                    current.setPictureIsDawnloaded(false);
+                                }
                             }
                         }
                         recycling = false;
                     } else {
                         recycling = true;
-                        for (int i = firstVisibleItem - 10; i >= 0; i--) {
+                        for (int i = firstVisibleItem - 7; i >= 0; i--) {
                             Article current = categoriesHandler.getCurrentlyInUse().get(i);
-                            if (current.getPicture() != null) {
-                                current.getPicture().recycle();
-                                current.setPicture(globalClass.getCategoriesHandler().getSiteLogo().get(current.getSiteName()));
-                                current.setPictureIsDawnloaded(false);
+                            if (current.getPicture() != null && current.isPictureIsDawnloaded() && !current.getPicture().isRecycled()) {
+                                if(!current.getPicture().isRecycled())
+                                {
+                                    current.getPicture().recycle();
+                                    current.setPicture(globalClass.getCategoriesHandler().getSiteLogo().get(current.getSiteName()));
+                                    current.setPictureIsDawnloaded(false);
+                                }
                             }
                         }
                         recycling = false;
-                    }
-                }
-
-                if (firstVisibleItem + visibleItemCount == totalItemCount && totalItemCount != 0) {
-                    if (!categoriesHandler.isLoading()) {
-                        categoriesHandler.setLoading(true);
-                        communication.clientSend("118&" + categoriesHandler.getCurrentlyInUseCategoryServer() + "&" + categoriesHandler.getCurrentlyInUse().lastElement().getUrl() + "#");
                     }
                 }
             }
@@ -474,7 +480,6 @@ public class newsfeed_activity extends AppCompatActivity
         categoriesHandler.getCurrentlyInUse().clear();
         communication.clientSend("114&" + categoriesHandler.getCurrentlyInUseCategoryServer() + "#");
         categoriesHandler.setCurrentlyInUseCategory(categoriesHandler.getCurrentCategoryID(), this);
-        while(categoriesHandler.getCurrentlyInUse().size() == 0) {}
     }
 
     private void changeCategory(int categoryID)
@@ -482,6 +487,5 @@ public class newsfeed_activity extends AppCompatActivity
         categoriesHandler.getCurrentlyInUse().clear();
         communication.clientSend("114&" + categoriesHandler.getCategoriesForServer().get(categoryID) + "#");
         categoriesHandler.setCurrentlyInUseCategory(categoryID, this);
-        while(categoriesHandler.getCurrentlyInUse().size() == 0) {}
     }
 }

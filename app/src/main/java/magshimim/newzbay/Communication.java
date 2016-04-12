@@ -19,13 +19,10 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.InetSocketAddress;
 import java.net.Socket;
-import java.security.PublicKey;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Vector;
-
-import javax.crypto.SecretKey;
 
 public class Communication implements Runnable {
     private ClientRead clientRead;
@@ -37,7 +34,6 @@ public class Communication implements Runnable {
     }
 
     private Socket serverSocket;
-    //private SSLSocket serverSocketSSl;
     private String serverIP;
     private int dstport;
     private static int isConnect;
@@ -48,11 +44,6 @@ public class Communication implements Runnable {
         isConnect = 0;
         dstport = 4444;
             serverSocket = new Socket();
-            //String trustStore = "D:\\AndroidStudioProjects\\NewzBayClient\\serv3";
-            /*System.setProperty("javax.net.ssl.trustStore", "C:\\Program Files\\Java\\jdk1.8.0_60\\jre\\lib\\security\\cacerts");
-            System.setProperty("javax.net.ssl.trustStorePassword","changeit");
-            SSLSocketFactory sslSocketFactory = (SSLSocketFactory) SSLSocketFactory.getDefault();
-            serverSocketSSl = (SSLSocket) sslSocketFactory.createSocket(serverIP, dstport);*/
         try {
             serverSocket.connect(new InetSocketAddress(serverIP, dstport), 5000);
             isConnect = 1;
@@ -151,15 +142,12 @@ public class Communication implements Runnable {
 class ClientRead extends Thread {
     private Socket serverSocket;
     private PrintWriter out;
-    //private OutputStreamWriter out;
     private BufferedWriter bufferedWriter;
     private BufferedReader in;
     private GlobalClass globalClass;
     private CategoriesHandler categoriesHandler;
     private PriorityHandler priorityHandler;
     private AESEncryption aesEncryption;
-    private RSAEncryption rsaEncryption;
-    private String tempLine;
 
     public ClientRead(Socket serverSocket, GlobalClass globalClass) {
         this.serverSocket = serverSocket;
@@ -173,76 +161,25 @@ class ClientRead extends Thread {
     public void run() {
         try {
             out = new PrintWriter(serverSocket.getOutputStream());
-            //out = new OutputStreamWriter(serverSocket.getOutputStream());
             bufferedWriter = new BufferedWriter(out);
             in = new BufferedReader(new InputStreamReader(serverSocket.getInputStream()));
-        } catch (IOException e)
-        {
+        } catch (IOException e) {
             Log.d("check", "IO Error/ Client terminated abruptly");
-        } catch (NullPointerException e)
-        {
+        } catch (NullPointerException e) {
             Log.d("check", "Client Closed");
         }
-        out.println("402#");
+        out.println("404|" + aesEncryption.getAesKey() + "##");
         out.flush();
-        String msgFromServer = "";
         try {
-            do {
-                msgFromServer = msgFromServer + in.readLine();
-            }while (!msgFromServer.contains("##"));
-            msgFromServer = msgFromServer.substring(0,msgFromServer.length() - 2);
-            rsaEncryption = new RSAEncryption(msgFromServer.substring(4,msgFromServer.length()));
-            out.println(rsaEncryption.encrypt("404|" + aesEncryption.getAesKey() + "#"));
-            out.flush();
-            msgFromServer = in.readLine();
+            if(in.readLine().equals("405#"))
+            {
+                send("100#");
+                read();
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-
-
-        send("100#");
-        read();
-//        do
-//        {
-//            AESKey = aesEncryption.getSecretEncryptionKey();
-//        }while(AESKey == null);
-//
-//        String AESStrKey = Base64.encodeToString(AESKey.getEncoded(), Base64.DEFAULT);
-//        String privateAesSend = "402|";
-//        privateAesSend = privateAesSend + AESStrKey + "#";
-//        privateAesSend = (encryptRsa(privateAesSend, publicKeyRSA)).toString();
-//        privateAesSend = (encryptRsa("Hello from the other side", publicKeyRSA)).toString();
-//        Log.d("send", privateAesSend);
-//        out.println(privateAesSend);
-//        out.flush();
-//
-//        try {
-//            String line = in.readLine();
-//            line = aesEncryption.decryptText(line.getBytes(), AESKey);
-//            if(line.equals("103"))
-//            {
-//                send("100#"); //START WITH THE CONVERSATION
-//                read();
-//            }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
     }
-
-//    public static byte[] encryptRsa(String text, PublicKey key) {
-//        byte[] cipherText = null;
-//        try {
-//            // get an RSA cipher object and print the provider
-//            final Cipher cipher = Cipher.getInstance("RSA");
-//            // encrypt the plain text using the public key
-//            cipher.init(Cipher.ENCRYPT_MODE, key);
-//            cipherText = cipher.doFinal(text.getBytes());
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//        return cipherText;
-//    }
     public void read()
     {
         try {
@@ -284,6 +221,15 @@ class ClientRead extends Thread {
                         priorityHandler.setSite(site);
                     } else if (line.contains("115|")) {
                         line = line.substring(line.indexOf("|") + 1);
+                        for (int i = 0; i < categoriesHandler.getCurrentlyInUse().size(); i++) {
+                            Article current = categoriesHandler.getCurrentlyInUse().get(i);
+                            if (current.getPicture() != null && current.isPictureIsDawnloaded()) {
+                                if(!current.getPicture().isRecycled())
+                                {
+                                    current.getPicture().recycle();
+                                }
+                            }
+                        }
                         categoriesHandler.getCurrentlyInUse().clear();
                         while (line.contains("|")) {
                             String id, mainHeadLine, secondHeadLine, date, url, likes, imgURL;
@@ -377,7 +323,6 @@ class ClientRead extends Thread {
                         });
                     }
                     line = "";
-                    tempLine = "";
                 }
             }while (line.compareTo("501#") != 0);
         } catch (IOException e) {

@@ -184,15 +184,21 @@ public class ArticleAdapter extends ArrayAdapter<Article>{
                     connection.connect();
                     InputStream input = connection.getInputStream();
                     Bitmap b = BitmapFactory.decodeStream(input);
-                    categoriesHandler.getCurrentlyInUse().get(position1).setPicture(b);
-//                  categoriesHandler.getDownloadedPics().put(categoriesHandler.getCurrentlyInUse().get(position1).getPicURL(), b);
-                    while(categoriesHandler.isLoading()){}
-                    activity.runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            ((BaseAdapter) adapter).notifyDataSetChanged();
-                        }
-                    });
+                    if(categoriesHandler.getCurrentlyInUse().size() != 0)
+                    {
+                        categoriesHandler.getCurrentlyInUse().get(position1).setPicture(b);
+                        while(categoriesHandler.isLoading()){}
+                        activity.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                ((BaseAdapter) adapter).notifyDataSetChanged();
+                            }
+                        });
+                    }
+                    else if(b != null)
+                    {
+                        b.recycle();
+                    }
 
                 } catch (IOException e) {
                     e.printStackTrace();

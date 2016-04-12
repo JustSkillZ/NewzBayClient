@@ -402,7 +402,7 @@ public class entrance extends AppCompatActivity implements GoogleApiClient.Conne
             setBtnClickListeners();
             mProgressDialog = new ProgressDialog(this);
             mProgressDialog.setMessage("Loading...");
+            mGoogleApiClient.connect();
         }
-        mGoogleApiClient.connect();
     }
 }

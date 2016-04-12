@@ -65,106 +65,97 @@ public class ArticleAdapter extends ArrayAdapter<Article>{
     public View getView(final int position, View convertView, ViewGroup parent) {
         LayoutInflater layoutInflater = LayoutInflater.from(getContext());
         View view = layoutInflater.inflate(R.layout.listview_articles, parent, false);
-        if(user.getConnectedVia().equals("Guest"))
-        {
-            like = (Button) view.findViewById(R.id.btn_like);
-            like.setBackgroundResource(R.drawable.buttonborder_disabled);
-            like.setAlpha((float) 0.3);
-            like.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Toast toast = Toast.makeText(context, "רק משתמשים מחוברים יכולים לעשות לייק", Toast.LENGTH_LONG);
-                    toast.show();
-                }
-            });
-
-            comment = (Button) view.findViewById(R.id.btn_comment);
-            comment.setBackgroundResource(R.drawable.buttonborder_disabled);
-            comment.setAlpha((float) 0.3);
-            comment.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Toast toast = Toast.makeText(context, "רק משתמשים מחוברים יכולים להגיב", Toast.LENGTH_LONG);
-                    toast.show();
-                }
-            });
-
-        }
-        else
-        {
-            like = (Button) view.findViewById(R.id.btn_like);
-            if(categoriesHandler.getCurrentlyInUse().get(position).getLiked())
-            {
-                like.setText("Unlike");
-            }
-            else
-            {
-                like.setText("Like");
-            }
-            like.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-
-                    like = (Button) v.findViewById(R.id.btn_like);
-                    ViewGroup item = (ViewGroup)v.getParent().getParent();
-                    countLikes = (TextView) item.findViewById(R.id.tv_likes);
-                    if (categoriesHandler.getCurrentlyInUse().get(position).getLiked()) {
-                        like.setText("Like");
-                        categoriesHandler.getCurrentlyInUse().get(position).setLiked(false);
-                        categoriesHandler.getCurrentlyInUse().get(position).decNumberOfLikes();
-                        countLikes.setText(categoriesHandler.getCurrentlyInUse().get(position).getNumberOfLikes() + " Likes");
-                        communication.clientSend("110&" + categoriesHandler.getCurrentlyInUse().get(position).getUrl() + "#");
+        if(categoriesHandler.getCurrentlyInUse().size() != 0) {
+            if (user.getConnectedVia().equals("Guest")) {
+                like = (Button) view.findViewById(R.id.btn_like);
+                like.setBackgroundResource(R.drawable.buttonborder_disabled);
+                like.setAlpha((float) 0.3);
+                like.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Toast toast = Toast.makeText(context, "רק משתמשים מחוברים יכולים לעשות לייק", Toast.LENGTH_LONG);
+                        toast.show();
                     }
-                    else {
-                        like.setText("Unlike");
-                        categoriesHandler.getCurrentlyInUse().get(position).setLiked(true);
-                        categoriesHandler.getCurrentlyInUse().get(position).incNumberOfLikes();
-                        countLikes.setText(categoriesHandler.getCurrentlyInUse().get(position).getNumberOfLikes() + " Likes");
-                        communication.clientSend("110&" + categoriesHandler.getCurrentlyInUse().get(position).getUrl() + "#");
+                });
+
+                comment = (Button) view.findViewById(R.id.btn_comment);
+                comment.setBackgroundResource(R.drawable.buttonborder_disabled);
+                comment.setAlpha((float) 0.3);
+                comment.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Toast toast = Toast.makeText(context, "רק משתמשים מחוברים יכולים להגיב", Toast.LENGTH_LONG);
+                        toast.show();
                     }
+                });
+
+            } else {
+                like = (Button) view.findViewById(R.id.btn_like);
+                if (categoriesHandler.getCurrentlyInUse().get(position).getLiked()) {
+                    like.setText("Unlike");
+                } else {
+                    like.setText("Like");
+                }
+                like.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                        like = (Button) v.findViewById(R.id.btn_like);
+                        ViewGroup item = (ViewGroup) v.getParent().getParent();
+                        countLikes = (TextView) item.findViewById(R.id.tv_likes);
+                        if (categoriesHandler.getCurrentlyInUse().get(position).getLiked()) {
+                            like.setText("Like");
+                            categoriesHandler.getCurrentlyInUse().get(position).setLiked(false);
+                            categoriesHandler.getCurrentlyInUse().get(position).decNumberOfLikes();
+                            countLikes.setText(categoriesHandler.getCurrentlyInUse().get(position).getNumberOfLikes() + " Likes");
+                            communication.clientSend("110&" + categoriesHandler.getCurrentlyInUse().get(position).getUrl() + "#");
+                        } else {
+                            like.setText("Unlike");
+                            categoriesHandler.getCurrentlyInUse().get(position).setLiked(true);
+                            categoriesHandler.getCurrentlyInUse().get(position).incNumberOfLikes();
+                            countLikes.setText(categoriesHandler.getCurrentlyInUse().get(position).getNumberOfLikes() + " Likes");
+                            communication.clientSend("110&" + categoriesHandler.getCurrentlyInUse().get(position).getUrl() + "#");
+                        }
+                    }
+                });
+            }
+            TextView mainHeadline = (TextView) view.findViewById(R.id.tv_mainHeadline);
+            mainHeadline.setText(categoriesHandler.getCurrentlyInUse().elementAt(position).getMainHeadline());
+            TextView secondHeadLine = (TextView) view.findViewById(R.id.tv_secondHeadline);
+            secondHeadLine.setText(categoriesHandler.getCurrentlyInUse().elementAt(position).getSecondHeadline());
+            TextView site = (TextView) view.findViewById(R.id.tv_site);
+            site.setText(categoriesHandler.getCurrentlyInUse().elementAt(position).getSiteName());
+            TextView date = (TextView) view.findViewById(R.id.tv_date);
+            if (categoriesHandler.getCurrentlyInUse().elementAt(position).getDate() != null) {
+                Date d = new Date();
+                date.setText((String) DateUtils.getRelativeTimeSpanString(categoriesHandler.getCurrentlyInUse().elementAt(position).getDate().getTime(), d.getTime(), 0));
+            }
+            countLikes = (TextView) view.findViewById(R.id.tv_likes);
+            countLikes.setText(categoriesHandler.getCurrentlyInUse().get(position).getNumberOfLikes() + " Likes");
+            countComments = (TextView) view.findViewById(R.id.tv_comments);
+            countComments.setText("    " + categoriesHandler.getCurrentlyInUse().get(position).getNumberOfComments() + " Comments");
+            picture = (ImageButton) view.findViewById(R.id.ib_picture);
+            if (!categoriesHandler.getCurrentlyInUse().get(position).getPicURL().equals("null")) {
+                if (!categoriesHandler.getCurrentlyInUse().get(position).isPictureIsDawnloaded()) {
+                    categoriesHandler.getCurrentlyInUse().get(position).setPictureIsDawnloaded(true);
+                    getBitmapFromURL(picture, position);
+                    picture.setImageBitmap(categoriesHandler.getCurrentlyInUse().get(position).getPicture());
+                } else {
+                    picture.setImageBitmap(categoriesHandler.getCurrentlyInUse().get(position).getPicture());
+                }
+            }
+            picture.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    View parentRow = (View) v.getParent();
+                    listView = (ListView) parentRow.getParent();
+                    int position = listView.getPositionForView(parentRow);
+                    categoriesHandler.setCurrentlyOpenURL(categoriesHandler.getCurrentlyInUse().elementAt(position).getUrl());
+                    Intent web = new Intent(context, InnerWeb.class);
+                    context.startActivity(web);
                 }
             });
         }
-        TextView mainHeadline = (TextView) view.findViewById(R.id.tv_mainHeadline);
-        mainHeadline.setText(categoriesHandler.getCurrentlyInUse().elementAt(position).getMainHeadline());
-        TextView secondHeadLine = (TextView) view.findViewById(R.id.tv_secondHeadline);
-        secondHeadLine.setText(categoriesHandler.getCurrentlyInUse().elementAt(position).getSecondHeadline());
-        TextView site = (TextView) view.findViewById(R.id.tv_site);
-        site.setText(categoriesHandler.getCurrentlyInUse().elementAt(position).getSiteName());
-        TextView date = (TextView) view.findViewById(R.id.tv_date);
-        if(categoriesHandler.getCurrentlyInUse().elementAt(position).getDate() != null)
-        {
-            Date d = new Date();
-            date.setText((String) DateUtils.getRelativeTimeSpanString(categoriesHandler.getCurrentlyInUse().elementAt(position).getDate().getTime(), d.getTime(), 0));
-        }
-        countLikes = (TextView) view.findViewById(R.id.tv_likes);
-        countLikes.setText(categoriesHandler.getCurrentlyInUse().get(position).getNumberOfLikes() + " Likes");
-        countComments = (TextView) view.findViewById(R.id.tv_comments);
-        countComments.setText("    " + categoriesHandler.getCurrentlyInUse().get(position).getNumberOfComments() + " Comments");
-        picture = (ImageButton) view.findViewById(R.id.ib_picture);
-        if(!categoriesHandler.getCurrentlyInUse().get(position).getPicURL().equals("null"))
-        {
-            if(!categoriesHandler.getCurrentlyInUse().get(position).isPictureIsDawnloaded())
-            {
-                categoriesHandler.getCurrentlyInUse().get(position).setPictureIsDawnloaded(true);
-                getBitmapFromURL(picture, position);
-                picture.setImageBitmap(categoriesHandler.getCurrentlyInUse().get(position).getPicture());
-            }
-            else {
-                picture.setImageBitmap(categoriesHandler.getCurrentlyInUse().get(position).getPicture());
-            }
-        }
-        picture.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                View parentRow = (View) v.getParent();
-                listView = (ListView) parentRow.getParent();
-                int position = listView.getPositionForView(parentRow);
-                categoriesHandler.setCurrentlyOpenURL(categoriesHandler.getCurrentlyInUse().elementAt(position).getUrl());
-                Intent web = new Intent(context,InnerWeb.class);
-                context.startActivity(web);
-            }
-        });
         return view;
     }
 

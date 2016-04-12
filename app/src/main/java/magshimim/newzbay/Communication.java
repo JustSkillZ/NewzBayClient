@@ -201,7 +201,7 @@ class ClientRead extends Thread {
                     } else if (line.equals("103#") || line.equals("400#")) {
                         Log.d("Server", line);
                         send("106#");
-                        send("104|1&1|1&2|4&1|4&2|8&1#");
+                        //send("104|1&1|1&2|4&1|4&2|8&1#");
                     } else if (line.contains("107|")) {
                         Vector<String> id = new Vector<String>();
                         Vector<String> subject = new Vector<String>();

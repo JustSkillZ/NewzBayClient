@@ -94,7 +94,7 @@
             android:textAllCaps="false"
             android:textSize="16sp"
             android:textColor="@color/grey"
-            android:layout_weight="0.32" />"
+            android:layout_weight="0.32"/>"
     </LinearLayout>
 
     <LinearLayout
@@ -130,6 +130,6 @@
         android:layout_width="match_parent"
         android:layout_height="28dp"
         android:background="@color/nb"
-        android:elevation="10dp"/>
+        android:elevation="10dp" />
 
 </LinearLayout>

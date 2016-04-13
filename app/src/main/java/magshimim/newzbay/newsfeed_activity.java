@@ -15,6 +15,8 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v4.widget.ViewDragHelper;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.SpannableString;
 import android.text.format.Time;
 import android.text.style.ForegroundColorSpan;
@@ -44,15 +46,16 @@ public class newsfeed_activity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     private android.support.v7.widget.Toolbar toolbar_main;
-    private ListAdapter listadapter;
     private SwipeRefreshLayout refreshList;
-    private ListView listView_article;
     private Handler handler = new Handler();
     private DrawerLayout drawer;
     private GlobalClass globalClass;
     private CategoriesHandler categoriesHandler;
     private Communication communication;
     private User user;
+    private RecyclerView recyclerView_article;
+    private RecyclerView.Adapter recyclerAdapter;
+    private android.support.v7.widget.LinearLayoutManager recyclerLayoutManager;
 
     boolean doubleBackToExitPressedOnce = false;
 
@@ -60,6 +63,9 @@ public class newsfeed_activity extends AppCompatActivity
     private final String prefsConnection = "magshimim.newzbay.ConnectionPrefs";
     private final String isExplanation1 = "isExplanation1";
     private final String isPrioritized = "isPrioritized";
+
+    public newsfeed_activity() {
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -152,82 +158,45 @@ public class newsfeed_activity extends AppCompatActivity
 
         saveInInternalFolder("NewzBay", "check");
 
-        listView_article = (ListView) findViewById(R.id.listView_articles);
-        listView_article.setFriction(ViewConfiguration.getScrollFriction() * (float)3);
-        listadapter = new ArticleAdapter(newsfeed_activity.this, this, (GlobalClass)getApplicationContext());
-        listView_article.setAdapter(listadapter);
+        recyclerView_article = (RecyclerView) findViewById(R.id.recyclerView_articles);
+        recyclerLayoutManager = new LinearLayoutManager(this);
+        recyclerView_article.setLayoutManager(recyclerLayoutManager);
+        recyclerAdapter =  new ArticleAdapter(this, (GlobalClass)getApplicationContext());
+        recyclerView_article.setAdapter(recyclerAdapter);
+        recyclerView_article.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            int pastVisiblesItems, visibleItemCount, totalItemCount;
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                if (dy > 0) {
+                    visibleItemCount = recyclerLayoutManager.getChildCount();
+                    totalItemCount = recyclerLayoutManager.getItemCount();
+                    pastVisiblesItems = recyclerLayoutManager.findFirstVisibleItemPosition();
 
-        categoriesHandler.setListAdapter(listadapter);
-        categoriesHandler.setNewsfeed(this);
-
-        listView_article.setOnScrollListener(new AbsListView.OnScrollListener() {
-
-            int mLastFirstVisibleItem = 0;
-            boolean mIsScrollingUp = false;
-            boolean recycling = false;
-
-            public void onScrollStateChanged(AbsListView view, int scrollState) {
-
-                if (view.getId() == listView_article.getId())
-                {
-                    final int currentFirstVisibleItem = listView_article.getFirstVisiblePosition();
-
-                    if (currentFirstVisibleItem > mLastFirstVisibleItem) {
-                        mIsScrollingUp = false;
-                    } else if (currentFirstVisibleItem < mLastFirstVisibleItem) {
-                        mIsScrollingUp = true;
-                    }
-                    mLastFirstVisibleItem = currentFirstVisibleItem;
-                }
-            }
-
-            public void onScroll(AbsListView view, int firstVisibleItem,
-                                 int visibleItemCount, int totalItemCount) {
-
-                if (firstVisibleItem + visibleItemCount == totalItemCount && totalItemCount != 0) {
-                    if (!categoriesHandler.isLoading()) {
-                        categoriesHandler.setLoading(true);
-                        communication.clientSend("118&" + categoriesHandler.getCurrentlyInUseCategoryServer() + "&" + categoriesHandler.getCurrentlyInUse().lastElement().getUrl() + "#");
-                    }
-                }
-
-                int lastVisibleRow = listView_article.getLastVisiblePosition();
-                if(!recycling && !categoriesHandler.isLoading()) {
-                    if (mIsScrollingUp) {
-                        recycling = true;
-                        Log.d("Recycling", "below");
-                        int numberOfArticles = categoriesHandler.getCurrentlyInUse().size();
-                        for (int i = lastVisibleRow + 7; i < numberOfArticles; i++) {
-                            Article current = categoriesHandler.getCurrentlyInUse().get(i);
-                            if (current.getPicture() != null && current.isPictureIsDawnloaded()) {
-                                if(!current.getPicture().isRecycled())
-                                {
-                                    current.getPicture().recycle();
-                                    current.setPicture(globalClass.getCategoriesHandler().getSiteLogo().get(current.getSiteName()));
-                                    current.setPictureIsDawnloaded(false);
-                                }
-                            }
+                    if (pastVisiblesItems + visibleItemCount == totalItemCount && totalItemCount != 0) {
+                        if (!categoriesHandler.isLoading()) {
+                            categoriesHandler.setLoading(true);
+                            communication.clientSend("118&" + categoriesHandler.getCurrentlyInUseCategoryServer() + "&" + categoriesHandler.getCurrentlyInUse().lastElement().getUrl() + "#");
                         }
-                        recycling = false;
-                    } else {
-                        recycling = true;
-                        Log.d("Recycling", "above");
-                        for (int i = firstVisibleItem - 7; i >= 0; i--) {
-                            Article current = categoriesHandler.getCurrentlyInUse().get(i);
-                            if (current.getPicture() != null && current.isPictureIsDawnloaded()) {
-                                if(!current.getPicture().isRecycled())
-                                {
-                                    current.getPicture().recycle();
-                                    current.setPicture(globalClass.getCategoriesHandler().getSiteLogo().get(current.getSiteName()));
-                                    current.setPictureIsDawnloaded(false);
-                                }
-                            }
-                        }
-                        recycling = false;
                     }
                 }
             }
         });
+
+        categoriesHandler.setRecyclerAdapter(recyclerAdapter);
+        categoriesHandler.setNewsfeed(this);
+
+
+//                int position = listView_article.getPositionForView(view);
+//        Article current = categoriesHandler.getCurrentlyInUse().get(i);
+//        if (current.getPicture() != null && current.isPictureIsDawnloaded()) {
+//            if(!current.getPicture().isRecycled())
+//            {
+//                current.getPicture().recycle();
+//                current.setPicture(globalClass.getCategoriesHandler().getSiteLogo().get(current.getSiteName()));
+//                current.setPictureIsDawnloaded(false);
+//            }
+//        }
+
         createSwipeRefreshLayout();
 
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -406,12 +375,8 @@ public class newsfeed_activity extends AppCompatActivity
         ImageButton userPic = (ImageButton) drawer.findViewById(R.id.ib_userPic);
         if(userPic != null)
         {
-            if(user.getProfilePic() != null) {
-                userPic.setImageBitmap(RoundedImageView.getCroppedBitmap(user.getProfilePic(), 240));
-            }
-            else
-            {
-                userPic.setImageBitmap(RoundedImageView.getCroppedBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.user_icon), 240));
+            if(user.getConnectedVia().equals("Guest")) {
+                userPic.setImageBitmap(RoundedImageView.getCroppedBitmap(BitmapFactory.decodeResource(globalClass.getResources(), R.drawable.user_icon), 240));
             }
         }
     }
@@ -483,6 +448,7 @@ public class newsfeed_activity extends AppCompatActivity
         categoriesHandler.getCurrentlyInUse().clear();
         communication.clientSend("114&" + categoriesHandler.getCurrentlyInUseCategoryServer() + "#");
         categoriesHandler.setCurrentlyInUseCategory(categoriesHandler.getCurrentCategoryID(), this);
+        while(categoriesHandler.getCurrentlyInUse().size() != 0);
     }
 
     private void changeCategory(int categoryID)
@@ -490,5 +456,6 @@ public class newsfeed_activity extends AppCompatActivity
         categoriesHandler.getCurrentlyInUse().clear();
         communication.clientSend("114&" + categoriesHandler.getCategoriesForServer().get(categoryID) + "#");
         categoriesHandler.setCurrentlyInUseCategory(categoryID, this);
+        while(categoriesHandler.getCurrentlyInUse().size() != 0);
     }
 }

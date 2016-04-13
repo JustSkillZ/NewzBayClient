@@ -196,12 +196,12 @@ class ClientRead extends Thread {
                     //line = aesEncryption.decryptText(line.getBytes(), AESKey);
                     Log.d("check", "Response from server :  " + line);
                     if (line.equals("101#")) {
+                        send("106#");
                         Log.d("Server", "101#");
 
                     } else if (line.equals("103#") || line.equals("400#")) {
                         Log.d("Server", line);
-                        send("106#");
-                        //send("104|1&1|1&2|4&1|4&2|8&1#");
+                    //    send("104|1&1|1&2|4&1|4&2|8&1#");
                     } else if (line.contains("107|")) {
                         Vector<String> id = new Vector<String>();
                         Vector<String> subject = new Vector<String>();
@@ -267,13 +267,13 @@ class ClientRead extends Thread {
                             }
                             Article article = new Article(categoriesHandler.getCurrentlyInUseCategory(globalClass.getUser()), mainHeadLine, secondHeadLine, imgURL, dates, priorityHandler.getSite().elementAt(priorityHandler.getIdOfRSS().indexOf(id)), url, Integer.parseInt(likes), 0, liked, globalClass);
                             categoriesHandler.getCurrentlyInUse().add(article);
+                            categoriesHandler.getNewsfeed().runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    categoriesHandler.getRecyclerAdapter().notifyDataSetChanged();
+                                }
+                            });
                         }
-                        categoriesHandler.getNewsfeed().runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                ((BaseAdapter) categoriesHandler.getListAdapter()).notifyDataSetChanged();
-                            }
-                        });
                     } else if (line.contains("119|")) {
                         line = line.substring(line.indexOf("|") + 1);
                         while (line.contains("|")) {
@@ -313,14 +313,14 @@ class ClientRead extends Thread {
                             }
                             Article article = new Article(categoriesHandler.getCurrentlyInUseCategory(globalClass.getUser()), mainHeadLine, secondHeadLine, imgURL, dates, priorityHandler.getSite().elementAt(priorityHandler.getIdOfRSS().indexOf(id)), url, Integer.parseInt(likes), 0, liked, globalClass);
                             categoriesHandler.getCurrentlyInUse().addElement(article);
+                            categoriesHandler.getNewsfeed().runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    categoriesHandler.getRecyclerAdapter().notifyDataSetChanged();
+                                }
+                            });
                         }
-                        //categoriesHandler.setLoading(false);
-                        categoriesHandler.getNewsfeed().runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                ((BaseAdapter) categoriesHandler.getListAdapter()).notifyDataSetChanged();
-                            }
-                        });
+                        categoriesHandler.setLoading(false);
                     }
                     line = "";
                 }

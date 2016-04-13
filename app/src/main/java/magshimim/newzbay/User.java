@@ -2,6 +2,7 @@ package magshimim.newzbay;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.widget.ImageButton;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -13,13 +14,15 @@ public class User {
     private String picURL;
     private Bitmap profilePic;
     private String connectedVia;
+    private GlobalClass globalClass;
 
-    public User(String fullName, String picURL, Bitmap profilePic, String connectedVia)
+    public User(String fullName, String picURL, Bitmap profilePic, String connectedVia, GlobalClass globalClass)
     {
         this.fullName = fullName;
         this.picURL = picURL;
         this.profilePic = profilePic;
         this.connectedVia = connectedVia;
+        this.globalClass = globalClass;
     }
 
     public String getFullName() {
@@ -57,6 +60,18 @@ public class User {
                     connection.connect();
                     InputStream input = connection.getInputStream();
                     profilePic = BitmapFactory.decodeStream(input);
+                    globalClass.getCategoriesHandler().getNewsfeed().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            ImageButton userPic = (ImageButton) globalClass.getCategoriesHandler().getNewsfeed().findViewById(R.id.ib_userPic);
+                            if(userPic != null)
+                            {
+                                if(!connectedVia.equals("Guest")) {
+                                    userPic.setImageBitmap(RoundedImageView.getCroppedBitmap(getProfilePic(), 240));
+                                }
+                            }
+                        }
+                    });
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

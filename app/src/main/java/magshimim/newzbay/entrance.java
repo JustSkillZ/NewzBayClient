@@ -132,7 +132,7 @@ public class entrance extends AppCompatActivity implements GoogleApiClient.Conne
 
     public void signInAsGuest(View v) {
         Log.d(TAG, "guest login");
-        user = new User("Guest", "", BitmapFactory.decodeResource(getResources(), R.drawable.user_icon), "Guest");
+        user = new User("Guest", "", BitmapFactory.decodeResource(getResources(), R.drawable.user_icon), "Guest", globalClass);
         globalClass.setUser(user);
         globalClass.getCommunication().clientSend("102&guest@guest.com&guest#");
         moveToNewsFeed();
@@ -177,7 +177,7 @@ public class entrance extends AppCompatActivity implements GoogleApiClient.Conne
                                 }
                             }
                         });
-                user = new FacebookUser(Profile.getCurrentProfile().getName(), Profile.getCurrentProfile().getProfilePictureUri(500, 500).toString(), null, Profile.getCurrentProfile(), "");
+                user = new FacebookUser(Profile.getCurrentProfile().getName(), Profile.getCurrentProfile().getProfilePictureUri(500, 500).toString(), null, Profile.getCurrentProfile(), "", globalClass);
                 globalClass.setUser(user);
                 Bundle parameters = new Bundle();
                 parameters.putString("fields", "id,name,email,gender, birthday");
@@ -297,7 +297,7 @@ public class entrance extends AppCompatActivity implements GoogleApiClient.Conne
     public void onConnected(Bundle arg0) {
         is_signInBtn_clicked = false;
         // Get user's information and set it into the layout
-        user = new GoogleUser(Plus.PeopleApi.getCurrentPerson(mGoogleApiClient).getDisplayName(), Plus.PeopleApi.getCurrentPerson(mGoogleApiClient).getImage().getUrl(), null, Plus.PeopleApi.getCurrentPerson(mGoogleApiClient), mGoogleApiClient);
+        user = new GoogleUser(Plus.PeopleApi.getCurrentPerson(mGoogleApiClient).getDisplayName(), Plus.PeopleApi.getCurrentPerson(mGoogleApiClient).getImage().getUrl(), null, Plus.PeopleApi.getCurrentPerson(mGoogleApiClient), mGoogleApiClient, globalClass);
         globalClass.setUser(user);
         // Update the UI after signin
         moveToNewsFeed();
@@ -307,7 +307,7 @@ public class entrance extends AppCompatActivity implements GoogleApiClient.Conne
     @Override
     public void onConnectionSuspended(int arg0) {
         mGoogleApiClient.connect();
-        user = new GoogleUser(Plus.PeopleApi.getCurrentPerson(mGoogleApiClient).getDisplayName(), Plus.PeopleApi.getCurrentPerson(mGoogleApiClient).getImage().getUrl(), null, Plus.PeopleApi.getCurrentPerson(mGoogleApiClient), mGoogleApiClient);
+        user = new GoogleUser(Plus.PeopleApi.getCurrentPerson(mGoogleApiClient).getDisplayName(), Plus.PeopleApi.getCurrentPerson(mGoogleApiClient).getImage().getUrl(), null, Plus.PeopleApi.getCurrentPerson(mGoogleApiClient), mGoogleApiClient, globalClass);
         globalClass.setUser(user);
         moveToNewsFeed();
     }
@@ -390,7 +390,7 @@ public class entrance extends AppCompatActivity implements GoogleApiClient.Conne
         if (Profile.getCurrentProfile() != null) {
             Log.d(TAG, "facebook login");
             SharedPreferences sharedpreferences = getSharedPreferences(prefsConnection, Context.MODE_PRIVATE);
-            user = new FacebookUser(Profile.getCurrentProfile().getName(), Profile.getCurrentProfile().getProfilePictureUri(500, 500).toString(), null, Profile.getCurrentProfile(), sharedpreferences.getString(facebookEmail, ""));
+            user = new FacebookUser(Profile.getCurrentProfile().getName(), Profile.getCurrentProfile().getProfilePictureUri(500, 500).toString(), null, Profile.getCurrentProfile(), sharedpreferences.getString(facebookEmail, ""), globalClass);
             globalClass.setUser(user);
             globalClass.getCommunication().clientSend("102&" + ((FacebookUser) user).getFacebookUserEmail() + "&" + ((FacebookUser) user).getFacebookProfile().getFirstName() + "#");
             moveToNewsFeed();

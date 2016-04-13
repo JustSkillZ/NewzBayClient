@@ -9,8 +9,8 @@ public class FacebookUser extends User{
     private Profile facebookProfile;
     private String facebookUserEmail;
 
-    public FacebookUser(String fullName, String picURL, Bitmap profilePic, Profile facebookProfile, String facebookUserEmail) {
-        super(fullName, picURL, profilePic, "Facebook");
+    public FacebookUser(String fullName, String picURL, Bitmap profilePic, Profile facebookProfile, String facebookUserEmail, GlobalClass globalClass) {
+        super(fullName, picURL, profilePic, "Facebook", globalClass);
         this.facebookProfile = facebookProfile;
         this.facebookUserEmail = facebookUserEmail;
     }

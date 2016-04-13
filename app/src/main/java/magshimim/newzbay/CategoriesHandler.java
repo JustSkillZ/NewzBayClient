@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.support.v7.widget.RecyclerView;
 import android.widget.ListAdapter;
 
 import java.util.Arrays;
@@ -22,7 +23,7 @@ public class CategoriesHandler {
     private HashMap<String, Bitmap> siteLogo;
     private boolean loadingArticles = false;
     private List<String> categoriesForServer = Arrays.asList("", "israelNewz", "worldNewz", "politics", "economy", "sport", "culture", "celebs", "technology");
-    private ListAdapter listAdapter;
+    private RecyclerView.Adapter recyclerAdapter;
     private Activity newsfeed;
     private GlobalClass globalClass;
 
@@ -186,12 +187,12 @@ public class CategoriesHandler {
         this.categoriesForServer = categoriesForServer;
     }
 
-    public ListAdapter getListAdapter() {
-        return listAdapter;
+    public RecyclerView.Adapter getRecyclerAdapter() {
+        return recyclerAdapter;
     }
 
-    public void setListAdapter(ListAdapter listAdapter) {
-        this.listAdapter = listAdapter;
+    public void setRecyclerAdapter(RecyclerView.Adapter recyclerAdapter) {
+        this.recyclerAdapter = recyclerAdapter;
     }
 
     public Activity getNewsfeed() {

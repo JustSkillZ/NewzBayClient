@@ -7,6 +7,7 @@ import android.content.IntentSender;
 import android.content.SharedPreferences;
 import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.format.Time;
@@ -83,6 +84,9 @@ public class entrance extends AppCompatActivity implements GoogleApiClient.Conne
         guestLoginBtn.setTextColor(getResources().getColor(R.color.grey));
         guestLoginBtn.setAlpha((float) 0.1);
         guestLoginBtn.setEnabled(false);
+        Drawable logo = getResources().getDrawable(R.drawable.anchor_logo);
+        logo.setBounds(0, 0, (int)(logo.getIntrinsicWidth()*0.5),(int)(logo.getIntrinsicHeight()*0.5));
+        guestLoginBtn.setCompoundDrawables(logo, null, null, null);
 
         LoginButton facebookLoginBtn = (LoginButton) findViewById(R.id.btn_Facebook);
         facebookLoginBtn.setBackground(getResources().getDrawable(R.drawable.disabled_button_rounded_corners));

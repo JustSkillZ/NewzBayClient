@@ -64,7 +64,12 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
         ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
         int maxKb = am.getMemoryClass() * 1024;
         int limitKb = maxKb / 8;
-        downloadedPictures = new LruCache<String, Bitmap>(limitKb);
+        downloadedPictures = new LruCache<String, Bitmap>(limitKb) {
+            @Override
+            protected int sizeOf(String key, Bitmap bitmap) {
+                return bitmap.getByteCount();
+            }
+        };
     }
 
     @Override

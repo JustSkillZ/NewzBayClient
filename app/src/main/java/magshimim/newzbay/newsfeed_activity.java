@@ -9,6 +9,7 @@ import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -164,18 +165,19 @@ public class newsfeed_activity extends AppCompatActivity
         recyclerAdapter =  new ArticleAdapter(this, (GlobalClass)getApplicationContext());
         recyclerView_article.setAdapter(recyclerAdapter);
         recyclerView_article.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            int pastVisiblesItems, visibleItemCount, totalItemCount;
+            int pastVisibleItems, visibleItemCount, totalItemCount;
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 if (dy > 0) {
                     visibleItemCount = recyclerLayoutManager.getChildCount();
                     totalItemCount = recyclerLayoutManager.getItemCount();
-                    pastVisiblesItems = recyclerLayoutManager.findFirstVisibleItemPosition();
+                    pastVisibleItems = recyclerLayoutManager.findFirstVisibleItemPosition();
 
-                    if (pastVisiblesItems + visibleItemCount == totalItemCount && totalItemCount != 0) {
+                    if (pastVisibleItems + visibleItemCount == totalItemCount && totalItemCount != 0) {
                         if (!categoriesHandler.isLoading()) {
                             categoriesHandler.setLoading(true);
                             communication.clientSend("118&" + categoriesHandler.getCurrentlyInUseCategoryServer() + "&" + categoriesHandler.getCurrentlyInUse().lastElement().getUrl() + "#");
+                            Snackbar.make((View) recyclerView_article.getParent(),"טוען כתבות נוספות", Snackbar.LENGTH_LONG).setAction("Action", null).show();
                         }
                     }
                 }
@@ -448,7 +450,7 @@ public class newsfeed_activity extends AppCompatActivity
         categoriesHandler.getCurrentlyInUse().clear();
         communication.clientSend("114&" + categoriesHandler.getCurrentlyInUseCategoryServer() + "#");
         categoriesHandler.setCurrentlyInUseCategory(categoriesHandler.getCurrentCategoryID(), this);
-        while(categoriesHandler.getCurrentlyInUse().size() != 0);
+        while(categoriesHandler.getCurrentlyInUse().size() == 0);
     }
 
     private void changeCategory(int categoryID)
@@ -456,6 +458,6 @@ public class newsfeed_activity extends AppCompatActivity
         categoriesHandler.getCurrentlyInUse().clear();
         communication.clientSend("114&" + categoriesHandler.getCategoriesForServer().get(categoryID) + "#");
         categoriesHandler.setCurrentlyInUseCategory(categoryID, this);
-        while(categoriesHandler.getCurrentlyInUse().size() != 0);
+        while(categoriesHandler.getCurrentlyInUse().size() == 0);
     }
 }

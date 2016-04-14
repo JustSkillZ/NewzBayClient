@@ -16,7 +16,7 @@
 #   public *;
 #}
 
--dontnote com.google.vending.licensing.ILicensingService
+-keep com.google.vending.licensing.ILicensingService
 -dontnote com.android.vending.licensing.ILicensingService
 -keepattributes magshimim.newzbay.GlobalClass
 -keepattributes Signature

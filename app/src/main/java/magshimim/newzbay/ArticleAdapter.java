@@ -16,6 +16,8 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.squareup.picasso.Picasso;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -28,7 +30,6 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
     private CategoriesHandler categoriesHandler;
     private Communication communication;
     private User user;
-    private LruCache <String, Bitmap> downloadedPictures;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public TextView mainHeadline;
@@ -64,12 +65,6 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
         ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
         int maxKb = am.getMemoryClass() * 1024;
         int limitKb = maxKb / 8;
-        downloadedPictures = new LruCache<String, Bitmap>(limitKb) {
-            @Override
-            protected int sizeOf(String key, Bitmap bitmap) {
-                return bitmap.getByteCount();
-            }
-        };
     }
 
     @Override
@@ -152,16 +147,11 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
                 holder.date.setText((String) DateUtils.getRelativeTimeSpanString(categoriesHandler.getCurrentlyInUse().elementAt(position).getDate().getTime(), d.getTime(), 0));
             }
             holder.countLikes.setText(categoriesHandler.getCurrentlyInUse().get(position).getNumberOfLikes() + " Likes");
-            holder.countComments.setText("    " + categoriesHandler.getCurrentlyInUse().get(position).getNumberOfComments() + " Comments");
+            holder.countComments.setText(categoriesHandler.getCurrentlyInUse().get(position).getNumberOfComments() + " Comments");
             if (!categoriesHandler.getCurrentlyInUse().get(position).getPicURL().equals("null")) {
-                Bitmap pic = downloadedPictures.get(categoriesHandler.getCurrentlyInUse().get(position).getPicURL());
-                if (pic != null) {
-                    holder.picture.setImageBitmap(pic);
-                }
-                else {
-                    holder.picture.setImageBitmap(categoriesHandler.getCurrentlyInUse().get(position).getPicture());
-                    getBitmapFromURL(holder.picture, position);
-                }
+                Picasso.with(context).load(categoriesHandler.getCurrentlyInUse().get(position).getPicURL()).into(holder.picture);
+            } else {
+                holder.picture.setImageBitmap(categoriesHandler.getCurrentlyInUse().get(position).getPicture());
             }
             holder.picture.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -179,41 +169,4 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
     public int getItemCount() {
         return categoriesHandler.getCurrentlyInUse().size();
     }
-
-    public void getBitmapFromURL(ImageButton ib, int position) {
-        final int position1 = position;
-        final ImageButton tempImageButton = ib;
-        Runnable runnable = new Runnable() {
-            @Override
-            public void run()
-            {
-                try {
-                    URL url = new URL((categoriesHandler.getCurrentlyInUse().get(position1).getPicURL()));
-                    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-                    connection.setDoInput(true);
-                    connection.connect();
-                    InputStream input = connection.getInputStream();
-                    final Bitmap b = BitmapFactory.decodeStream(input);
-                    if(categoriesHandler.getCurrentlyInUse().size() != 0 && b != null)
-                    {
-                        downloadedPictures.put(categoriesHandler.getCurrentlyInUse().get(position1).getPicURL(), b);
-                        while(categoriesHandler.isLoading()){}
-                        categoriesHandler.getNewsfeed().runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                tempImageButton.setImageBitmap(b);
-                            }
-                        });
-                    }
-
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        };
-        Thread t = new Thread(runnable);
-        t.start();
-    }
-
-
 }

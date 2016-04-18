@@ -8,6 +8,8 @@ import android.widget.PopupWindow;
 public class ErrorHandler {
     private PopupWindow noConnectionWithServer;
     private View popupWindowView_noConnectionWithServer;
+    private String ConnectingClientMsg;
+    private String lastMsgToServer;
 
     public ErrorHandler() {
         noConnectionWithServer = null;
@@ -29,13 +31,13 @@ public class ErrorHandler {
         this.popupWindowView_noConnectionWithServer = popupWindowView_noConnectionWithServer;
     }
 
-    public void handleNoConnectionToTheServer(final GlobalClass globalClass, final Context context)
+    public void handleNoConnectionToTheServer(final GlobalClass globalClass)
     {
         Button refreshConnection = (Button) globalClass.getErrorHandler().getPopupWindowView_noConnectionWithServer().findViewById(R.id.btn_reconnect);
         refreshConnection.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 if (globalClass.getErrorHandler().getNoConnectionWithServer() != null) {
-                    Communication communication = new Communication(globalClass, context);
+                    Communication communication = new Communication(globalClass);
                     globalClass.setCommunication(communication);
                     Thread t = new Thread(communication);
                     t.start();
@@ -43,5 +45,21 @@ public class ErrorHandler {
                 }
             }
         });
+    }
+
+    public String getConnectingClientMsg() {
+        return ConnectingClientMsg;
+    }
+
+    public void setConnectingClientMsg(String connectingClientMsg) {
+        ConnectingClientMsg = connectingClientMsg;
+    }
+
+    public String getLastMsgToServer() {
+        return lastMsgToServer;
+    }
+
+    public void setLastMsgToServer(String lastMsgToServer) {
+        this.lastMsgToServer = lastMsgToServer;
     }
 }

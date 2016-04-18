@@ -72,9 +72,11 @@ public class entrance extends AppCompatActivity implements GoogleApiClient.Conne
 
         ((GlobalClass) getApplicationContext()).initiateClass(getResources());
         globalClass = ((GlobalClass) getApplicationContext());
+        globalClass.setCurrentActivity(entrance.this);
+        globalClass.setCurrentLayout(R.id.entrance_layout);
         LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         globalClass.getErrorHandler().setPopupWindowView_noConnectionWithServer(inflater.inflate(R.layout.popup_no_connection, null, false));
-        globalClass.getErrorHandler().handleNoConnectionToTheServer(globalClass, entrance.this);
+        globalClass.getErrorHandler().handleNoConnectionToTheServer(globalClass);
         FacebookSdk.sdkInitialize(getApplicationContext());
         callbackManager = CallbackManager.Factory.create();
         setContentView(R.layout.activity_entrance);
@@ -109,7 +111,7 @@ public class entrance extends AppCompatActivity implements GoogleApiClient.Conne
             slogen.setTextColor(getResources().getColor(R.color.white));
         }
 
-        communication = new Communication((GlobalClass) getApplicationContext(), entrance.this);
+        communication = new Communication((GlobalClass) getApplicationContext());
         globalClass.setCommunication(communication);
         Thread t = new Thread(communication);
         t.start();
@@ -138,14 +140,18 @@ public class entrance extends AppCompatActivity implements GoogleApiClient.Conne
         Log.d(TAG, "guest login");
         user = new User("Guest", "", BitmapFactory.decodeResource(getResources(), R.drawable.user_icon), "Guest", globalClass);
         globalClass.setUser(user);
-        globalClass.getCommunication().clientSend("102&guest@guest.com&guest#");
+        String send = "102&guest@guest.com&guest#";
+        globalClass.getErrorHandler().setConnectingClientMsg(send);
+        globalClass.getCommunication().clientSend(send);
         moveToNewsFeed();
     }
 
     public void moveToNewsFeed() {
         if(user.getConnectedVia().equals("Google"))
         {
-            globalClass.getCommunication().clientSend("102&" + Plus.AccountApi.getAccountName(mGoogleApiClient) + "&" + ((GoogleUser) user).getGoogleProfile().getName().getGivenName() + "#");
+            String send = "102&" + Plus.AccountApi.getAccountName(mGoogleApiClient) + "&" + ((GoogleUser) user).getGoogleProfile().getName().getGivenName() + "#";
+            globalClass.getErrorHandler().setConnectingClientMsg(send);
+            globalClass.getCommunication().clientSend(send);
             Log.d("Server", "102&"+Plus.AccountApi.getAccountName(mGoogleApiClient)+"&"+((GoogleUser)user).getGoogleProfile().getName().getGivenName()+"#");
         }
         Intent nfScreen = new Intent(this, newsfeed_activity.class);
@@ -170,8 +176,9 @@ public class entrance extends AppCompatActivity implements GoogleApiClient.Conne
                                 try {
                                     String email = object.getString("email");
                                     ((FacebookUser)user).setFacebookUserEmail(email);
-
-                                    globalClass.getCommunication().clientSend("102&" + ((FacebookUser) user).getFacebookUserEmail() + "&" + ((FacebookUser) user).getFacebookProfile().getFirstName() + "#");
+                                    String send = "102&" + ((FacebookUser) user).getFacebookUserEmail() + "&" + ((FacebookUser) user).getFacebookProfile().getFirstName() + "#";
+                                    globalClass.getErrorHandler().setConnectingClientMsg(send);
+                                    globalClass.getCommunication().clientSend(send);
                                     SharedPreferences sharedpreferences = getSharedPreferences(prefsConnection, Context.MODE_PRIVATE);
                                     SharedPreferences.Editor editor = sharedpreferences.edit();
                                     editor.putString(facebookEmail, email);
@@ -396,7 +403,9 @@ public class entrance extends AppCompatActivity implements GoogleApiClient.Conne
             SharedPreferences sharedpreferences = getSharedPreferences(prefsConnection, Context.MODE_PRIVATE);
             user = new FacebookUser(Profile.getCurrentProfile().getName(), Profile.getCurrentProfile().getProfilePictureUri(500, 500).toString(), null, Profile.getCurrentProfile(), sharedpreferences.getString(facebookEmail, ""), globalClass);
             globalClass.setUser(user);
-            globalClass.getCommunication().clientSend("102&" + ((FacebookUser) user).getFacebookUserEmail() + "&" + ((FacebookUser) user).getFacebookProfile().getFirstName() + "#");
+            String send = "102&" + ((FacebookUser) user).getFacebookUserEmail() + "&" + ((FacebookUser) user).getFacebookProfile().getFirstName() + "#";
+            globalClass.getErrorHandler().setConnectingClientMsg(send);
+            globalClass.getCommunication().clientSend(send);
             moveToNewsFeed();
         }
         else

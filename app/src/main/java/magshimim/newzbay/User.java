@@ -49,38 +49,6 @@ public class User {
         this.profilePic = profilePic;
     }
 
-    public void getBitmapFromURL(String src) {
-        Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    URL url = new URL(picURL);
-                    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-                    connection.setDoInput(true);
-                    connection.connect();
-                    InputStream input = connection.getInputStream();
-                    profilePic = BitmapFactory.decodeStream(input);
-                    globalClass.getCategoriesHandler().getNewsfeed().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            ImageButton userPic = (ImageButton) globalClass.getCategoriesHandler().getNewsfeed().findViewById(R.id.ib_userPic);
-                            if(userPic != null)
-                            {
-                                if(!connectedVia.equals("Guest")) {
-                                    userPic.setImageBitmap(RoundedImageView.getCroppedBitmap(getProfilePic(), 240));
-                                }
-                            }
-                        }
-                    });
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        };
-        Thread t = new Thread(runnable);
-        t.start();
-    }
-
     public String getConnectedVia() {
         return connectedVia;
     }

@@ -3,13 +3,11 @@ package magshimim.newzbay;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -24,17 +22,14 @@ import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewConfiguration;
-import android.widget.AbsListView;
 import android.widget.ImageButton;
-import android.widget.ListAdapter;
-import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.login.LoginManager;
 import com.google.android.gms.plus.Plus;
+import com.squareup.picasso.Picasso;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
@@ -52,7 +47,6 @@ public class newsfeed_activity extends AppCompatActivity
     private DrawerLayout drawer;
     private GlobalClass globalClass;
     private CategoriesHandler categoriesHandler;
-    private Communication communication;
     private User user;
     private RecyclerView recyclerView_article;
     private RecyclerView.Adapter recyclerAdapter;
@@ -97,8 +91,9 @@ public class newsfeed_activity extends AppCompatActivity
         }
 
         globalClass = ((GlobalClass) getApplicationContext());
+        globalClass.setCurrentActivity(newsfeed_activity.this);
+        globalClass.setCurrentLayout(R.id.newsfeed_layout);
         categoriesHandler = globalClass.getCategoriesHandler();
-        communication = globalClass.getCommunication();
         user = globalClass.getUser();
 
 //        final ImageView loading = (ImageView) findViewById(R.id.iv_nb_loading);
@@ -138,11 +133,19 @@ public class newsfeed_activity extends AppCompatActivity
 
         if(user.getConnectedVia().equals("Facebook"))
         {
-            user.getBitmapFromURL(((FacebookUser) user).getFacebookProfile().getProfilePictureUri(500, 500).toString());
+            try {
+                user.setProfilePic(Picasso.with(this).load((((FacebookUser) user).getFacebookProfile().getProfilePictureUri(500, 500))).get());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             user.setFullName(((FacebookUser) user).getFacebookProfile().getName());
         }
         else if(user.getConnectedVia().equals("Google")) {
-            user.getBitmapFromURL(((GoogleUser) user).getGoogleProfile().getImage().getUrl().replace("sz=50", "sz=500").toString());
+            try {
+                user.setProfilePic(Picasso.with(this).load(((GoogleUser) user).getGoogleProfile().getImage().getUrl().replace("sz=50", "sz=500")).get());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             user.setFullName(((GoogleUser) user).getGoogleProfile().getDisplayName());
         }
 
@@ -166,6 +169,7 @@ public class newsfeed_activity extends AppCompatActivity
         recyclerView_article.setAdapter(recyclerAdapter);
         recyclerView_article.addOnScrollListener(new RecyclerView.OnScrollListener() {
             int pastVisibleItems, visibleItemCount, totalItemCount;
+
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 if (dy > 0) {
@@ -176,8 +180,7 @@ public class newsfeed_activity extends AppCompatActivity
                     if (pastVisibleItems + visibleItemCount == totalItemCount && totalItemCount != 0) {
                         if (!categoriesHandler.isLoading()) {
                             categoriesHandler.setLoading(true);
-                            communication.clientSend("118&" + categoriesHandler.getCurrentlyInUseCategoryServer() + "&" + categoriesHandler.getCurrentlyInUse().lastElement().getUrl() + "#");
-                            Snackbar.make((View) recyclerView_article.getParent(),"טוען כתבות נוספות", Snackbar.LENGTH_LONG).setAction("Action", null).show();
+                            globalClass.getCommunication().clientSend("118&" + categoriesHandler.getCurrentlyInUseCategoryServer() + "&" + categoriesHandler.getCurrentlyInUse().lastElement().getUrl() + "#");
                         }
                     }
                 }
@@ -186,18 +189,6 @@ public class newsfeed_activity extends AppCompatActivity
 
         categoriesHandler.setRecyclerAdapter(recyclerAdapter);
         categoriesHandler.setNewsfeed(this);
-
-
-//                int position = listView_article.getPositionForView(view);
-//        Article current = categoriesHandler.getCurrentlyInUse().get(i);
-//        if (current.getPicture() != null && current.isPictureIsDawnloaded()) {
-//            if(!current.getPicture().isRecycled())
-//            {
-//                current.getPicture().recycle();
-//                current.setPicture(globalClass.getCategoriesHandler().getSiteLogo().get(current.getSiteName()));
-//                current.setPictureIsDawnloaded(false);
-//            }
-//        }
 
         createSwipeRefreshLayout();
 
@@ -298,9 +289,9 @@ public class newsfeed_activity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
         if (id == R.id.nav_hot_news) {
-//            Intent intent = new Intent(this, ExploreArticles.class);
-//            startActivity(intent);
-//            this.onStop();
+            Intent intent = new Intent(this, ExploreArticles.class);
+            startActivity(intent);
+            this.onStop();
         } else if (id == R.id.nav_news) {
             changeCategory(1);
 
@@ -342,8 +333,8 @@ public class newsfeed_activity extends AppCompatActivity
             {
                 LoginManager.getInstance().logOut();
             }
-            communication.clientSend("500#"); //Disconnect from the server
-            communication.setIsConnect(0);
+            globalClass.getCommunication().clientSend("500#"); //Disconnect from the server
+            globalClass.getCommunication().setIsConnect(0);
             Log.d("Server", "500#");
             globalClass.endClass();
             Intent intent = new Intent(this, entrance.class);
@@ -447,16 +438,14 @@ public class newsfeed_activity extends AppCompatActivity
 
     private void updateArticles()
     {
-        categoriesHandler.getCurrentlyInUse().clear();
-        communication.clientSend("114&" + categoriesHandler.getCurrentlyInUseCategoryServer() + "#");
+        globalClass.getCommunication().clientSend("114&" + categoriesHandler.getCurrentlyInUseCategoryServer() + "#");
         categoriesHandler.setCurrentlyInUseCategory(categoriesHandler.getCurrentCategoryID(), this);
         while(categoriesHandler.getCurrentlyInUse().size() == 0);
     }
 
     private void changeCategory(int categoryID)
     {
-        categoriesHandler.getCurrentlyInUse().clear();
-        communication.clientSend("114&" + categoriesHandler.getCategoriesForServer().get(categoryID) + "#");
+        globalClass.getCommunication().clientSend("114&" + categoriesHandler.getCategoriesForServer().get(categoryID) + "#");
         categoriesHandler.setCurrentlyInUseCategory(categoryID, this);
         while(categoriesHandler.getCurrentlyInUse().size() == 0);
     }

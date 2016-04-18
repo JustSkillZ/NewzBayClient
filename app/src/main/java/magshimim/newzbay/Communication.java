@@ -1,16 +1,13 @@
 package magshimim.newzbay;
 
 import android.app.Activity;
-import android.content.Context;
 import android.util.Log;
 import android.view.Gravity;
-import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.PopupWindow;
 
 import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.common.SignInButton;
-import com.google.android.gms.plus.Plus;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -27,62 +24,70 @@ import java.util.Vector;
 public class Communication implements Runnable {
     private ClientRead clientRead;
     private GlobalClass globalClass;
-    private Context context;
-    public Communication(GlobalClass globalClass, Context context) {
-        this.globalClass = globalClass;
-        this.context = context;
-    }
-
     private Socket serverSocket;
     private String serverIP;
     private int dstport;
     private static int isConnect;
+    private boolean userConnected;
+
+    public Communication(GlobalClass globalClass) {
+        this.globalClass = globalClass;
+    }
 
     @Override
     public void run() {
         serverIP = "79.181.200.73";
         isConnect = 0;
         dstport = 4444;
-            serverSocket = new Socket();
+        userConnected = false;
+        serverSocket = new Socket();
         try {
             serverSocket.connect(new InetSocketAddress(serverIP, dstport), 5000);
             isConnect = 1;
-            ((Activity) context).runOnUiThread(new Runnable() {
+            ((Activity) globalClass.getCurrentActivity()).runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    Button guestLoginBtn = (Button) ((Activity) context).findViewById(R.id.btn_NB);
-                    guestLoginBtn.setBackground(((Activity) context).getResources().getDrawable(R.drawable.button_rounded_corners));
-                    guestLoginBtn.setTextColor(((Activity) context).getResources().getColor(R.color.white));
-                    guestLoginBtn.setAlpha((float) 1);
-                    guestLoginBtn.setEnabled(true);
+                    Button guestLoginBtn = (Button) ((Activity) globalClass.getCurrentActivity()).findViewById(R.id.btn_NB);
+                    if(guestLoginBtn != null)
+                    {
+                        guestLoginBtn.setBackground(globalClass.getCurrentActivity().getResources().getDrawable(R.drawable.button_rounded_corners));
+                        guestLoginBtn.setTextColor(globalClass.getCurrentActivity().getResources().getColor(R.color.white));
+                        guestLoginBtn.setAlpha((float) 1);
+                        guestLoginBtn.setEnabled(true);
+                    }
 
-                    LoginButton facebookLoginBtn = (LoginButton) ((Activity) context).findViewById(R.id.btn_Facebook);
-                    facebookLoginBtn.setBackground(((Activity) context).getResources().getDrawable(R.drawable.button_rounded_corners_facebook));
-                    facebookLoginBtn.setTextColor(((Activity) context).getResources().getColor(R.color.white));
-                    facebookLoginBtn.setAlpha((float) 1);
-                    facebookLoginBtn.setEnabled(true);
+                    LoginButton facebookLoginBtn = (LoginButton) ((Activity) globalClass.getCurrentActivity()).findViewById(R.id.btn_Facebook);
+                    if(facebookLoginBtn != null)
+                    {
+                        facebookLoginBtn.setBackground(globalClass.getCurrentActivity().getResources().getDrawable(R.drawable.button_rounded_corners_facebook));
+                        facebookLoginBtn.setTextColor(globalClass.getCurrentActivity().getResources().getColor(R.color.white));
+                        facebookLoginBtn.setAlpha((float) 1);
+                        facebookLoginBtn.setEnabled(true);
+                    }
 
-                    SignInButton googleLoginBtn = (SignInButton) ((Activity) context).findViewById(R.id.btn_Google);
-                    googleLoginBtn.setEnabled(true);
+                    SignInButton googleLoginBtn = (SignInButton) ((Activity) globalClass.getCurrentActivity()).findViewById(R.id.btn_Google);
+                    if(googleLoginBtn != null)
+                    {
+                        googleLoginBtn.setEnabled(true);
+                    }
+
                     if (globalClass.getUser() == null) {
-                        ((entrance) context).connectToSocialNets();
-                    } else {
-                        if (globalClass.getUser().getConnectedVia().equals("Google")) {
-                            clientSend("102&" + Plus.AccountApi.getAccountName(((GoogleUser) globalClass.getUser()).getmGoogleApiClient()) + "&" + ((GoogleUser) globalClass.getUser()).getGoogleProfile().getName().getGivenName() + "#");
-                        } else if (globalClass.getUser().getConnectedVia().equals("Facebook")) {
-                            clientSend("102&" + ((FacebookUser) globalClass.getUser()).getFacebookUserEmail() + "&" + ((FacebookUser) globalClass.getUser()).getFacebookProfile().getFirstName() + "#");
-                        } else {
-                            clientSend("102&guest@guest.com&guest#");
-                        }
+                        ((entrance) globalClass.getCurrentActivity()).connectToSocialNets();
+                    }
+                    else
+                    {
+                        userConnected = true;
                     }
                 }
             });
-            clientRead = new ClientRead(serverSocket, globalClass);
-            new Thread(clientRead).start();
+            clientRead = new ClientRead(serverSocket, globalClass, userConnected);
+            Thread t = new Thread(clientRead);
+            t.setName("Reading From The Server");
+            t.start();
         }
         catch (IOException e) { //No connection to server
             isConnect = -1;
-            ((Activity) context).runOnUiThread(new Runnable() {
+            ((Activity) globalClass.getCurrentActivity()).runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
                     final PopupWindow noConnection = new PopupWindow(
@@ -91,44 +96,26 @@ public class Communication implements Runnable {
                             800,
                             true);
                     noConnection.setAnimationStyle(R.style.AnimationFade);
-                    noConnection.showAtLocation(((Activity) context).findViewById(R.id.entrance_layout), Gravity.CENTER, 0, 0);
+                    try
+                    {
+                        noConnection.showAtLocation(((Activity) globalClass.getCurrentActivity()).findViewById(globalClass.getCurrentLayout()), Gravity.CENTER, 0, 0);
+                    }
+                    catch (IllegalStateException e)
+                    {
+                        e.printStackTrace();
+                    }
                     globalClass.getErrorHandler().setNoConnectionWithServer(noConnection);
                 }
             });
         }
     }
-    /*finally
-    {
-        try
-        {
-            System.out.println("Connection Closing..");
-            if (is != null)
-            {
-                is.close();
-                System.out.println(" Socket Input Stream Closed");
-            }
-
-            if (os != null)
-            {
-                os.close();
-                System.out.println("Socket Out Closed");
-            }
-            if (serverSocket != null)
-            {
-                serverSocket.close();
-                System.out.println("Socket Closed");
-            }
-
-        }
-        catch (IOException ie)
-        {
-            System.out.println("Socket Close Error");
-        }
-    }//end finally*/
 
     public void clientSend(String str)
     {
-        clientRead.send(str);
+        if(clientRead != null)
+        {
+            clientRead.send(str);
+        }
     }
 
     public static int isConnect() {
@@ -148,13 +135,15 @@ class ClientRead extends Thread {
     private CategoriesHandler categoriesHandler;
     private PriorityHandler priorityHandler;
     private AESEncryption aesEncryption;
+    private boolean userConnected;
 
-    public ClientRead(Socket serverSocket, GlobalClass globalClass) {
+    public ClientRead(Socket serverSocket, GlobalClass globalClass, boolean userConnected) {
         this.serverSocket = serverSocket;
         this.globalClass = globalClass;
         categoriesHandler = globalClass.getCategoriesHandler();
         priorityHandler = globalClass.getPriorityHandler();
         aesEncryption = new AESEncryption();
+        this.userConnected = userConnected;
     }
 
     @Override
@@ -185,8 +174,14 @@ class ClientRead extends Thread {
         try {
 
             String line = "";
+            String tempLine;
             do {
-                line = line + in.readLine();
+                tempLine = in.readLine();
+                if(tempLine == null)
+                {
+                    break;
+                }
+                line = line + tempLine;
                 if (line.contains("##")) {
                     line = line.substring(0,line.length() - 2);
                     line = aesEncryption.decrypt(line);
@@ -196,7 +191,15 @@ class ClientRead extends Thread {
                     //line = aesEncryption.decryptText(line.getBytes(), AESKey);
                     Log.d("check", "Response from server :  " + line);
                     if (line.equals("101#")) {
-                        send("106#");
+                        if(userConnected)
+                        {
+                            send(globalClass.getErrorHandler().getConnectingClientMsg());
+                            send(globalClass.getErrorHandler().getLastMsgToServer());
+                        }
+                        else
+                        {
+                            send("106#");
+                        }
                         Log.d("Server", "101#");
 
                     } else if (line.equals("103#") || line.equals("400#")) {
@@ -328,6 +331,7 @@ class ClientRead extends Thread {
         } catch (IOException e) {
 
             Log.d("check", "IO Error/ Client terminated abruptly");
+
         } catch (NullPointerException e) {
             Log.d("check", "Client Closed");
         } catch (Exception e) {
@@ -343,6 +347,23 @@ class ClientRead extends Thread {
             Log.d("send", str + " | Encrypted: " + cipherText);
             out.println(cipherText);
             out.flush();
+            if(out.checkError())
+            {
+                globalClass.getErrorHandler().setLastMsgToServer(str);
+                ((Activity)globalClass.getCurrentActivity()).runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        final PopupWindow noConnection = new PopupWindow(
+                                globalClass.getErrorHandler().getPopupWindowView_noConnectionWithServer(),
+                                800,
+                                800,
+                                true);
+                        noConnection.setAnimationStyle(R.style.AnimationFade);
+                        noConnection.showAtLocation(((Activity) globalClass.getCurrentActivity()).findViewById(R.id.newsfeed_layout), Gravity.CENTER, 0, 0);
+                        globalClass.getErrorHandler().setNoConnectionWithServer(noConnection);
+                    }
+                });
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }

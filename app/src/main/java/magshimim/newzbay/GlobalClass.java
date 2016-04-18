@@ -1,6 +1,7 @@
 package magshimim.newzbay;
 
 import android.app.Application;
+import android.content.Context;
 import android.content.res.Resources;
 
 public class GlobalClass extends Application {
@@ -11,6 +12,8 @@ public class GlobalClass extends Application {
     private PriorityHandler priorityHandler;
     private User user;
     private Resources resources;
+    private Context currentActivity;
+    private int currentLayout;
 
     public void initiateClass(Resources resources)
     {
@@ -71,5 +74,21 @@ public class GlobalClass extends Application {
 
     public Resources getAppResources() {
         return resources;
+    }
+
+    public Context getCurrentActivity() {
+        return currentActivity;
+    }
+
+    public void setCurrentActivity(Context currentActivity) {
+        this.currentActivity = currentActivity;
+    }
+
+    public int getCurrentLayout() {
+        return currentLayout;
+    }
+
+    public void setCurrentLayout(int currentLayout) {
+        this.currentLayout = currentLayout;
     }
 }

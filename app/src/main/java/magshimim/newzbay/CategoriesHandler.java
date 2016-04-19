@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.support.v4.view.PagerAdapter;
 import android.support.v7.widget.RecyclerView;
 import android.widget.ListAdapter;
 
@@ -19,12 +20,11 @@ public class CategoriesHandler {
     private int currentCategoryID;
     private String currentlyOpenURL;
 
-    private HashMap<String, Bitmap> downloadedPics;
     private HashMap<String, Bitmap> siteLogo;
     private boolean loadingArticles = false;
-    private List<String> categoriesForServer = Arrays.asList("", "israelNewz", "worldNewz", "politics", "economy", "sport", "culture", "celebs", "technology");
+    private List<String> categoriesForServer = Arrays.asList("", "israelNewz", "worldNewz", "politics", "economy", "sport", "culture", "celebs", "technology", "science");
     private RecyclerView.Adapter recyclerAdapter;
-    private Activity newsfeed;
+    private PagerAdapter hotNewsPageAdapter;
     private GlobalClass globalClass;
 
     public CategoriesHandler(Vector<Article> currentlyInUse, String currentlyInUseCategory, String currentlyInUseCategoryServer, boolean loadingArticles, GlobalClass globalClass)
@@ -41,7 +41,6 @@ public class CategoriesHandler {
         this.currentlyInUseCategory = currentlyInUseCategory;
         this.currentlyInUseCategoryServer = currentlyInUseCategoryServer;
         this.loadingArticles = loadingArticles;
-        downloadedPics = new HashMap<>();
         siteLogo = new HashMap<>();
         siteLogo.put("ynet", BitmapFactory.decodeResource(globalClass.getResources(), R.drawable.site_ynet));
         siteLogo.put("one", BitmapFactory.decodeResource(globalClass.getResources(), R.drawable.site_one));
@@ -159,14 +158,6 @@ public class CategoriesHandler {
         this.currentlyInUseCategoryServer = currentlyInUseCategoryServer;
     }
 
-    public HashMap<String, Bitmap> getDownloadedPics() {
-        return downloadedPics;
-    }
-
-    public void setDownloadedPics(HashMap<String, Bitmap> downloadedPics) {
-        this.downloadedPics = downloadedPics;
-    }
-
     public boolean isLoading() {
         return loadingArticles;
     }
@@ -195,19 +186,19 @@ public class CategoriesHandler {
         this.recyclerAdapter = recyclerAdapter;
     }
 
-    public Activity getNewsfeed() {
-        return newsfeed;
-    }
-
-    public void setNewsfeed(Activity newsfeed) {
-        this.newsfeed = newsfeed;
-    }
-
     public HashMap<String, Bitmap> getSiteLogo() {
         return siteLogo;
     }
 
     public void setSiteLogo(HashMap<String, Bitmap> siteLogo) {
         this.siteLogo = siteLogo;
+    }
+
+    public PagerAdapter getHotNewsPageAdapter() {
+        return hotNewsPageAdapter;
+    }
+
+    public void setHotNewsPageAdapter(PagerAdapter hotNewsPageAdapter) {
+        this.hotNewsPageAdapter = hotNewsPageAdapter;
     }
 }

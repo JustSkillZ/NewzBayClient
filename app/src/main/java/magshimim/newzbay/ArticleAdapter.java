@@ -62,9 +62,6 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
         categoriesHandler = globalClass.getCategoriesHandler();
         user = globalClass.getUser();
         this.communication = globalClass.getCommunication();
-        ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
-        int maxKb = am.getMemoryClass() * 1024;
-        int limitKb = maxKb / 8;
     }
 
     @Override

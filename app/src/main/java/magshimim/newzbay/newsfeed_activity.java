@@ -1,9 +1,9 @@
 package magshimim.newzbay;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.BitmapFactory;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.os.Handler;
@@ -131,32 +131,17 @@ public class newsfeed_activity extends AppCompatActivity
             editor.commit();
         }
 
-        if(user.getConnectedVia().equals("Facebook"))
-        {
-            try {
-                user.setProfilePic(Picasso.with(this).load((((FacebookUser) user).getFacebookProfile().getProfilePictureUri(500, 500))).get());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            user.setFullName(((FacebookUser) user).getFacebookProfile().getName());
-        }
-        else if(user.getConnectedVia().equals("Google")) {
-            try {
-                user.setProfilePic(Picasso.with(this).load(((GoogleUser) user).getGoogleProfile().getImage().getUrl().replace("sz=50", "sz=500")).get());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            user.setFullName(((GoogleUser) user).getGoogleProfile().getDisplayName());
-        }
-
         toolbar_main = (android.support.v7.widget.Toolbar) findViewById(R.id.toolbar_main);
         setSupportActionBar(toolbar_main);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         for (int i = 0; i <= toolbar_main.getChildCount(); i++) {
             View v = toolbar_main.getChildAt(i);
-            if (v instanceof TextView) {
-                ((TextView) v).setText(categoriesHandler.getCurrentlyInUseCategory(user));
+            if(v != null)
+            {
+                if (v instanceof TextView) {
+                    ((TextView) v).setText(categoriesHandler.getCurrentlyInUseCategory(user));
+                }
             }
         }
 
@@ -188,7 +173,6 @@ public class newsfeed_activity extends AppCompatActivity
         });
 
         categoriesHandler.setRecyclerAdapter(recyclerAdapter);
-        categoriesHandler.setNewsfeed(this);
 
         createSwipeRefreshLayout();
 
@@ -289,9 +273,11 @@ public class newsfeed_activity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
         if (id == R.id.nav_hot_news) {
+            categoriesHandler.getCurrentlyInUse().clear();
+            globalClass.getCommunication().clientSend("126#");
+            while(categoriesHandler.getCurrentlyInUse().size() == 0);
             Intent intent = new Intent(this, ExploreArticles.class);
             startActivity(intent);
-            this.onStop();
         } else if (id == R.id.nav_news) {
             changeCategory(1);
 
@@ -316,7 +302,7 @@ public class newsfeed_activity extends AppCompatActivity
             changeCategory(8);
 
         } else if (id == R.id.nav_science) {
-            //changeCategory(9);
+            changeCategory(9);
 
         } else if (id == R.id.nav_settings) {
             Intent settings = new Intent(this, settings_activity.class);
@@ -365,11 +351,21 @@ public class newsfeed_activity extends AppCompatActivity
         {
             userFullName.setText(user.getFullName());
         }
-        ImageButton userPic = (ImageButton) drawer.findViewById(R.id.ib_userPic);
+        de.hdodenhof.circleimageview.CircleImageView userPic = (de.hdodenhof.circleimageview.CircleImageView) drawer.findViewById(R.id.ib_userPic);
         if(userPic != null)
         {
             if(user.getConnectedVia().equals("Guest")) {
-                userPic.setImageBitmap(RoundedImageView.getCroppedBitmap(BitmapFactory.decodeResource(globalClass.getResources(), R.drawable.user_icon), 240));
+                Picasso.with(globalClass.getCurrentActivity()).load(R.drawable.user_icon).transform(new RoundedImage()).into(userPic);
+            }
+            else if(user.getConnectedVia().equals("Facebook"))
+            {
+                Picasso.with(globalClass.getCurrentActivity()).load(((FacebookUser) user).getFacebookProfile().getProfilePictureUri(500, 500)).transform(new RoundedImage()).into(userPic);
+                user.setFullName(((FacebookUser) user).getFacebookProfile().getName());
+            }
+            else if(user.getConnectedVia().equals("Google"))
+            {
+                Picasso.with(globalClass.getCurrentActivity()).load(((GoogleUser) user).getGoogleProfile().getImage().getUrl().replace("sz=50", "sz=500")).transform(new RoundedImage()).into(userPic);
+                user.setFullName(((GoogleUser) user).getGoogleProfile().getDisplayName());
             }
         }
     }
@@ -440,13 +436,13 @@ public class newsfeed_activity extends AppCompatActivity
     {
         globalClass.getCommunication().clientSend("114&" + categoriesHandler.getCurrentlyInUseCategoryServer() + "#");
         categoriesHandler.setCurrentlyInUseCategory(categoriesHandler.getCurrentCategoryID(), this);
-        while(categoriesHandler.getCurrentlyInUse().size() == 0);
+        recyclerLayoutManager.scrollToPositionWithOffset(0, 0);
     }
 
     private void changeCategory(int categoryID)
     {
         globalClass.getCommunication().clientSend("114&" + categoriesHandler.getCategoriesForServer().get(categoryID) + "#");
         categoriesHandler.setCurrentlyInUseCategory(categoryID, this);
-        while(categoriesHandler.getCurrentlyInUse().size() == 0);
+        recyclerLayoutManager.scrollToPositionWithOffset(0, 0);
     }
 }

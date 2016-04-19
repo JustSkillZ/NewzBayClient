@@ -1,18 +1,16 @@
 package magshimim.newzbay;
 
-import android.graphics.Bitmap;
-
 import java.util.HashMap;
 import java.util.Vector;
 
 public class PriorityHandler {
-    private Vector<String> idOfRSS;
-    private Vector<String> subject;
-    private Vector<String> site;
-    private String subjectToShow;
-    private String subjectToServer;
+    private Vector<CategorySite> categorySites;
+    private String currentPrioritySubject;
+    private Vector<String> sitesOfCurrentSubject;
 
     public PriorityHandler() {
+        categorySites = new Vector<>();
+        sitesOfCurrentSubject = new Vector<>();
     }
 
     private HashMap<String, String> Subjects = new HashMap<String, String>() // Key - subjectToServer, Value - subjectToShow
@@ -28,51 +26,44 @@ public class PriorityHandler {
             put("science","מדע");
         }};
 
-    public Vector<String> getIdOfRSS(){
-        return idOfRSS;
-    }
-
-    public void setIdOfRSS(Vector<String> idOfRSS) {
-        this.idOfRSS = idOfRSS;
-    }
-
-    public Vector<String> getSubject() {
-        return subject;
-    }
-
-    public void setSubject(Vector<String> subject) {
-        this.subject = subject;
-    }
-
-    public Vector<String> getSite() {
-        return site;
-    }
-
-    public void setSite(Vector<String> site) {
-        this.site = site;
-    }
-
-    public String getSubjectToShow() {
-        return subjectToShow;
-    }
-
-    public void setSubjectToShow(String subjectToShow) {
-        this.subjectToShow = subjectToShow;
-    }
-
-    public String getSubjectToServer() {
-        return subjectToServer;
-    }
-
-    public void setSubjectToServer(String subjectToServer) {
-        this.subjectToServer = subjectToServer;
-    }
-
     public HashMap<String, String> getSubjects() {
         return Subjects;
     }
 
     public void setSubjects(HashMap<String, String> subjects) {
         Subjects = subjects;
+    }
+
+    public Vector<CategorySite> getCategorySites() {
+        return categorySites;
+    }
+
+    public void setCategorySites(Vector<CategorySite> categorySites) {
+        this.categorySites = categorySites;
+    }
+
+    public String getCurrentPrioritySubject() {
+        return currentPrioritySubject;
+    }
+
+    public void setCurrentPrioritySubject(String currentPrioritySubject) {
+        this.currentPrioritySubject = currentPrioritySubject;
+        sitesOfCurrentSubject.clear();
+        for(int i = 0; i < categorySites.size(); i++)
+        {
+            if(categorySites.get(i).getSubject().equals(currentPrioritySubject))
+            {
+                sitesOfCurrentSubject.add(categorySites.get(i).getSite());
+            }
+        }
+
+    }
+
+    public Vector<String> getSitesOfCurrentSubject() {
+        return sitesOfCurrentSubject;
+    }
+
+    public void setSitesOfCurrentSubject(Vector<String> sitesOfCurrentSubject) {
+        this.sitesOfCurrentSubject = sitesOfCurrentSubject;
     }
 }

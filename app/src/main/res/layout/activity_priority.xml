@@ -37,41 +37,12 @@
     </RelativeLayout>
 
     <LinearLayout
-        android:paddingTop="20dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="-20dp"
-        android:layout_weight="1">
-        <ImageButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/news_category"
-            android:layout_weight="1"
-            android:tag="israelNewz"
-            android:background="@color/transparent"/>
-
-        <ImageButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:src="@drawable/global_news_category"
-            android:tag="worldNewz"
-            android:background="@color/transparent"/>
-        <ImageButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:tag="politics"
-            android:src="@drawable/politics_category"
-            android:background="@color/transparent"/>
-    </LinearLayout>
-
-    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
+        android:layout_marginTop="16dp"
         android:weightSum="3">
-        <TextView
+        <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="חדשות בארץ"
@@ -80,9 +51,12 @@
             android:textStyle="bold"
             android:textSize="18dp"
             android:layout_weight="1"
-            android:background="@color/transparent"/>
+            android:contentDescription="israelNewz"
+            android:drawableTop="@drawable/news_category"
+            android:background="@color/transparent"
+            android:onClick="choosePriorityBySubject"/>
 
-        <TextView
+        <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -91,8 +65,11 @@
             android:gravity="center"
             android:text="חדשות בעולם"
             android:textSize="18dp"
-            android:background="@color/transparent"/>
-        <TextView
+            android:contentDescription="worldNewz"
+            android:drawableTop="@drawable/global_news_category"
+            android:background="@color/transparent"
+            android:onClick="choosePriorityBySubject"/>
+        <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/black"
@@ -101,43 +78,19 @@
             android:gravity="center"
             android:textSize="18dp"
             android:textStyle="bold"
-            android:background="@color/transparent"/>
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="-20dp"
-        android:layout_weight="1">
-        <ImageButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:tag="economy"
-            android:src="@drawable/economy_category"
-            android:background="@color/transparent"/>
-        <ImageButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:tag="sport"
-            android:src="@drawable/sport_category"
-            android:background="@color/transparent"/>
-        <ImageButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:tag="culture"
-            android:src="@drawable/culture_category"
-            android:background="@color/transparent"/>
+            android:drawableTop="@drawable/politics_category"
+            android:background="@color/transparent"
+            android:contentDescription="politics"
+            android:onClick="choosePriorityBySubject"/>
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
+        android:layout_marginTop="10dp"
         android:weightSum="3">
-        <TextView
+        <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="כלכלה"
@@ -146,9 +99,12 @@
             android:textSize="18dp"
             android:layout_weight="1"
             android:gravity="center"
-            android:background="@color/transparent"/>
+            android:drawableTop="@drawable/economy_category"
+            android:background="@color/transparent"
+            android:contentDescription="economy"
+            android:onClick="choosePriorityBySubject"/>
 
-        <TextView
+        <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -157,8 +113,11 @@
             android:text="ספורט"
             android:gravity="center"
             android:textSize="18dp"
-            android:background="@color/transparent"/>
-        <TextView
+            android:drawableTop="@drawable/sport_category"
+            android:background="@color/transparent"
+            android:contentDescription="sport"
+            android:onClick="choosePriorityBySubject"/>
+        <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/black"
@@ -167,43 +126,20 @@
             android:gravity="center"
             android:textSize="18dp"
             android:textStyle="bold"
-            android:background="@color/transparent"/>
+            android:drawableTop="@drawable/culture_category"
+            android:background="@color/transparent"
+            android:contentDescription="culture"
+            android:onClick="choosePriorityBySubject"/>
     </LinearLayout>
+
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="-20dp"
-        android:layout_weight="1">
-        <ImageButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:tag="celebs"
-            android:src="@drawable/celebrities_category"
-            android:background="@color/transparent"/>
-        <ImageButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:tag="technology"
-            android:src="@drawable/technology_category"
-            android:background="@color/transparent"/>
-        <ImageButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:tag="science"
-            android:src="@drawable/science_category"
-            android:background="@color/transparent"/>
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
         android:layout_weight="1"
         android:weightSum="3">
-        <TextView
+        <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="סלבס"
@@ -212,9 +148,12 @@
             android:textSize="18dp"
             android:layout_weight="1"
             android:gravity="center"
-            android:background="@color/transparent"/>
+            android:drawableTop="@drawable/celebrities_category"
+            android:background="@color/transparent"
+            android:contentDescription="celebs"
+            android:onClick="choosePriorityBySubject"/>
 
-        <TextView
+        <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -223,8 +162,11 @@
             android:text="טכנולוגיה"
             android:gravity="center"
             android:textSize="18dp"
-            android:background="@color/transparent"/>
-        <TextView
+            android:drawableTop="@drawable/technology_category"
+            android:background="@color/transparent"
+            android:contentDescription="technology"
+            android:onClick="choosePriorityBySubject"/>
+        <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/black"
@@ -233,7 +175,10 @@
             android:gravity="center"
             android:textSize="18dp"
             android:textStyle="bold"
-            android:background="@color/transparent"/>
+            android:drawableTop="@drawable/science_category"
+            android:background="@color/transparent"
+            android:contentDescription="science"
+            android:onClick="choosePriorityBySubject"/>
     </LinearLayout>
 
     <RelativeLayout
@@ -247,7 +192,7 @@
             android:text="סיים"
             android:gravity="center"
             android:textSize="20dp"
-            android:id="@+id/btn_sendPriority"
+            android:id="@+id/btn_endPriority"
             android:textStyle="bold"
             android:background="@drawable/button_rounded_corners_facebook"
             android:layout_gravity="center_horizontal"

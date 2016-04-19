@@ -19,7 +19,7 @@ public class GlobalClass extends Application {
     {
         this.resources = resources;
         categoriesHandler= new CategoriesHandler(null, "", "", false, this);
-        errorHandler = new ErrorHandler();
+        errorHandler = new ErrorHandler(this);
         user = null;
         priorityHandler = new PriorityHandler();
     }
@@ -44,7 +44,8 @@ public class GlobalClass extends Application {
         return user;
     }
 
-    public void setUser(User user) {
+    public void setUser(User user)
+    {
         this.user = user;
     }
 

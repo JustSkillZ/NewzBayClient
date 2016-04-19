@@ -2,9 +2,7 @@ package magshimim.newzbay;
 
 import android.app.Activity;
 import android.util.Log;
-import android.view.Gravity;
 import android.widget.Button;
-import android.widget.PopupWindow;
 
 import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.common.SignInButton;
@@ -36,7 +34,7 @@ public class Communication implements Runnable {
 
     @Override
     public void run() {
-        serverIP = "79.181.200.73";
+        serverIP = "109.67.60.124";
         isConnect = 0;
         dstport = 4444;
         userConnected = false;
@@ -48,8 +46,7 @@ public class Communication implements Runnable {
                 @Override
                 public void run() {
                     Button guestLoginBtn = (Button) ((Activity) globalClass.getCurrentActivity()).findViewById(R.id.btn_NB);
-                    if(guestLoginBtn != null)
-                    {
+                    if (guestLoginBtn != null) {
                         guestLoginBtn.setBackground(globalClass.getCurrentActivity().getResources().getDrawable(R.drawable.button_rounded_corners));
                         guestLoginBtn.setTextColor(globalClass.getCurrentActivity().getResources().getColor(R.color.white));
                         guestLoginBtn.setAlpha((float) 1);
@@ -57,8 +54,7 @@ public class Communication implements Runnable {
                     }
 
                     LoginButton facebookLoginBtn = (LoginButton) ((Activity) globalClass.getCurrentActivity()).findViewById(R.id.btn_Facebook);
-                    if(facebookLoginBtn != null)
-                    {
+                    if (facebookLoginBtn != null) {
                         facebookLoginBtn.setBackground(globalClass.getCurrentActivity().getResources().getDrawable(R.drawable.button_rounded_corners_facebook));
                         facebookLoginBtn.setTextColor(globalClass.getCurrentActivity().getResources().getColor(R.color.white));
                         facebookLoginBtn.setAlpha((float) 1);
@@ -66,47 +62,25 @@ public class Communication implements Runnable {
                     }
 
                     SignInButton googleLoginBtn = (SignInButton) ((Activity) globalClass.getCurrentActivity()).findViewById(R.id.btn_Google);
-                    if(googleLoginBtn != null)
-                    {
+                    if (googleLoginBtn != null) {
                         googleLoginBtn.setEnabled(true);
                     }
 
                     if (globalClass.getUser() == null) {
                         ((entrance) globalClass.getCurrentActivity()).connectToSocialNets();
-                    }
-                    else
-                    {
+                    } else {
                         userConnected = true;
                     }
+
+                    clientRead = new ClientRead(serverSocket, globalClass, userConnected);
+                    Thread t = new Thread(clientRead);
+                    t.start();
                 }
             });
-            clientRead = new ClientRead(serverSocket, globalClass, userConnected);
-            Thread t = new Thread(clientRead);
-            t.setName("Reading From The Server");
-            t.start();
         }
         catch (IOException e) { //No connection to server
             isConnect = -1;
-            ((Activity) globalClass.getCurrentActivity()).runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    final PopupWindow noConnection = new PopupWindow(
-                            globalClass.getErrorHandler().getPopupWindowView_noConnectionWithServer(),
-                            800,
-                            800,
-                            true);
-                    noConnection.setAnimationStyle(R.style.AnimationFade);
-                    try
-                    {
-                        noConnection.showAtLocation(((Activity) globalClass.getCurrentActivity()).findViewById(globalClass.getCurrentLayout()), Gravity.CENTER, 0, 0);
-                    }
-                    catch (IllegalStateException e)
-                    {
-                        e.printStackTrace();
-                    }
-                    globalClass.getErrorHandler().setNoConnectionWithServer(noConnection);
-                }
-            });
+            globalClass.getErrorHandler().reConnect();
         }
     }
 
@@ -169,19 +143,14 @@ class ClientRead extends Thread {
             e.printStackTrace();
         }
     }
+
     public void read()
     {
         try {
 
             String line = "";
-            String tempLine;
             do {
-                tempLine = in.readLine();
-                if(tempLine == null)
-                {
-                    break;
-                }
-                line = line + tempLine;
+                line = line + in.readLine();
                 if (line.contains("##")) {
                     line = line.substring(0,line.length() - 2);
                     line = aesEncryption.decrypt(line);
@@ -195,135 +164,153 @@ class ClientRead extends Thread {
                         {
                             send(globalClass.getErrorHandler().getConnectingClientMsg());
                             send(globalClass.getErrorHandler().getLastMsgToServer());
+                            globalClass.getErrorHandler().setLastMsgToServer("");
                         }
                         else
                         {
                             send("106#");
                         }
-                        Log.d("Server", "101#");
 
-                    } else if (line.equals("103#") || line.equals("400#")) {
-                        Log.d("Server", line);
-                    //    send("104|1&1|1&2|4&1|4&2|8&1#");
-                    } else if (line.contains("107|")) {
-                        Vector<String> id = new Vector<String>();
-                        Vector<String> subject = new Vector<String>();
-                        Vector<String> site = new Vector<String>();
+                    }
+                    else if (line.equals("103#") || line.equals("400#"))
+                    {
+                        send("104|1&1|1&2|4&1|4&2|8&1#");
+                    }
+                    else if (line.contains("107|")) {
+                        String id, subject, site;
                         line = line.substring(line.indexOf("|") + 1);
                         while (line.contains("|")) {
                             String temp = line.substring(0, line.indexOf("|"));
-                            id.add(temp.substring(0, temp.indexOf("&")));
+                            id = temp.substring(0, temp.indexOf("&"));
                             temp = temp.substring((temp.indexOf("&") + 1));
-                            subject.add(temp.substring(0, temp.indexOf("&")));
+                            subject = temp.substring(0, temp.indexOf("&"));
                             temp = temp.substring(temp.indexOf("&") + 1);
-                            site.add(temp);
+                            site = temp;
                             line = line.substring(line.indexOf("|") + 1);
+                            priorityHandler.getCategorySites().add(new CategorySite(id, subject, site));
                         }
-                        priorityHandler.setIdOfRSS(id);
-                        priorityHandler.setSubject(subject);
-                        priorityHandler.setSite(site);
-                    } else if (line.contains("115|")) {
-                        line = line.substring(line.indexOf("|") + 1);
-                        for (int i = 0; i < categoriesHandler.getCurrentlyInUse().size(); i++) {
-                            Article current = categoriesHandler.getCurrentlyInUse().get(i);
-                            if (current.getPicture() != null && current.isPictureIsDawnloaded()) {
-                                if(!current.getPicture().isRecycled())
+                    }
+                    else if (line.contains("115|") || line.contains("127|"))
+                    {
+                        if(!line.equals("115|#") && !line.equals("127|#"))
+                        {
+                            line = line.substring(line.indexOf("|") + 1);
+                            categoriesHandler.getCurrentlyInUse().clear();
+                            while (line.contains("|")) {
+                                String id, mainHeadLine, secondHeadLine, date, siteName = "", url, likes, imgURL;
+                                Boolean liked;
+                                String temp = line.substring(0, line.indexOf("|"));
+                                id = temp.substring(0, temp.indexOf("☺"));
+                                temp = temp.substring((temp.indexOf("☺") + 1));
+                                mainHeadLine = temp.substring(0, temp.indexOf("☺"));
+                                temp = temp.substring((temp.indexOf("☺") + 1));
+                                secondHeadLine = temp.substring(0, temp.indexOf("☺"));
+                                temp = temp.substring(temp.indexOf("☺") + 1);
+                                date = temp.substring(0, temp.indexOf("☺"));
+                                temp = temp.substring(temp.indexOf("☺") + 1);
+                                url = temp.substring(0, temp.indexOf("☺"));
+                                temp = temp.substring(temp.indexOf("☺") + 1);
+                                imgURL = temp.substring(0, temp.indexOf("☺"));
+                                temp = temp.substring(temp.indexOf("☺") + 1);
+                                likes = temp.substring(0, temp.indexOf("☺"));
+                                temp = temp.substring(temp.indexOf("☺") + 1);
+                                if ((Integer.parseInt(temp)) == 1) {
+                                    liked = true;
+                                } else {
+                                    liked = false;
+                                }
+                                line = line.substring(line.indexOf("|") + 1);
+                                SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                                Date dates = null;
+                                try {
+                                    dates = formatter.parse(date);
+
+                                } catch (ParseException e) {
+                                    e.printStackTrace();
+                                }
+                                for(int i = 0; i < priorityHandler.getCategorySites().size(); i++)
                                 {
-                                    current.getPicture().recycle();
+                                    if(priorityHandler.getCategorySites().get(i).getId().equals(id))
+                                    {
+                                        siteName = priorityHandler.getCategorySites().get(i).getSite();
+                                    }
                                 }
+                                Article article = new Article(categoriesHandler.getCurrentlyInUseCategory(globalClass.getUser()), mainHeadLine, secondHeadLine, imgURL, dates, siteName, url, Integer.parseInt(likes), 0, liked, globalClass);
+                                categoriesHandler.getCurrentlyInUse().add(article);
+                                ((Activity) globalClass.getCurrentActivity()).runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        if(categoriesHandler.getHotNewsPageAdapter() != null) {
+                                            categoriesHandler.getHotNewsPageAdapter().notifyDataSetChanged();
+                                        }
+                                        categoriesHandler.getRecyclerAdapter().notifyDataSetChanged();
+                                    }
+                                });
                             }
                         }
-                        categoriesHandler.getCurrentlyInUse().clear();
-                        while (line.contains("|")) {
-                            String id, mainHeadLine, secondHeadLine, date, url, likes, imgURL;
-                            Boolean liked;
-                            String temp = line.substring(0, line.indexOf("|"));
-                            id = temp.substring(0, temp.indexOf("☺"));
-                            temp = temp.substring((temp.indexOf("☺") + 1));
-                            mainHeadLine = temp.substring(0, temp.indexOf("☺"));
-                            temp = temp.substring((temp.indexOf("☺") + 1));
-                            secondHeadLine = temp.substring(0, temp.indexOf("☺"));
-                            temp = temp.substring(temp.indexOf("☺") + 1);
-                            date = temp.substring(0, temp.indexOf("☺"));
-                            temp = temp.substring(temp.indexOf("☺") + 1);
-                            url = temp.substring(0, temp.indexOf("☺"));
-                            temp = temp.substring(temp.indexOf("☺") + 1);
-                            imgURL = temp.substring(0, temp.indexOf("☺"));
-                            temp = temp.substring(temp.indexOf("☺") + 1);
-                            likes = temp.substring(0, temp.indexOf("☺"));
-                            temp = temp.substring(temp.indexOf("☺") + 1);
-                            if ((Integer.parseInt(temp)) == 1) {
-                                liked = true;
-                            } else {
-                                liked = false;
-                            }
+                        else
+                        {
+                            globalClass.getErrorHandler().reConnect();
+                        }
+                    }
+                    else if (line.contains("119|"))
+                    {
+                        if(!line.equals("119|#"))
+                        {
                             line = line.substring(line.indexOf("|") + 1);
-                            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                            Date dates = null;
-                            try {
-                                dates = formatter.parse(date);
-                                System.out.println(dates);
-                                System.out.println(formatter.format(dates));
-
-                            } catch (ParseException e) {
-                                e.printStackTrace();
-                            }
-                            Article article = new Article(categoriesHandler.getCurrentlyInUseCategory(globalClass.getUser()), mainHeadLine, secondHeadLine, imgURL, dates, priorityHandler.getSite().elementAt(priorityHandler.getIdOfRSS().indexOf(id)), url, Integer.parseInt(likes), 0, liked, globalClass);
-                            categoriesHandler.getCurrentlyInUse().add(article);
-                            categoriesHandler.getNewsfeed().runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    categoriesHandler.getRecyclerAdapter().notifyDataSetChanged();
+                            while (line.contains("|")) {
+                                String id, mainHeadLine, secondHeadLine, date, siteName = "", url, likes, imgURL;
+                                Boolean liked;
+                                String temp = line.substring(0, line.indexOf("|"));
+                                id = temp.substring(0, temp.indexOf("☺"));
+                                temp = temp.substring((temp.indexOf("☺") + 1));
+                                mainHeadLine = temp.substring(0, temp.indexOf("☺"));
+                                temp = temp.substring((temp.indexOf("☺") + 1));
+                                secondHeadLine = temp.substring(0, temp.indexOf("☺"));
+                                temp = temp.substring(temp.indexOf("☺") + 1);
+                                date = temp.substring(0, temp.indexOf("☺"));
+                                temp = temp.substring(temp.indexOf("☺") + 1);
+                                url = temp.substring(0, temp.indexOf("☺"));
+                                temp = temp.substring(temp.indexOf("☺") + 1);
+                                imgURL = temp.substring(0, temp.indexOf("☺"));
+                                temp = temp.substring(temp.indexOf("☺") + 1);
+                                likes = temp.substring(0, temp.indexOf("☺"));
+                                temp = temp.substring(temp.indexOf("☺") + 1);
+                                if ((Integer.parseInt(temp)) == 1) {
+                                    liked = true;
+                                } else {
+                                    liked = false;
                                 }
-                            });
-                        }
-                    } else if (line.contains("119|")) {
-                        line = line.substring(line.indexOf("|") + 1);
-                        while (line.contains("|")) {
-                            String id, mainHeadLine, secondHeadLine, date, url, likes, imgURL;
-                            Boolean liked;
-                            String temp = line.substring(0, line.indexOf("|"));
-                            id = temp.substring(0, temp.indexOf("☺"));
-                            temp = temp.substring((temp.indexOf("☺") + 1));
-                            mainHeadLine = temp.substring(0, temp.indexOf("☺"));
-                            temp = temp.substring((temp.indexOf("☺") + 1));
-                            secondHeadLine = temp.substring(0, temp.indexOf("☺"));
-                            temp = temp.substring(temp.indexOf("☺") + 1);
-                            date = temp.substring(0, temp.indexOf("☺"));
-                            temp = temp.substring(temp.indexOf("☺") + 1);
-                            url = temp.substring(0, temp.indexOf("☺"));
-                            temp = temp.substring(temp.indexOf("☺") + 1);
-                            imgURL = temp.substring(0, temp.indexOf("☺"));
-                            temp = temp.substring(temp.indexOf("☺") + 1);
-                            likes = temp.substring(0, temp.indexOf("☺"));
-                            temp = temp.substring(temp.indexOf("☺") + 1);
-                            if ((Integer.parseInt(temp)) == 1) {
-                                liked = true;
-                            } else {
-                                liked = false;
-                            }
-                            line = line.substring(line.indexOf("|") + 1);
-                            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                            Date dates = null;
-                            try {
+                                line = line.substring(line.indexOf("|") + 1);
+                                SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                                Date dates = null;
+                                try {
 
-                                dates = formatter.parse(date);
-                                System.out.println(dates);
-                                System.out.println(formatter.format(dates));
+                                    dates = formatter.parse(date);
+                                    System.out.println(dates);
+                                    System.out.println(formatter.format(dates));
 
-                            } catch (ParseException e) {
-                                e.printStackTrace();
-                            }
-                            Article article = new Article(categoriesHandler.getCurrentlyInUseCategory(globalClass.getUser()), mainHeadLine, secondHeadLine, imgURL, dates, priorityHandler.getSite().elementAt(priorityHandler.getIdOfRSS().indexOf(id)), url, Integer.parseInt(likes), 0, liked, globalClass);
-                            categoriesHandler.getCurrentlyInUse().addElement(article);
-                            categoriesHandler.getNewsfeed().runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    categoriesHandler.getRecyclerAdapter().notifyDataSetChanged();
+                                } catch (ParseException e) {
+                                    e.printStackTrace();
                                 }
-                            });
+                                for(int i = 0; i < priorityHandler.getCategorySites().size(); i++)
+                                {
+                                    if(priorityHandler.getCategorySites().get(i).getId().equals(id))
+                                    {
+                                        siteName = priorityHandler.getCategorySites().get(i).getSite();
+                                    }
+                                }
+                                Article article = new Article(categoriesHandler.getCurrentlyInUseCategory(globalClass.getUser()), mainHeadLine, secondHeadLine, imgURL, dates, siteName, url, Integer.parseInt(likes), 0, liked, globalClass);
+                                categoriesHandler.getCurrentlyInUse().addElement(article);
+                                ((Activity) globalClass.getCurrentActivity()).runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        categoriesHandler.getRecyclerAdapter().notifyDataSetChanged();
+                                    }
+                                });
+                            }
+                            categoriesHandler.setLoading(false);
                         }
-                        categoriesHandler.setLoading(false);
                     }
                     line = "";
                 }
@@ -342,7 +329,7 @@ class ClientRead extends Thread {
     public void send(String str)
     {
         try {
-           // cipherText = aesEncryption.encryptText(str, AESKey);
+            //cipherText = aesEncryption.encryptText(str, AESKey);
             String cipherText = aesEncryption.encrypt(str) + "##";
             Log.d("send", str + " | Encrypted: " + cipherText);
             out.println(cipherText);
@@ -350,19 +337,7 @@ class ClientRead extends Thread {
             if(out.checkError())
             {
                 globalClass.getErrorHandler().setLastMsgToServer(str);
-                ((Activity)globalClass.getCurrentActivity()).runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        final PopupWindow noConnection = new PopupWindow(
-                                globalClass.getErrorHandler().getPopupWindowView_noConnectionWithServer(),
-                                800,
-                                800,
-                                true);
-                        noConnection.setAnimationStyle(R.style.AnimationFade);
-                        noConnection.showAtLocation(((Activity) globalClass.getCurrentActivity()).findViewById(R.id.newsfeed_layout), Gravity.CENTER, 0, 0);
-                        globalClass.getErrorHandler().setNoConnectionWithServer(noConnection);
-                    }
-                });
+                globalClass.getErrorHandler().reConnect();
             }
         } catch (Exception e) {
             e.printStackTrace();

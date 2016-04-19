@@ -67,8 +67,8 @@ public class entrance extends AppCompatActivity implements GoogleApiClient.Conne
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-//        Intent priority = new Intent(this,ChoosePriority.class);
-//        startActivity(priority);
+        Intent priority = new Intent(this,Priority.class);
+        startActivity(priority);
 
         ((GlobalClass) getApplicationContext()).initiateClass(getResources());
         globalClass = ((GlobalClass) getApplicationContext());
@@ -76,7 +76,7 @@ public class entrance extends AppCompatActivity implements GoogleApiClient.Conne
         globalClass.setCurrentLayout(R.id.entrance_layout);
         LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         globalClass.getErrorHandler().setPopupWindowView_noConnectionWithServer(inflater.inflate(R.layout.popup_no_connection, null, false));
-        globalClass.getErrorHandler().handleNoConnectionToTheServer(globalClass);
+        globalClass.getErrorHandler().handleNoConnectionToTheServer();
         FacebookSdk.sdkInitialize(getApplicationContext());
         callbackManager = CallbackManager.Factory.create();
         setContentView(R.layout.activity_entrance);

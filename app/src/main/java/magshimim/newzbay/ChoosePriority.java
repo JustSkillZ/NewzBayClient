@@ -34,7 +34,7 @@ public class ChoosePriority extends AppCompatActivity implements PopupMenu.OnMen
         setContentView(R.layout.activity_choose_priority);
         globalClass = (GlobalClass) getApplicationContext();
         priorityHandler = globalClass.getPriorityHandler();
-
+        priorityHandler.getRemovedSitesOfCurrentSubject().clear();
         TextView subject = (TextView) findViewById(R.id.tv_subject);
         subject.setText(priorityHandler.getSubjects().get(priorityHandler.getCurrentPrioritySubject()));
         Time now = new Time();
@@ -104,8 +104,16 @@ public class ChoosePriority extends AppCompatActivity implements PopupMenu.OnMen
 
     @Override
     public boolean onMenuItemClick(MenuItem item) {
-        priorityHandler.getClientsPriority().add(priorityHandler.getRemovedSitesOfCurrentSubject().get(item.getItemId()));
-        priorityHandler.getRemovedSitesOfCurrentSubject().remove(item.getItemId());
+        int position = -1;
+        for(int i = 0; i < priorityHandler.getRemovedSitesOfCurrentSubject().size(); i++)
+        {
+            if(priorityHandler.getRemovedSitesOfCurrentSubject().get(i).equals(item.getTitle()))
+            {
+                position = i;
+            }
+        }
+        priorityHandler.getClientsPriority().add(priorityHandler.getRemovedSitesOfCurrentSubject().get(position));
+        priorityHandler.getRemovedSitesOfCurrentSubject().remove(position);
         addRemoved.getMenu().removeItem(item.getItemId());
         recyclerAdapter.notifyDataSetChanged();
         return true;

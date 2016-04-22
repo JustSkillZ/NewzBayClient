@@ -6,15 +6,15 @@
     android:orientation="vertical">
 
     <ImageView
-        android:layout_marginLeft="4dp"
-        android:layout_marginRight="4dp"
-        android:layout_marginTop="4dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginTop="1dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/ib_site_logo"
         android:adjustViewBounds="true"
         android:minHeight="150dp"
         android:scaleType="fitCenter"
-        android:layout_marginBottom="15dp"/>
+        android:layout_marginBottom="4dp"/>
 
 </LinearLayout>

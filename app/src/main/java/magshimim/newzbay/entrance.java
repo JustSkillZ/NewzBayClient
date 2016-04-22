@@ -1,5 +1,6 @@
 package magshimim.newzbay;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -25,6 +26,7 @@ import com.facebook.FacebookSdk;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.facebook.Profile;
+import com.facebook.ProfileTracker;
 import com.facebook.appevents.AppEventsLogger;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
@@ -66,9 +68,6 @@ public class entrance extends AppCompatActivity implements GoogleApiClient.Conne
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        Intent priority = new Intent(this,Priority.class);
-        startActivity(priority);
 
         ((GlobalClass) getApplicationContext()).initiateClass(getResources());
         globalClass = ((GlobalClass) getApplicationContext());
@@ -163,10 +162,10 @@ public class entrance extends AppCompatActivity implements GoogleApiClient.Conne
         facebook_loginButton = (LoginButton) findViewById(R.id.btn_Facebook);
         facebook_loginButton.setReadPermissions(Arrays.asList("email", "user_friends"));
         facebook_loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+
             @Override
             public void onSuccess(LoginResult loginResult) {
                 Log.d(TAG, "facebook login");
-
                 GraphRequest request = GraphRequest.newMeRequest(
                         loginResult.getAccessToken(),
                         new GraphRequest.GraphJSONObjectCallback() {

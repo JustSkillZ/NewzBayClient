@@ -7,10 +7,13 @@ public class PriorityHandler {
     private Vector<CategorySite> categorySites;
     private String currentPrioritySubject;
     private Vector<String> sitesOfCurrentSubject;
+    private Vector<String> clientsPriority;
+    private Vector<String> removedSitesOfCurrentSubject;
 
     public PriorityHandler() {
         categorySites = new Vector<>();
         sitesOfCurrentSubject = new Vector<>();
+        removedSitesOfCurrentSubject = new Vector<>();
     }
 
     private HashMap<String, String> Subjects = new HashMap<String, String>() // Key - subjectToServer, Value - subjectToShow
@@ -56,7 +59,7 @@ public class PriorityHandler {
                 sitesOfCurrentSubject.add(categorySites.get(i).getSite());
             }
         }
-
+        clientsPriority = new Vector<>(sitesOfCurrentSubject);
     }
 
     public Vector<String> getSitesOfCurrentSubject() {
@@ -65,5 +68,21 @@ public class PriorityHandler {
 
     public void setSitesOfCurrentSubject(Vector<String> sitesOfCurrentSubject) {
         this.sitesOfCurrentSubject = sitesOfCurrentSubject;
+    }
+
+    public Vector<String> getClientsPriority() {
+        return clientsPriority;
+    }
+
+    public void setClientsPriority(Vector<String> clientsPriority) {
+        this.clientsPriority = clientsPriority;
+    }
+
+    public Vector<String> getRemovedSitesOfCurrentSubject() {
+        return removedSitesOfCurrentSubject;
+    }
+
+    public void setRemovedSitesOfCurrentSubject(Vector<String> removedSitesOfCurrentSubject) {
+        this.removedSitesOfCurrentSubject = removedSitesOfCurrentSubject;
     }
 }

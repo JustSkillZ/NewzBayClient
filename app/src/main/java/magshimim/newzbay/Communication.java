@@ -1,8 +1,10 @@
 package magshimim.newzbay;
 
 import android.app.Activity;
+import android.support.design.widget.Snackbar;
 import android.util.Log;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.common.SignInButton;
@@ -65,13 +67,14 @@ public class Communication implements Runnable {
                     if (googleLoginBtn != null) {
                         googleLoginBtn.setEnabled(true);
                     }
-
-                    if (globalClass.getUser() == null) {
-                        ((entrance) globalClass.getCurrentActivity()).connectToSocialNets();
-                    } else {
+                    if (globalClass.getUser() != null)
+                    {
                         userConnected = true;
                     }
-
+                    else
+                    {
+                        ((entrance) globalClass.getCurrentActivity()).connectToSocialNets();
+                    }
                     clientRead = new ClientRead(serverSocket, globalClass, userConnected);
                     Thread t = new Thread(clientRead);
                     t.start();
@@ -122,7 +125,8 @@ class ClientRead extends Thread {
 
     @Override
     public void run() {
-        try {
+        try
+        {
             out = new PrintWriter(serverSocket.getOutputStream());
             bufferedWriter = new BufferedWriter(out);
             in = new BufferedReader(new InputStreamReader(serverSocket.getInputStream()));
@@ -142,6 +146,7 @@ class ClientRead extends Thread {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        read();
     }
 
     public void read()
@@ -169,12 +174,15 @@ class ClientRead extends Thread {
                         else
                         {
                             send("106#");
+                            if(!globalClass.getErrorHandler().getConnectingClientMsg().equals(""))
+                            {
+                                send(globalClass.getErrorHandler().getConnectingClientMsg());
+                            }
                         }
-
                     }
                     else if (line.equals("103#") || line.equals("400#"))
                     {
-                        send("104|1&1|1&2|4&1|4&2|8&1#");
+
                     }
                     else if (line.contains("107|")) {
                         String id, subject, site;
@@ -192,7 +200,7 @@ class ClientRead extends Thread {
                     }
                     else if (line.contains("115|") || line.contains("127|"))
                     {
-                        if(!line.equals("115|#") && !line.equals("127|#"))
+                        if(!line.equals("115|#"))
                         {
                             line = line.substring(line.indexOf("|") + 1);
                             categoriesHandler.getCurrentlyInUse().clear();
@@ -250,7 +258,14 @@ class ClientRead extends Thread {
                         }
                         else
                         {
-                            globalClass.getErrorHandler().reConnect();
+                            ((Activity) globalClass.getCurrentActivity()).runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    categoriesHandler.getCurrentlyInUse().clear();
+                                    categoriesHandler.getRecyclerAdapter().notifyDataSetChanged();
+                                    Toast.makeText(globalClass.getCurrentActivity(), "לא ביצעת העדפה בנושא זה", Toast.LENGTH_LONG).show();
+                                }
+                            });
                         }
                     }
                     else if (line.contains("119|"))

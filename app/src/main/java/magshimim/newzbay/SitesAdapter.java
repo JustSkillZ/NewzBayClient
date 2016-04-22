@@ -1,13 +1,14 @@
 package magshimim.newzbay;
 
-import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-public class SitesAdapter extends RecyclerView.Adapter<SitesAdapter.ViewHolder> {
+import java.util.Collections;
+
+public class SitesAdapter extends RecyclerView.Adapter<SitesAdapter.ViewHolder> implements DragNSwipeHelperAdapter{
 
     private PriorityHandler priorityHandler;
     private CategoriesHandler categoriesHandler;
@@ -39,12 +40,32 @@ public class SitesAdapter extends RecyclerView.Adapter<SitesAdapter.ViewHolder> 
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        holder.siteLogo.setImageBitmap(categoriesHandler.getSiteLogo().get(priorityHandler.getSitesOfCurrentSubject().get(position)));
-
+        holder.siteLogo.setImageBitmap(categoriesHandler.getSiteLogo().get(priorityHandler.getClientsPriority().get(position)));
     }
 
     @Override
     public int getItemCount() {
-        return priorityHandler.getSitesOfCurrentSubject().size();
+        return priorityHandler.getClientsPriority().size();
+    }
+
+    @Override
+    public void onItemDismiss(int position) {
+        priorityHandler.getRemovedSitesOfCurrentSubject().add(priorityHandler.getClientsPriority().get(position));
+        priorityHandler.getClientsPriority().remove(position);
+        notifyItemRemoved(position);
+    }
+
+    @Override
+    public void onItemMove(int fromPosition, int toPosition) {
+        if (fromPosition < toPosition) {
+            for (int i = fromPosition; i < toPosition; i++) {
+                Collections.swap(priorityHandler.getClientsPriority(), i, i + 1);
+            }
+        } else {
+            for (int i = fromPosition; i > toPosition; i--) {
+                Collections.swap(priorityHandler.getClientsPriority(), i, i - 1);
+            }
+        }
+        notifyItemMoved(fromPosition, toPosition);
     }
 }

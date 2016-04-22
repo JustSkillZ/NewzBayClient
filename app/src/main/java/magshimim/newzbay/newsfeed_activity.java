@@ -59,9 +59,6 @@ public class newsfeed_activity extends AppCompatActivity
     private final String isExplanation1 = "isExplanation1";
     private final String isPrioritized = "isPrioritized";
 
-    public newsfeed_activity() {
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -239,6 +236,13 @@ public class newsfeed_activity extends AppCompatActivity
         SpannableString spanString = new SpannableString(navigationView.getMenu().findItem(R.id.nav_hot_news).getTitle().toString());
         spanString.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.orange)), 0, spanString.length(), 0); //fix the color to white
         navigationView.getMenu().findItem(R.id.nav_hot_news).setTitle(spanString);
+        if(user.getConnectedVia().equals("Guest"))
+        {
+            navigationView.getMenu().findItem(R.id.nav_priority).getIcon().setColorFilter(getResources().getColor(R.color.com_facebook_button_background_color_disabled), PorterDuff.Mode.SRC_ATOP);
+            spanString = new SpannableString(navigationView.getMenu().findItem(R.id.nav_priority).getTitle().toString());
+            spanString.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.com_facebook_button_background_color_disabled)), 0, spanString.length(), 0); //fix the color to white
+            navigationView.getMenu().findItem(R.id.nav_priority).setTitle(spanString);
+        }
     }
 
     @Override
@@ -308,6 +312,19 @@ public class newsfeed_activity extends AppCompatActivity
             Intent settings = new Intent(this, settings_activity.class);
             startActivity(settings);
             this.onStop();
+        }
+        else if(id == R.id.nav_priority)
+        {
+            if(!user.getConnectedVia().equals("Guest"))
+            {
+                Intent priority1 = new Intent(this,Priority.class);
+                startActivity(priority1);
+                this.onStop();
+            }
+            else
+            {
+                Toast.makeText(globalClass.getCurrentActivity(), "רק משתמשים מחוברים יכולים לעשות תיעדוף לאתרים", Toast.LENGTH_LONG).show();
+            }
         }
         else if (id == R.id.nav_discconect) {
             if (user.getConnectedVia().equals("Google")) {

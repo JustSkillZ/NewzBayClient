@@ -51,6 +51,10 @@
         android:icon="@drawable/ic_settings_white_24dp"
         android:title="הגדרות" />
     <item
+        android:id="@+id/nav_priority"
+        android:icon="@drawable/priority_icon"
+        android:title="בחירת אתרים" />
+    <item
         android:id="@+id/nav_discconect"
         android:icon="@drawable/disconnect_logo"
         android:title="התנתק" />

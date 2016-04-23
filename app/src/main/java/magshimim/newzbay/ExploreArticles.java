@@ -47,8 +47,6 @@ public class ExploreArticles extends AppCompatActivity {
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
         ((GlobalClass) getApplicationContext()).getCategoriesHandler().setHotNewsPageAdapter(mSectionsPagerAdapter);
-        ((GlobalClass) getApplicationContext()).setCurrentActivity(ExploreArticles.this);
-        ((GlobalClass) getApplicationContext()).setCurrentLayout(R.id.activity_explore_articles);
     }
 
     @Override
@@ -116,7 +114,15 @@ public class ExploreArticles extends AppCompatActivity {
                 }
             });
             numberOfLikes = (TextView) rootView.findViewById(R.id.tv_article_likes);
-            numberOfLikes.setText(" " + hotNews.get(getArguments().getInt("NB")).getNumberOfLikes());
+            float numOfLikes = Integer.parseInt(String.valueOf(hotNews.get(getArguments().getInt("NB")).getNumberOfLikes()));
+            if(numOfLikes >= 1000)
+            {
+                numberOfLikes.setText(String.format("%.1f", (numOfLikes / 1000)) + "k");
+            }
+            else
+            {
+                numberOfLikes.setText(hotNews.get(getArguments().getInt("NB")).getNumberOfLikes() + "");
+            }
             ImageButton like = (ImageButton) rootView.findViewById(R.id.ib_like);
             if(like != null)
             {
@@ -151,7 +157,6 @@ public class ExploreArticles extends AppCompatActivity {
                                 Picasso.with(getContext()).load(R.drawable.like_hot_article).into(like);
                                 hotNews.get(getArguments().getInt("NB")).setLiked(false);
                                 hotNews.get(getArguments().getInt("NB")).decNumberOfLikes();
-                                numberOfLikes.setText(" " + hotNews.get(getArguments().getInt("NB")).getNumberOfLikes());
                                 globalClass.getCommunication().clientSend("110&" + globalClass.getCategoriesHandler().getCurrentlyInUse().get(getArguments().getInt("NB")).getUrl() + "#");
                             }
                             else
@@ -159,8 +164,16 @@ public class ExploreArticles extends AppCompatActivity {
                                 Picasso.with(getContext()).load(R.drawable.hot_article_liked).into(like);
                                 hotNews.get(getArguments().getInt("NB")).setLiked(true);
                                 hotNews.get(getArguments().getInt("NB")).incNumberOfLikes();
-                                numberOfLikes.setText(" " + hotNews.get(getArguments().getInt("NB")).getNumberOfLikes());
                                 globalClass.getCommunication().clientSend("110&" + globalClass.getCategoriesHandler().getCurrentlyInUse().get(getArguments().getInt("NB")).getUrl() + "#");
+                            }
+                            float numOfLikes = Integer.parseInt(String.valueOf(hotNews.get(getArguments().getInt("NB")).getNumberOfLikes()));
+                            if(numOfLikes >= 1000)
+                            {
+                                numberOfLikes.setText(String.format("%.1f", (numOfLikes / 1000)) + "k");
+                            }
+                            else
+                            {
+                                numberOfLikes.setText(hotNews.get(getArguments().getInt("NB")).getNumberOfLikes() + "");
                             }
                         }
                     });

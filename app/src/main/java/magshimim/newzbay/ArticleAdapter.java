@@ -1,11 +1,9 @@
 package magshimim.newzbay;
 
-import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.support.v4.util.LruCache;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.support.v7.widget.RecyclerView;
 import android.text.format.DateUtils;
 import android.view.LayoutInflater;
@@ -18,10 +16,6 @@ import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.Date;
 
 public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHolder> {
@@ -30,6 +24,7 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
     private CategoriesHandler categoriesHandler;
     private Communication communication;
     private User user;
+    private GlobalClass globalClass;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public TextView mainHeadline;
@@ -62,6 +57,7 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
         categoriesHandler = globalClass.getCategoriesHandler();
         user = globalClass.getUser();
         this.communication = globalClass.getCommunication();
+        this.globalClass = globalClass;
     }
 
     @Override
@@ -109,9 +105,9 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
 
             } else {
                 if (categoriesHandler.getCurrentlyInUse().get(position).getLiked()) {
-                    holder.like.setText("Unlike");
+                    holder.like.setTextColor(globalClass.getResources().getColor(R.color.nb));
                 } else {
-                    holder.like.setText("Like");
+                    holder.like.setTextColor(globalClass.getResources().getColor(R.color.grey));
                 }
                 holder.like.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -121,17 +117,24 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
                         ViewGroup item = (ViewGroup) v.getParent().getParent();
                         TextView countLikes = (TextView) item.findViewById(R.id.tv_likes);
                         if (categoriesHandler.getCurrentlyInUse().get(tempPosition).getLiked()) {
-                            like.setText("Like");
+                            like.setTextColor(globalClass.getResources().getColor(R.color.grey));
                             categoriesHandler.getCurrentlyInUse().get(tempPosition).setLiked(false);
                             categoriesHandler.getCurrentlyInUse().get(tempPosition).decNumberOfLikes();
-                            countLikes.setText(categoriesHandler.getCurrentlyInUse().get(tempPosition).getNumberOfLikes() + " Likes");
                             communication.clientSend("110&" + categoriesHandler.getCurrentlyInUse().get(tempPosition).getUrl() + "#");
                         } else {
-                            like.setText("Unlike");
+                            like.setTextColor(globalClass.getResources().getColor(R.color.nb));
                             categoriesHandler.getCurrentlyInUse().get(tempPosition).setLiked(true);
                             categoriesHandler.getCurrentlyInUse().get(tempPosition).incNumberOfLikes();
-                            countLikes.setText(categoriesHandler.getCurrentlyInUse().get(tempPosition).getNumberOfLikes() + " Likes");
                             communication.clientSend("110&" + categoriesHandler.getCurrentlyInUse().get(tempPosition).getUrl() + "#");
+                        }
+                        float numOfLikes = Integer.parseInt(String.valueOf(categoriesHandler.getCurrentlyInUse().get(tempPosition).getNumberOfLikes()));
+                        if(numOfLikes >= 1000)
+                        {
+                            countLikes.setText(String.format("%.1f", (numOfLikes / 1000)) + "k");
+                        }
+                        else
+                        {
+                            countLikes.setText(categoriesHandler.getCurrentlyInUse().get(tempPosition).getNumberOfLikes() + "");
                         }
                     }
                 });
@@ -143,8 +146,24 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
                 Date d = new Date();
                 holder.date.setText((String) DateUtils.getRelativeTimeSpanString(categoriesHandler.getCurrentlyInUse().elementAt(position).getDate().getTime(), d.getTime(), 0));
             }
-            holder.countLikes.setText(categoriesHandler.getCurrentlyInUse().get(position).getNumberOfLikes() + " Likes");
-            holder.countComments.setText(categoriesHandler.getCurrentlyInUse().get(position).getNumberOfComments() + " Comments");
+            float numOfLikes = Integer.parseInt(String.valueOf(categoriesHandler.getCurrentlyInUse().get(position).getNumberOfLikes()));
+            if(numOfLikes >= 1000)
+            {
+                holder.countLikes.setText(String.format("%.1f", (numOfLikes / 1000)) + "k");
+            }
+            else
+            {
+                holder.countLikes.setText(categoriesHandler.getCurrentlyInUse().get(position).getNumberOfLikes() + "");
+            }
+            float numOfComments = Integer.parseInt(String.valueOf(categoriesHandler.getCurrentlyInUse().get(position).getNumberOfComments()));
+            if(numOfComments >= 1000)
+            {
+                holder.countComments.setText(String.format("%.1f", (numOfComments / 1000)) + "k");
+            }
+            else
+            {
+                holder.countComments.setText(categoriesHandler.getCurrentlyInUse().get(position).getNumberOfComments() + "");
+            }
             if (!categoriesHandler.getCurrentlyInUse().get(position).getPicURL().equals("null")) {
                 Picasso.with(context).load(categoriesHandler.getCurrentlyInUse().get(position).getPicURL()).into(holder.picture);
             } else {
@@ -159,7 +178,6 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
                 }
             });
         }
-
     }
 
     @Override

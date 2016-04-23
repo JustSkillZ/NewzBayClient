@@ -1,21 +1,23 @@
 package magshimim.newzbay;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.SharedPreferences;
 import android.graphics.BitmapFactory;
+import android.graphics.Point;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.format.Time;
 import android.util.Log;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -68,6 +70,17 @@ public class entrance extends AppCompatActivity implements GoogleApiClient.Conne
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        LayoutInflater layoutInflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        final View inflatedView = layoutInflater.inflate(R.layout.popup_comments, null,false);
+        Display display = getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        PopupWindow popWindow = new PopupWindow(inflatedView, size.x - 50,size.y - 500, true );
+        popWindow.setFocusable(true);
+        popWindow.setOutsideTouchable(true);
+        popWindow.setAnimationStyle(R.anim.fade_in);
+//        popWindow.showAtLocation(this.getWindow().get,Gravity.BOTTOM, 0,150);
 
         ((GlobalClass) getApplicationContext()).initiateClass(getResources());
         globalClass = ((GlobalClass) getApplicationContext());
@@ -139,7 +152,7 @@ public class entrance extends AppCompatActivity implements GoogleApiClient.Conne
         Log.d(TAG, "guest login");
         user = new User("Guest", "", BitmapFactory.decodeResource(getResources(), R.drawable.user_icon), "Guest", globalClass);
         globalClass.setUser(user);
-        String send = "102&guest@guest.com&guest#";
+        String send = "102&guest@guest.com&guest&#";
         globalClass.getErrorHandler().setConnectingClientMsg(send);
         globalClass.getCommunication().clientSend(send);
         moveToNewsFeed();
@@ -148,10 +161,10 @@ public class entrance extends AppCompatActivity implements GoogleApiClient.Conne
     public void moveToNewsFeed() {
         if(user.getConnectedVia().equals("Google"))
         {
-            String send = "102&" + Plus.AccountApi.getAccountName(mGoogleApiClient) + "&" + ((GoogleUser) user).getGoogleProfile().getName().getGivenName() + "#";
+            String send = "102&" + Plus.AccountApi.getAccountName(mGoogleApiClient) + "&" + ((GoogleUser) user).getGoogleProfile().getName().getGivenName() + "&" + user.getPicURL() + "#";
             globalClass.getErrorHandler().setConnectingClientMsg(send);
             globalClass.getCommunication().clientSend(send);
-            Log.d("Server", "102&"+Plus.AccountApi.getAccountName(mGoogleApiClient)+"&"+((GoogleUser)user).getGoogleProfile().getName().getGivenName()+"#");
+            Log.d("Server", "102&" + Plus.AccountApi.getAccountName(mGoogleApiClient) + "&" + ((GoogleUser) user).getGoogleProfile().getName().getGivenName() + "&" + user.getPicURL() + "#");
         }
         Intent nfScreen = new Intent(this, newsfeed_activity.class);
         startActivity(nfScreen);
@@ -162,6 +175,8 @@ public class entrance extends AppCompatActivity implements GoogleApiClient.Conne
         facebook_loginButton = (LoginButton) findViewById(R.id.btn_Facebook);
         facebook_loginButton.setReadPermissions(Arrays.asList("email", "user_friends"));
         facebook_loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+
+            private ProfileTracker mProfileTracker;
 
             @Override
             public void onSuccess(LoginResult loginResult) {
@@ -175,7 +190,7 @@ public class entrance extends AppCompatActivity implements GoogleApiClient.Conne
                                 try {
                                     String email = object.getString("email");
                                     ((FacebookUser)user).setFacebookUserEmail(email);
-                                    String send = "102&" + ((FacebookUser) user).getFacebookUserEmail() + "&" + ((FacebookUser) user).getFacebookProfile().getFirstName() + "#";
+                                    String send = "102&" + ((FacebookUser) user).getFacebookUserEmail() + "&" + ((FacebookUser) user).getFacebookProfile().getFirstName() + "&" + user.getPicURL() + "#";
                                     globalClass.getErrorHandler().setConnectingClientMsg(send);
                                     globalClass.getCommunication().clientSend(send);
                                     SharedPreferences sharedpreferences = getSharedPreferences(prefsConnection, Context.MODE_PRIVATE);
@@ -402,7 +417,7 @@ public class entrance extends AppCompatActivity implements GoogleApiClient.Conne
             SharedPreferences sharedpreferences = getSharedPreferences(prefsConnection, Context.MODE_PRIVATE);
             user = new FacebookUser(Profile.getCurrentProfile().getName(), Profile.getCurrentProfile().getProfilePictureUri(500, 500).toString(), null, Profile.getCurrentProfile(), sharedpreferences.getString(facebookEmail, ""), globalClass);
             globalClass.setUser(user);
-            String send = "102&" + ((FacebookUser) user).getFacebookUserEmail() + "&" + ((FacebookUser) user).getFacebookProfile().getFirstName() + "#";
+            String send = "102&" + ((FacebookUser) user).getFacebookUserEmail() + "&" + ((FacebookUser) user).getFacebookProfile().getFirstName() + "&" + user.getPicURL() + "#";
             globalClass.getErrorHandler().setConnectingClientMsg(send);
             globalClass.getCommunication().clientSend(send);
             moveToNewsFeed();

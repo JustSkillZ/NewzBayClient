@@ -19,6 +19,7 @@
 -keepattributes SourceFile,LineNumberTable
 -keep class com.parse.*{ *; }
 -dontwarn com.parse.**
+-keep class android.support.v4.** { *; }
 -dontwarn com.squareup.picasso.**
 -keepclasseswithmembernames class * {
     native <methods>;

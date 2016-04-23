@@ -3,12 +3,15 @@ package magshimim.newzbay;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.graphics.PorterDuff;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
 import android.view.View;
 import android.webkit.WebBackForwardList;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
@@ -101,6 +104,11 @@ public class InnerWeb extends AppCompatActivity {
         web.getSettings().setBuiltInZoomControls(true);
         web.getSettings().setDisplayZoomControls(false);
         web.setWebViewClient(new WebViewClient() {
+
+            @Override
+            public void onPageStarted(WebView view, String url, Bitmap favicon) {
+                super.onPageStarted(view, url, favicon);
+            }
 
             @Override
             public void onPageFinished(WebView view, String url) {

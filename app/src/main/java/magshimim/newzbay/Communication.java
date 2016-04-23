@@ -1,6 +1,7 @@
 package magshimim.newzbay;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.support.design.widget.Snackbar;
 import android.util.Log;
 import android.widget.Button;
@@ -135,7 +136,7 @@ class ClientRead extends Thread {
         } catch (NullPointerException e) {
             Log.d("check", "Client Closed");
         }
-        out.println("404|" + aesEncryption.getAesKey() + "##");
+        out.println("404◘" + aesEncryption.getAesKey() + "##");
         out.flush();
         try {
             if(in.readLine().equals("405#"))
@@ -180,34 +181,40 @@ class ClientRead extends Thread {
                             }
                         }
                     }
-                    else if (line.equals("103#") || line.equals("400#"))
+                    else if (line.equals("103#"))
                     {
-
+                        ((Activity) globalClass.getCurrentActivity()).runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Intent priority = new Intent(globalClass.getCurrentActivity(), Priority.class);
+                                globalClass.getCurrentActivity().startActivity(priority);
+                            }
+                        });
                     }
-                    else if (line.contains("107|")) {
+                    else if (line.contains("107◘")) {
                         String id, subject, site;
-                        line = line.substring(line.indexOf("|") + 1);
-                        while (line.contains("|")) {
-                            String temp = line.substring(0, line.indexOf("|"));
+                        line = line.substring(line.indexOf("◘") + 1);
+                        while (line.contains("◘")) {
+                            String temp = line.substring(0, line.indexOf("◘"));
                             id = temp.substring(0, temp.indexOf("&"));
                             temp = temp.substring((temp.indexOf("&") + 1));
                             subject = temp.substring(0, temp.indexOf("&"));
                             temp = temp.substring(temp.indexOf("&") + 1);
                             site = temp;
-                            line = line.substring(line.indexOf("|") + 1);
+                            line = line.substring(line.indexOf("◘") + 1);
                             priorityHandler.getCategorySites().add(new CategorySite(id, subject, site));
                         }
                     }
-                    else if (line.contains("115|") || line.contains("127|"))
+                    else if (line.contains("115◘") || line.contains("127◘"))
                     {
-                        if(!line.equals("115|#"))
+                        if(!line.equals("115◘#"))
                         {
-                            line = line.substring(line.indexOf("|") + 1);
+                            line = line.substring(line.indexOf("◘") + 1);
                             categoriesHandler.getCurrentlyInUse().clear();
-                            while (line.contains("|")) {
-                                String id, mainHeadLine, secondHeadLine, date, siteName = "", url, likes, imgURL;
+                            while (line.contains("◘")) {
+                                String id, mainHeadLine, secondHeadLine, date, siteName = "", url, likes, comments, imgURL;
                                 Boolean liked;
-                                String temp = line.substring(0, line.indexOf("|"));
+                                String temp = line.substring(0, line.indexOf("◘"));
                                 id = temp.substring(0, temp.indexOf("☺"));
                                 temp = temp.substring((temp.indexOf("☺") + 1));
                                 mainHeadLine = temp.substring(0, temp.indexOf("☺"));
@@ -222,12 +229,14 @@ class ClientRead extends Thread {
                                 temp = temp.substring(temp.indexOf("☺") + 1);
                                 likes = temp.substring(0, temp.indexOf("☺"));
                                 temp = temp.substring(temp.indexOf("☺") + 1);
+                                comments = temp.substring(0, temp.indexOf("☺"));
+                                temp = temp.substring(temp.indexOf("☺") + 1);
                                 if ((Integer.parseInt(temp)) == 1) {
                                     liked = true;
                                 } else {
                                     liked = false;
                                 }
-                                line = line.substring(line.indexOf("|") + 1);
+                                line = line.substring(line.indexOf("◘") + 1);
                                 SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                                 Date dates = null;
                                 try {
@@ -243,7 +252,7 @@ class ClientRead extends Thread {
                                         siteName = priorityHandler.getCategorySites().get(i).getSite();
                                     }
                                 }
-                                Article article = new Article(categoriesHandler.getCurrentlyInUseCategory(globalClass.getUser()), mainHeadLine, secondHeadLine, imgURL, dates, siteName, url, Integer.parseInt(likes), 0, liked, globalClass);
+                                Article article = new Article(categoriesHandler.getCurrentlyInUseCategory(globalClass.getUser()), mainHeadLine, secondHeadLine, imgURL, dates, siteName, url, Integer.parseInt(likes), Integer.parseInt(comments), liked, globalClass);
                                 categoriesHandler.getCurrentlyInUse().add(article);
                                 ((Activity) globalClass.getCurrentActivity()).runOnUiThread(new Runnable() {
                                     @Override
@@ -268,15 +277,15 @@ class ClientRead extends Thread {
                             });
                         }
                     }
-                    else if (line.contains("119|"))
+                    else if (line.contains("119◘"))
                     {
-                        if(!line.equals("119|#"))
+                        if(!line.equals("119◘#"))
                         {
-                            line = line.substring(line.indexOf("|") + 1);
-                            while (line.contains("|")) {
-                                String id, mainHeadLine, secondHeadLine, date, siteName = "", url, likes, imgURL;
+                            line = line.substring(line.indexOf("◘") + 1);
+                            while (line.contains("◘")) {
+                                String id, mainHeadLine, secondHeadLine, date, siteName = "", url, likes, comments, imgURL;
                                 Boolean liked;
-                                String temp = line.substring(0, line.indexOf("|"));
+                                String temp = line.substring(0, line.indexOf("◘"));
                                 id = temp.substring(0, temp.indexOf("☺"));
                                 temp = temp.substring((temp.indexOf("☺") + 1));
                                 mainHeadLine = temp.substring(0, temp.indexOf("☺"));
@@ -291,12 +300,14 @@ class ClientRead extends Thread {
                                 temp = temp.substring(temp.indexOf("☺") + 1);
                                 likes = temp.substring(0, temp.indexOf("☺"));
                                 temp = temp.substring(temp.indexOf("☺") + 1);
+                                comments = temp.substring(0, temp.indexOf("☺"));
+                                temp = temp.substring(temp.indexOf("☺") + 1);
                                 if ((Integer.parseInt(temp)) == 1) {
                                     liked = true;
                                 } else {
                                     liked = false;
                                 }
-                                line = line.substring(line.indexOf("|") + 1);
+                                line = line.substring(line.indexOf("◘") + 1);
                                 SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                                 Date dates = null;
                                 try {
@@ -315,7 +326,7 @@ class ClientRead extends Thread {
                                         siteName = priorityHandler.getCategorySites().get(i).getSite();
                                     }
                                 }
-                                Article article = new Article(categoriesHandler.getCurrentlyInUseCategory(globalClass.getUser()), mainHeadLine, secondHeadLine, imgURL, dates, siteName, url, Integer.parseInt(likes), 0, liked, globalClass);
+                                Article article = new Article(categoriesHandler.getCurrentlyInUseCategory(globalClass.getUser()), mainHeadLine, secondHeadLine, imgURL, dates, siteName, url, Integer.parseInt(likes), Integer.parseInt(comments), liked, globalClass);
                                 categoriesHandler.getCurrentlyInUse().addElement(article);
                                 ((Activity) globalClass.getCurrentActivity()).runOnUiThread(new Runnable() {
                                     @Override

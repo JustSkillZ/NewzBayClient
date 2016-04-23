@@ -66,8 +66,8 @@ public class ChoosePriority extends AppCompatActivity implements PopupMenu.OnMen
 
     public void sendPriority(View v)
     {
-        globalClass.getCommunication().clientSend("194|" + priorityHandler.getCurrentPrioritySubject() + "#");
-        String priority = "104|";
+        globalClass.getCommunication().clientSend("194◘" + priorityHandler.getCurrentPrioritySubject() + "#");
+        String priority = "104◘";
         for(int i = 0; i < priorityHandler.getClientsPriority().size(); i++)
         {
             for(int j = 0; j < priorityHandler.getCategorySites().size(); j++)
@@ -76,7 +76,7 @@ public class ChoosePriority extends AppCompatActivity implements PopupMenu.OnMen
                 {
                     if(priorityHandler.getCategorySites().get(j).getSite().equals(priorityHandler.getClientsPriority().get(i)))
                     {
-                        priority = priority + priorityHandler.getCategorySites().get(j).getId() + "&" + (i + 1) + "|";
+                        priority = priority + priorityHandler.getCategorySites().get(j).getId() + "&" + (i + 1) + "◘";
                     }
                 }
             }

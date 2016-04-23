@@ -76,7 +76,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/tv_likes"
-            android:text="+999 Likes"
+            android:text="+999"
+            android:layout_marginLeft="4dp"
             android:layout_marginBottom="4dp"
             android:layout_marginTop="4dp"
             android:textAllCaps="false"
@@ -84,18 +85,33 @@
             android:saveEnabled="true"
             android:textColor="@color/grey" />
 
+        <ImageView
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:id="@+id/im_likes"
+            android:layout_marginTop="1dp"
+            android:layout_marginLeft="3dp"
+            android:background="@drawable/likes_icon"/>
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/tv_comments"
-            android:text="+999 Comments"
+            android:text="+999"
             android:layout_marginLeft="15dp"
             android:layout_marginTop="4dp"
             android:layout_marginBottom="4dp"
             android:textAllCaps="false"
             android:textSize="16sp"
-            android:textColor="@color/grey"
-            android:layout_weight="0.32"/>"
+            android:textColor="@color/grey" />
+
+        <ImageView
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:id="@+id/im_comments"
+            android:layout_marginLeft="3dp"
+            android:background="@drawable/comments_icon"/>
+
     </LinearLayout>
 
     <LinearLayout
@@ -109,7 +125,8 @@
             android:layout_weight="1"
             android:id="@+id/btn_like"
             android:background="@drawable/buttonborder"
-            android:text="Like"
+            android:text="אהבתי"
+            android:textStyle="bold"
             android:textAllCaps="false"
             android:textSize="18sp"
             android:saveEnabled="true"
@@ -121,7 +138,8 @@
             android:layout_weight="1"
             android:id="@+id/btn_comment"
             android:background="@drawable/buttonborder"
-            android:text="Comment"
+            android:text="הגב"
+            android:textStyle="bold"
             android:textAllCaps="false"
             android:textSize="18sp"
             android:textColor="@color/grey"/>

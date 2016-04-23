@@ -9,7 +9,7 @@ android {
         applicationId "magshimim.newzbay"
         minSdkVersion 18
         targetSdkVersion 23
-        versionCode 1
+        versionCode 3
         versionName "1.0"
     }
     buildTypes {
@@ -19,7 +19,7 @@ android {
                     'proguard-rules.pro'
         }
         debug {
-            debuggable false
+
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'),
                     'proguard-rules.pro'

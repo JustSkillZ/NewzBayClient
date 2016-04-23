@@ -55,25 +55,14 @@ public class newsfeed_activity extends AppCompatActivity
     private final String explanationPref = "magshimim.newzbay.ExplanationPref" ;
     private final String prefsConnection = "magshimim.newzbay.ConnectionPrefs";
     private final String isExplanation1 = "isExplanation1";
-    private final String isPrioritized = "isPrioritized";
+    private final String isPrioritizedGoogle = "isPrioritizedGoogle";
+    private final String isPrioritizedFacebook = "isPrioritizedFacebook";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.newsfeed_activity);
-
-        SharedPreferences sharedpreferences = getSharedPreferences(prefsConnection, Context.MODE_PRIVATE);
-        if (!sharedpreferences.getBoolean(isPrioritized, false))
-        {
-            Intent priority = new Intent(this,Priority.class);
-            startActivity(priority);
-
-            sharedpreferences = getSharedPreferences(prefsConnection, Context.MODE_PRIVATE);
-            SharedPreferences.Editor editor = sharedpreferences.edit();
-            editor.putBoolean(isPrioritized, true);
-            editor.commit();
-        }
 
         Time now = new Time();
         now.setToNow();
@@ -86,10 +75,12 @@ public class newsfeed_activity extends AppCompatActivity
         }
 
         globalClass = ((GlobalClass) getApplicationContext());
+        user = globalClass.getUser();
         globalClass.setCurrentActivity(newsfeed_activity.this);
         globalClass.setCurrentLayout(R.id.newsfeed_layout);
         categoriesHandler = globalClass.getCategoriesHandler();
-        user = globalClass.getUser();
+        SharedPreferences sharedpreferences;
+
 
 //        final ImageView loading = (ImageView) findViewById(R.id.iv_nb_loading);
 //        loading.setVisibility(View.VISIBLE);
@@ -126,6 +117,31 @@ public class newsfeed_activity extends AppCompatActivity
             editor.commit();
         }
 
+//        if(user.getConnectedVia().equals("Google")) {
+//            sharedpreferences = getSharedPreferences(prefsConnection, Context.MODE_PRIVATE);
+//            if (!sharedpreferences.getBoolean(isPrioritizedGoogle, false)) {
+//                Intent priority = new Intent(this, Priority.class);
+//                startActivity(priority);
+//
+//                sharedpreferences = getSharedPreferences(prefsConnection, Context.MODE_PRIVATE);
+//                SharedPreferences.Editor editor = sharedpreferences.edit();
+//                editor.putBoolean(isPrioritizedGoogle, true);
+//                editor.commit();
+//            }
+//        }
+//        else if(user.getConnectedVia().equals("Facebook")) {
+//            sharedpreferences = getSharedPreferences(prefsConnection, Context.MODE_PRIVATE);
+//            if (!sharedpreferences.getBoolean(isPrioritizedFacebook, false)) {
+//                Intent priority = new Intent(this, Priority.class);
+//                startActivity(priority);
+//
+//                sharedpreferences = getSharedPreferences(prefsConnection, Context.MODE_PRIVATE);
+//                SharedPreferences.Editor editor = sharedpreferences.edit();
+//                editor.putBoolean(isPrioritizedFacebook, true);
+//                editor.commit();
+//            }
+//        }
+
         toolbar_main = (android.support.v7.widget.Toolbar) findViewById(R.id.toolbar_main);
         setSupportActionBar(toolbar_main);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
@@ -135,7 +151,14 @@ public class newsfeed_activity extends AppCompatActivity
             if(v != null)
             {
                 if (v instanceof TextView) {
-                    ((TextView) v).setText(categoriesHandler.getCurrentlyInUseCategory(user));
+                    try
+                    {
+                        ((TextView) v).setText(categoriesHandler.getCurrentlyInUseCategory(user));
+                    }
+                    catch (NullPointerException e)
+                    {
+                        e.printStackTrace();
+                    }
                 }
             }
         }
@@ -277,6 +300,7 @@ public class newsfeed_activity extends AppCompatActivity
         if (id == R.id.nav_hot_news) {
             categoriesHandler.getCurrentlyInUse().clear();
             globalClass.getCommunication().clientSend("126#");
+            while(categoriesHandler.getCurrentlyInUse().size() == 0);
             Intent intent = new Intent(this, ExploreArticles.class);
             startActivity(intent);
         } else if (id == R.id.nav_news) {
@@ -465,14 +489,5 @@ public class newsfeed_activity extends AppCompatActivity
         globalClass.getCommunication().clientSend("114&" + categoriesHandler.getCategoriesForServer().get(categoryID) + "#");
         categoriesHandler.setCurrentlyInUseCategory(categoryID, this);
         recyclerLayoutManager.scrollToPositionWithOffset(0, 0);
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        categoriesHandler.getCurrentlyInUse().clear();
-        recyclerAdapter.notifyDataSetChanged();
-        globalClass.setCurrentActivity(newsfeed_activity.this);
-        globalClass.setCurrentLayout(R.id.newsfeed_layout);
     }
 }

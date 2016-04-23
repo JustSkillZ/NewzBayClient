@@ -1,6 +1,5 @@
 package magshimim.newzbay;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -22,7 +21,6 @@ import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -279,7 +277,6 @@ public class newsfeed_activity extends AppCompatActivity
         if (id == R.id.nav_hot_news) {
             categoriesHandler.getCurrentlyInUse().clear();
             globalClass.getCommunication().clientSend("126#");
-            while(categoriesHandler.getCurrentlyInUse().size() == 0);
             Intent intent = new Intent(this, ExploreArticles.class);
             startActivity(intent);
         } else if (id == R.id.nav_news) {
@@ -325,6 +322,13 @@ public class newsfeed_activity extends AppCompatActivity
             {
                 Toast.makeText(globalClass.getCurrentActivity(), "רק משתמשים מחוברים יכולים לעשות תיעדוף לאתרים", Toast.LENGTH_LONG).show();
             }
+        }
+        else if(id == R.id.nav_helpNB)
+        {
+            Intent intent = new Intent(Intent.ACTION_SEND);
+            intent.setType("plain/text");
+            intent.putExtra(Intent.EXTRA_EMAIL, new String[] { "nnewzbay@gmail.com" });
+            startActivity(Intent.createChooser(intent, ""));
         }
         else if (id == R.id.nav_discconect) {
             if (user.getConnectedVia().equals("Google")) {
@@ -461,5 +465,14 @@ public class newsfeed_activity extends AppCompatActivity
         globalClass.getCommunication().clientSend("114&" + categoriesHandler.getCategoriesForServer().get(categoryID) + "#");
         categoriesHandler.setCurrentlyInUseCategory(categoryID, this);
         recyclerLayoutManager.scrollToPositionWithOffset(0, 0);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        categoriesHandler.getCurrentlyInUse().clear();
+        recyclerAdapter.notifyDataSetChanged();
+        globalClass.setCurrentActivity(newsfeed_activity.this);
+        globalClass.setCurrentLayout(R.id.newsfeed_layout);
     }
 }

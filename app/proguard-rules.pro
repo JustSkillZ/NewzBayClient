@@ -16,10 +16,10 @@
 #   public *;
 #}
 
--keep com.google.vending.licensing.ILicensingService
--dontnote com.android.vending.licensing.ILicensingService
--keepattributes magshimim.newzbay.GlobalClass
--keepattributes Signature
--dontwarn com.google.android.gms.internal.zzac
--dontwarn com.google.android.gms.internal.zzw
--dontwarn com.google.android.gms.internal.zzw$zza
+-keepattributes SourceFile,LineNumberTable
+-keep class com.parse.*{ *; }
+-dontwarn com.parse.**
+-dontwarn com.squareup.picasso.**
+-keepclasseswithmembernames class * {
+    native <methods>;
+    }

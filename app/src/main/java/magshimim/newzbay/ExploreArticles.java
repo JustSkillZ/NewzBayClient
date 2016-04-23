@@ -47,6 +47,8 @@ public class ExploreArticles extends AppCompatActivity {
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
         ((GlobalClass) getApplicationContext()).getCategoriesHandler().setHotNewsPageAdapter(mSectionsPagerAdapter);
+        ((GlobalClass) getApplicationContext()).setCurrentActivity(ExploreArticles.this);
+        ((GlobalClass) getApplicationContext()).setCurrentLayout(R.id.activity_explore_articles);
     }
 
     @Override
@@ -93,7 +95,7 @@ public class ExploreArticles extends AppCompatActivity {
             TextView headline = (TextView) rootView.findViewById(R.id.tv_article_title);
             headline.setText(hotNews.get(getArguments().getInt("NB")).getMainHeadline());
             TextView source = (TextView) rootView.findViewById(R.id.tv_article_site);
-            source.setText(hotNews.get(getArguments().getInt("NB")).getSiteName() + " /" );
+            source.setText(hotNews.get(getArguments().getInt("NB")).getSiteName() + "  /" );
             if (hotNews.get(getArguments().getInt("NB")).getDate() != null) {
                 Date d = new Date();
                 TextView date = (TextView) rootView.findViewById(R.id.tv_article_time);

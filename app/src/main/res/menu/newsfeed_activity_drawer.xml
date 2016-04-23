@@ -55,6 +55,10 @@
         android:icon="@drawable/priority_icon"
         android:title="בחירת אתרים" />
     <item
+        android:id="@+id/nav_helpNB"
+        android:icon="@drawable/help_icon"
+        android:title= "צור קשר"/>
+    <item
         android:id="@+id/nav_discconect"
         android:icon="@drawable/disconnect_logo"
         android:title="התנתק" />

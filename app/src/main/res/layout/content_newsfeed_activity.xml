@@ -67,7 +67,15 @@
         android:id="@+id/recyclerView_articles"
         android:divider="@null" />
 
-</android.support.v4.widget.SwipeRefreshLayout>
+    </android.support.v4.widget.SwipeRefreshLayout>
+
+    <ProgressBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/pb_loadingArticles"
+        android:visibility="invisible"/>
 
 </RelativeLayout>
 

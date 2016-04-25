@@ -76,7 +76,7 @@ public class ChoosePriority extends AppCompatActivity implements PopupMenu.OnMen
                 {
                     if(priorityHandler.getCategorySites().get(j).getSite().equals(priorityHandler.getClientsPriority().get(i)))
                     {
-                        priority = priority + priorityHandler.getCategorySites().get(j).getId() + "&" + (i + 1) + "◘";
+                        priority = priority + priorityHandler.getCategorySites().get(j).getId() + "○" + (i + 1) + "◘";
                     }
                 }
             }

@@ -15,7 +15,7 @@
         android:textSize="20dp"
         android:textColor="@color/black"
         android:id="@+id/tv_mainHeadline"
-        android:layout_gravity="right"
+        android:layout_gravity="center"
         android:gravity="center"/>
 
     <TextView
@@ -29,7 +29,7 @@
         android:ellipsize="end"
         android:maxLines="2"
         android:id="@+id/tv_secondHeadline"
-        android:layout_gravity="right"
+        android:layout_gravity="center"
         android:gravity="center"/>
 
     <RelativeLayout
@@ -59,6 +59,11 @@
             android:layout_alignParentRight="true"/>
     </RelativeLayout>
 
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="3dp"
+        android:background="#bacee4"/>
+
     <ImageButton
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -67,6 +72,11 @@
         android:adjustViewBounds="true"
         android:minHeight="150dp"
         android:scaleType="fitCenter"/>
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="3dp"
+        android:background="#bacee4"/>
 
     <LinearLayout
         android:layout_width="match_parent"

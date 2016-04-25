@@ -12,7 +12,7 @@
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/nb</item>
         <item name="colorPrimaryDark">@color/timeBar</item>
-        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorAccent">@color/nb</item>
         <item name="android:windowBackground">@color/grey</item>
         <item name="android:textColorPrimary">@color/white</item>
         <item name="android:windowEnableSplitTouch">false</item>

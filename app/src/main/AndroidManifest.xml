@@ -74,6 +74,8 @@
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme_NoActionBar" />
+        <activity android:name=".Comments"
+            android:theme="@style/AppTheme_NoActionBar"/>
     </application>
 
 </manifest>

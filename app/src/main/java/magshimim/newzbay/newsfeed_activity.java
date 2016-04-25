@@ -1,5 +1,6 @@
 package magshimim.newzbay;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -46,11 +47,12 @@ public class newsfeed_activity extends AppCompatActivity
     private GlobalClass globalClass;
     private CategoriesHandler categoriesHandler;
     private User user;
+
     private RecyclerView recyclerView_article;
     private RecyclerView.Adapter recyclerAdapter;
     private android.support.v7.widget.LinearLayoutManager recyclerLayoutManager;
 
-    boolean doubleBackToExitPressedOnce = false;
+    private boolean doubleBackToExitPressedOnce = false;
 
     private final String explanationPref = "magshimim.newzbay.ExplanationPref" ;
     private final String prefsConnection = "magshimim.newzbay.ConnectionPrefs";
@@ -183,7 +185,8 @@ public class newsfeed_activity extends AppCompatActivity
                     if (pastVisibleItems + visibleItemCount == totalItemCount && totalItemCount != 0) {
                         if (!categoriesHandler.isLoading()) {
                             categoriesHandler.setLoading(true);
-                            globalClass.getCommunication().clientSend("118&" + categoriesHandler.getCurrentlyInUseCategoryServer() + "&" + categoriesHandler.getCurrentlyInUse().lastElement().getUrl() + "#");
+                            globalClass.getCommunication().clientSend("118○" + categoriesHandler.getCurrentlyInUseCategoryServer() + "○" + categoriesHandler.getCurrentlyInUse().lastElement().getUrl() + "#");
+                            findViewById(R.id.pb_loadingArticles).setVisibility(View.VISIBLE);
                         }
                     }
                 }
@@ -289,7 +292,6 @@ public class newsfeed_activity extends AppCompatActivity
                 }
             }, 2000);
         }
-
     }
 
     @SuppressWarnings("StatementWithEmptyBody")
@@ -479,14 +481,16 @@ public class newsfeed_activity extends AppCompatActivity
 
     private void updateArticles()
     {
-        globalClass.getCommunication().clientSend("114&" + categoriesHandler.getCurrentlyInUseCategoryServer() + "#");
+        globalClass.getCommunication().clientSend("114○" + categoriesHandler.getCurrentlyInUseCategoryServer() + "#");
+        findViewById(R.id.pb_loadingArticles).setVisibility(View.VISIBLE);
         categoriesHandler.setCurrentlyInUseCategory(categoriesHandler.getCurrentCategoryID(), this);
         recyclerLayoutManager.scrollToPositionWithOffset(0, 0);
     }
 
     private void changeCategory(int categoryID)
     {
-        globalClass.getCommunication().clientSend("114&" + categoriesHandler.getCategoriesForServer().get(categoryID) + "#");
+        globalClass.getCommunication().clientSend("114○" + categoriesHandler.getCategoriesForServer().get(categoryID) + "#");
+        findViewById(R.id.pb_loadingArticles).setVisibility(View.VISIBLE);
         categoriesHandler.setCurrentlyInUseCategory(categoryID, this);
         recyclerLayoutManager.scrollToPositionWithOffset(0, 0);
     }

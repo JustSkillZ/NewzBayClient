@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.support.design.widget.Snackbar;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -111,6 +112,7 @@ class ClientRead extends Thread {
     private BufferedReader in;
     private GlobalClass globalClass;
     private CategoriesHandler categoriesHandler;
+    private CommentsHandler commentsHandler;
     private PriorityHandler priorityHandler;
     private AESEncryption aesEncryption;
     private boolean userConnected;
@@ -120,6 +122,7 @@ class ClientRead extends Thread {
         this.globalClass = globalClass;
         categoriesHandler = globalClass.getCategoriesHandler();
         priorityHandler = globalClass.getPriorityHandler();
+        commentsHandler = globalClass.getCommentsHandler();
         aesEncryption = new AESEncryption();
         this.userConnected = userConnected;
     }
@@ -196,10 +199,10 @@ class ClientRead extends Thread {
                         line = line.substring(line.indexOf("◘") + 1);
                         while (line.contains("◘")) {
                             String temp = line.substring(0, line.indexOf("◘"));
-                            id = temp.substring(0, temp.indexOf("&"));
-                            temp = temp.substring((temp.indexOf("&") + 1));
-                            subject = temp.substring(0, temp.indexOf("&"));
-                            temp = temp.substring(temp.indexOf("&") + 1);
+                            id = temp.substring(0, temp.indexOf("○"));
+                            temp = temp.substring((temp.indexOf("○") + 1));
+                            subject = temp.substring(0, temp.indexOf("○"));
+                            temp = temp.substring(temp.indexOf("○") + 1);
                             site = temp;
                             line = line.substring(line.indexOf("◘") + 1);
                             priorityHandler.getCategorySites().add(new CategorySite(id, subject, site));
@@ -215,22 +218,22 @@ class ClientRead extends Thread {
                                 String id, mainHeadLine, secondHeadLine, date, siteName = "", url, likes, comments, imgURL;
                                 Boolean liked;
                                 String temp = line.substring(0, line.indexOf("◘"));
-                                id = temp.substring(0, temp.indexOf("☺"));
-                                temp = temp.substring((temp.indexOf("☺") + 1));
-                                mainHeadLine = temp.substring(0, temp.indexOf("☺"));
-                                temp = temp.substring((temp.indexOf("☺") + 1));
-                                secondHeadLine = temp.substring(0, temp.indexOf("☺"));
-                                temp = temp.substring(temp.indexOf("☺") + 1);
-                                date = temp.substring(0, temp.indexOf("☺"));
-                                temp = temp.substring(temp.indexOf("☺") + 1);
-                                url = temp.substring(0, temp.indexOf("☺"));
-                                temp = temp.substring(temp.indexOf("☺") + 1);
-                                imgURL = temp.substring(0, temp.indexOf("☺"));
-                                temp = temp.substring(temp.indexOf("☺") + 1);
-                                likes = temp.substring(0, temp.indexOf("☺"));
-                                temp = temp.substring(temp.indexOf("☺") + 1);
-                                comments = temp.substring(0, temp.indexOf("☺"));
-                                temp = temp.substring(temp.indexOf("☺") + 1);
+                                id = temp.substring(0, temp.indexOf("○"));
+                                temp = temp.substring((temp.indexOf("○") + 1));
+                                mainHeadLine = temp.substring(0, temp.indexOf("○"));
+                                temp = temp.substring((temp.indexOf("○") + 1));
+                                secondHeadLine = temp.substring(0, temp.indexOf("○"));
+                                temp = temp.substring(temp.indexOf("○") + 1);
+                                date = temp.substring(0, temp.indexOf("○"));
+                                temp = temp.substring(temp.indexOf("○") + 1);
+                                url = temp.substring(0, temp.indexOf("○"));
+                                temp = temp.substring(temp.indexOf("○") + 1);
+                                imgURL = temp.substring(0, temp.indexOf("○"));
+                                temp = temp.substring(temp.indexOf("○") + 1);
+                                likes = temp.substring(0, temp.indexOf("○"));
+                                temp = temp.substring(temp.indexOf("○") + 1);
+                                comments = temp.substring(0, temp.indexOf("○"));
+                                temp = temp.substring(temp.indexOf("○") + 1);
                                 if ((Integer.parseInt(temp)) == 1) {
                                     liked = true;
                                 } else {
@@ -261,6 +264,7 @@ class ClientRead extends Thread {
                                             categoriesHandler.getHotNewsPageAdapter().notifyDataSetChanged();
                                         }
                                         categoriesHandler.getRecyclerAdapter().notifyDataSetChanged();
+                                        ((Activity) globalClass.getCurrentActivity()).findViewById(R.id.pb_loadingArticles).setVisibility(View.INVISIBLE);
                                     }
                                 });
                             }
@@ -273,6 +277,7 @@ class ClientRead extends Thread {
                                     categoriesHandler.getCurrentlyInUse().clear();
                                     categoriesHandler.getRecyclerAdapter().notifyDataSetChanged();
                                     Toast.makeText(globalClass.getCurrentActivity(), "לא ביצעת העדפה בנושא זה", Toast.LENGTH_LONG).show();
+                                    ((Activity) globalClass.getCurrentActivity()).findViewById(R.id.pb_loadingArticles).setVisibility(View.INVISIBLE);
                                 }
                             });
                         }
@@ -286,22 +291,22 @@ class ClientRead extends Thread {
                                 String id, mainHeadLine, secondHeadLine, date, siteName = "", url, likes, comments, imgURL;
                                 Boolean liked;
                                 String temp = line.substring(0, line.indexOf("◘"));
-                                id = temp.substring(0, temp.indexOf("☺"));
-                                temp = temp.substring((temp.indexOf("☺") + 1));
-                                mainHeadLine = temp.substring(0, temp.indexOf("☺"));
-                                temp = temp.substring((temp.indexOf("☺") + 1));
-                                secondHeadLine = temp.substring(0, temp.indexOf("☺"));
-                                temp = temp.substring(temp.indexOf("☺") + 1);
-                                date = temp.substring(0, temp.indexOf("☺"));
-                                temp = temp.substring(temp.indexOf("☺") + 1);
-                                url = temp.substring(0, temp.indexOf("☺"));
-                                temp = temp.substring(temp.indexOf("☺") + 1);
-                                imgURL = temp.substring(0, temp.indexOf("☺"));
-                                temp = temp.substring(temp.indexOf("☺") + 1);
-                                likes = temp.substring(0, temp.indexOf("☺"));
-                                temp = temp.substring(temp.indexOf("☺") + 1);
-                                comments = temp.substring(0, temp.indexOf("☺"));
-                                temp = temp.substring(temp.indexOf("☺") + 1);
+                                id = temp.substring(0, temp.indexOf("○"));
+                                temp = temp.substring((temp.indexOf("○") + 1));
+                                mainHeadLine = temp.substring(0, temp.indexOf("○"));
+                                temp = temp.substring((temp.indexOf("○") + 1));
+                                secondHeadLine = temp.substring(0, temp.indexOf("○"));
+                                temp = temp.substring(temp.indexOf("○") + 1);
+                                date = temp.substring(0, temp.indexOf("○"));
+                                temp = temp.substring(temp.indexOf("○") + 1);
+                                url = temp.substring(0, temp.indexOf("○"));
+                                temp = temp.substring(temp.indexOf("○") + 1);
+                                imgURL = temp.substring(0, temp.indexOf("○"));
+                                temp = temp.substring(temp.indexOf("○") + 1);
+                                likes = temp.substring(0, temp.indexOf("○"));
+                                temp = temp.substring(temp.indexOf("○") + 1);
+                                comments = temp.substring(0, temp.indexOf("○"));
+                                temp = temp.substring(temp.indexOf("○") + 1);
                                 if ((Integer.parseInt(temp)) == 1) {
                                     liked = true;
                                 } else {
@@ -332,11 +337,35 @@ class ClientRead extends Thread {
                                     @Override
                                     public void run() {
                                         categoriesHandler.getRecyclerAdapter().notifyDataSetChanged();
+                                        ((Activity) globalClass.getCurrentActivity()).findViewById(R.id.pb_loadingArticles).setVisibility(View.INVISIBLE);
                                     }
                                 });
                             }
                             categoriesHandler.setLoading(false);
                         }
+                    }
+                    else if(line.contains("121◘"))
+                    {
+                        commentsHandler.getCommentsofCurrentArticle().clear();
+                        line = line.substring(line.indexOf("◘") + 1);
+                        while (line.contains("◘")) {
+                            String username, picURL, commentText;
+                            String temp = line.substring(0, line.indexOf("◘"));
+                            username = temp.substring(0, temp.indexOf("○"));
+                            temp = temp.substring((temp.indexOf("○") + 1));
+                            picURL = temp.substring(0, temp.indexOf("○"));
+                            temp = temp.substring(temp.indexOf("○") + 1);
+                            commentText = temp;
+                            line = line.substring(line.indexOf("◘") + 1);
+                            Comment comment = new Comment(username, picURL, commentText);
+                            commentsHandler.getCommentsofCurrentArticle().addElement(comment);
+                        }
+                        ((Activity) globalClass.getCurrentActivity()).runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                commentsHandler.getRecyclerAdapter().notifyDataSetChanged();
+                            }
+                        });
                     }
                     line = "";
                 }
@@ -357,7 +386,7 @@ class ClientRead extends Thread {
         try {
             //cipherText = aesEncryption.encryptText(str, AESKey);
             String cipherText = aesEncryption.encrypt(str) + "##";
-            Log.d("send", str + " | Encrypted: " + cipherText);
+            Log.d("send", str);
             out.println(cipherText);
             out.flush();
             if(out.checkError())

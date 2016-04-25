@@ -1,16 +1,22 @@
 package magshimim.newzbay;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.Point;
 import android.graphics.drawable.Drawable;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.format.DateUtils;
+import android.view.Display;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -120,12 +126,12 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
                             like.setTextColor(globalClass.getResources().getColor(R.color.grey));
                             categoriesHandler.getCurrentlyInUse().get(tempPosition).setLiked(false);
                             categoriesHandler.getCurrentlyInUse().get(tempPosition).decNumberOfLikes();
-                            communication.clientSend("110&" + categoriesHandler.getCurrentlyInUse().get(tempPosition).getUrl() + "#");
+                            communication.clientSend("110○" + categoriesHandler.getCurrentlyInUse().get(tempPosition).getUrl() + "#");
                         } else {
                             like.setTextColor(globalClass.getResources().getColor(R.color.nb));
                             categoriesHandler.getCurrentlyInUse().get(tempPosition).setLiked(true);
                             categoriesHandler.getCurrentlyInUse().get(tempPosition).incNumberOfLikes();
-                            communication.clientSend("110&" + categoriesHandler.getCurrentlyInUse().get(tempPosition).getUrl() + "#");
+                            communication.clientSend("110○" + categoriesHandler.getCurrentlyInUse().get(tempPosition).getUrl() + "#");
                         }
                         float numOfLikes = Integer.parseInt(String.valueOf(categoriesHandler.getCurrentlyInUse().get(tempPosition).getNumberOfLikes()));
                         if(numOfLikes >= 1000)
@@ -175,6 +181,14 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
                     categoriesHandler.setCurrentlyOpenURL(categoriesHandler.getCurrentlyInUse().elementAt(tempPosition).getUrl());
                     Intent web = new Intent(context, InnerWeb.class);
                     context.startActivity(web);
+                }
+            });
+            holder.comment.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    globalClass.getCommentsHandler().setArticle(categoriesHandler.getCurrentlyInUse().elementAt(tempPosition));
+                    Intent comments = new Intent(context, Comments.class);
+                    context.startActivity(comments);
                 }
             });
         }

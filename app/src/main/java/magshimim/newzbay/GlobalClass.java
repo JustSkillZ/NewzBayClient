@@ -7,6 +7,7 @@ import android.content.res.Resources;
 public class GlobalClass extends Application {
 
     private CategoriesHandler categoriesHandler;
+    private CommentsHandler commentsHandler;
     private Communication communication;
     private ErrorHandler errorHandler;
     private PriorityHandler priorityHandler;
@@ -19,6 +20,7 @@ public class GlobalClass extends Application {
     {
         this.resources = resources;
         categoriesHandler= new CategoriesHandler(null, "", "", false, this);
+        commentsHandler = new CommentsHandler();
         errorHandler = new ErrorHandler(this);
         user = null;
         priorityHandler = new PriorityHandler();
@@ -91,5 +93,13 @@ public class GlobalClass extends Application {
 
     public void setCurrentLayout(int currentLayout) {
         this.currentLayout = currentLayout;
+    }
+
+    public CommentsHandler getCommentsHandler() {
+        return commentsHandler;
+    }
+
+    public void setCommentsHandler(CommentsHandler commentsHandler) {
+        this.commentsHandler = commentsHandler;
     }
 }

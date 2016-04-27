@@ -65,17 +65,7 @@ public class newsfeed_activity extends AppCompatActivity
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.newsfeed_activity);
-
-        Time now = new Time();
-        now.setToNow();
-        if(now.hour >= 19 || now.hour >= 0 && now.hour <= 5)
-        {
-            RelativeLayout layout =(RelativeLayout)findViewById(R.id.newsfeed_layout);
-            layout.setBackground(getResources().getDrawable(R.drawable.main_background_night));
-            TextView slogen = (TextView) findViewById(R.id.tv_hello1);
-            slogen.setTextColor(getResources().getColor(R.color.white));
-        }
-
+        changeTheme();
         globalClass = ((GlobalClass) getApplicationContext());
         user = globalClass.getUser();
         globalClass.setCurrentActivity(newsfeed_activity.this);
@@ -493,5 +483,24 @@ public class newsfeed_activity extends AppCompatActivity
         findViewById(R.id.pb_loadingArticles).setVisibility(View.VISIBLE);
         categoriesHandler.setCurrentlyInUseCategory(categoryID, this);
         recyclerLayoutManager.scrollToPositionWithOffset(0, 0);
+    }
+
+    private void changeTheme()
+    {
+        Time now = new Time();
+        now.setToNow();
+        if(now.hour >= 19 || now.hour >= 0 && now.hour <= 5)
+        {
+            RelativeLayout layout =(RelativeLayout)findViewById(R.id.newsfeed_layout);
+            layout.setBackground(getResources().getDrawable(R.drawable.main_background_night));
+            TextView slogen = (TextView) findViewById(R.id.tv_hello1);
+            slogen.setTextColor(getResources().getColor(R.color.white));
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        changeTheme();
     }
 }

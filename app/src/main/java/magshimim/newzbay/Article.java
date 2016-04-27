@@ -104,6 +104,16 @@ public class Article{
         numberOfLikes--;
     }
 
+    public void incNumberOfComments()
+    {
+        numberOfComments++;
+    }
+
+    public void decNumberOfComments()
+    {
+        numberOfComments--;
+    }
+
     public void setSubject(String subject) {
         this.subject = subject;
     }

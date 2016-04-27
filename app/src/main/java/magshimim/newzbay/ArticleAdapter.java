@@ -146,7 +146,23 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
                 });
             }
             holder.mainHeadline.setText(categoriesHandler.getCurrentlyInUse().elementAt(position).getMainHeadline());
+            holder.mainHeadline.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    globalClass.getCommentsHandler().setArticle(categoriesHandler.getCurrentlyInUse().elementAt(tempPosition));
+                    Intent comments = new Intent(context, Comments.class);
+                    context.startActivity(comments);
+                }
+            });
             holder.secondHeadline.setText(categoriesHandler.getCurrentlyInUse().elementAt(position).getSecondHeadline());
+            holder.secondHeadline.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    globalClass.getCommentsHandler().setArticle(categoriesHandler.getCurrentlyInUse().elementAt(tempPosition));
+                    Intent comments = new Intent(context, Comments.class);
+                    context.startActivity(comments);
+                }
+            });
             holder.site.setText(categoriesHandler.getCurrentlyInUse().elementAt(position).getSiteName());
             if (categoriesHandler.getCurrentlyInUse().elementAt(position).getDate() != null) {
                 Date d = new Date();

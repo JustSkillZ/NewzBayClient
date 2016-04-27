@@ -346,26 +346,29 @@ class ClientRead extends Thread {
                     }
                     else if(line.contains("121◘"))
                     {
-                        commentsHandler.getCommentsofCurrentArticle().clear();
-                        line = line.substring(line.indexOf("◘") + 1);
-                        while (line.contains("◘")) {
-                            String username, picURL, commentText;
-                            String temp = line.substring(0, line.indexOf("◘"));
-                            username = temp.substring(0, temp.indexOf("○"));
-                            temp = temp.substring((temp.indexOf("○") + 1));
-                            picURL = temp.substring(0, temp.indexOf("○"));
-                            temp = temp.substring(temp.indexOf("○") + 1);
-                            commentText = temp;
+                        if(!line.equals("121◘◘#"))
+                        {
+                            commentsHandler.getCommentsofCurrentArticle().clear();
                             line = line.substring(line.indexOf("◘") + 1);
-                            Comment comment = new Comment(username, picURL, commentText);
-                            commentsHandler.getCommentsofCurrentArticle().addElement(comment);
-                        }
-                        ((Activity) globalClass.getCurrentActivity()).runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                commentsHandler.getRecyclerAdapter().notifyDataSetChanged();
+                            while (line.contains("◘")) {
+                                String username, picURL, commentText;
+                                String temp = line.substring(0, line.indexOf("◘"));
+                                username = temp.substring(0, temp.indexOf("○"));
+                                temp = temp.substring((temp.indexOf("○") + 1));
+                                picURL = temp.substring(0, temp.indexOf("○"));
+                                temp = temp.substring(temp.indexOf("○") + 1);
+                                commentText = temp;
+                                line = line.substring(line.indexOf("◘") + 1);
+                                Comment comment = new Comment(username, picURL, commentText);
+                                commentsHandler.getCommentsofCurrentArticle().addElement(comment);
                             }
-                        });
+                            ((Activity) globalClass.getCurrentActivity()).runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    commentsHandler.getRecyclerAdapter().notifyDataSetChanged();
+                                }
+                            });
+                        }
                     }
                     line = "";
                 }

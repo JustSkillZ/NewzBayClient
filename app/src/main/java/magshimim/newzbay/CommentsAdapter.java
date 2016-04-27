@@ -1,5 +1,9 @@
 package magshimim.newzbay;
 
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,11 +20,13 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.ViewHo
     GlobalClass globalClass;
     CommentsHandler commentsHandler;
     Vector<Comment> comments;
+    Context context;
 
-    public CommentsAdapter(GlobalClass globalClass) {
+    public CommentsAdapter(GlobalClass globalClass, Context context) {
         this.globalClass = globalClass;
         commentsHandler = globalClass.getCommentsHandler();
         comments = commentsHandler.getCommentsofCurrentArticle();
+        this.context = context;
     }
 
     @Override
@@ -42,9 +48,24 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.ViewHo
             holder.deleteComment.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    globalClass.getCommunication().clientSend("124◘" + commentsHandler.getArticle().getUrl() + "○" + commentsHandler.getCommentsofCurrentArticle().get(tempPosition).getCommentText() + "#");
-                    commentsHandler.getCommentsofCurrentArticle().remove(tempPosition);
-                    commentsHandler.getRecyclerAdapter().notifyDataSetChanged();
+                    DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            switch (which){
+                                case DialogInterface.BUTTON_POSITIVE:
+                                    globalClass.getCommunication().clientSend("124◘" + commentsHandler.getArticle().getUrl() + "○" + commentsHandler.getCommentsofCurrentArticle().get(tempPosition).getCommentText() + "#");
+                                    commentsHandler.getCommentsofCurrentArticle().remove(tempPosition);
+                                    commentsHandler.getArticle().decNumberOfComments();
+                                    commentsHandler.getRecyclerAdapter().notifyDataSetChanged();
+                                    ((TextView)((Activity) context).findViewById(R.id.tv_comments)).setText(commentsHandler.getArticle().getNumberOfComments() + "");
+                                    break;
+                            }
+                        }
+                    };
+
+                    AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                    builder.setMessage("האם את/ה בטוח שברצונך למחוק את תגובתך?").setPositiveButton("מחק", dialogClickListener)
+                            .setNegativeButton("ביטול", dialogClickListener).show();
                 }
             });
         }

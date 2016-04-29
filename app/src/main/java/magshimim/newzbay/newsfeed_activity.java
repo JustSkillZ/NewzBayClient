@@ -109,31 +109,6 @@ public class newsfeed_activity extends AppCompatActivity
             editor.commit();
         }
 
-//        if(user.getConnectedVia().equals("Google")) {
-//            sharedpreferences = getSharedPreferences(prefsConnection, Context.MODE_PRIVATE);
-//            if (!sharedpreferences.getBoolean(isPrioritizedGoogle, false)) {
-//                Intent priority = new Intent(this, Priority.class);
-//                startActivity(priority);
-//
-//                sharedpreferences = getSharedPreferences(prefsConnection, Context.MODE_PRIVATE);
-//                SharedPreferences.Editor editor = sharedpreferences.edit();
-//                editor.putBoolean(isPrioritizedGoogle, true);
-//                editor.commit();
-//            }
-//        }
-//        else if(user.getConnectedVia().equals("Facebook")) {
-//            sharedpreferences = getSharedPreferences(prefsConnection, Context.MODE_PRIVATE);
-//            if (!sharedpreferences.getBoolean(isPrioritizedFacebook, false)) {
-//                Intent priority = new Intent(this, Priority.class);
-//                startActivity(priority);
-//
-//                sharedpreferences = getSharedPreferences(prefsConnection, Context.MODE_PRIVATE);
-//                SharedPreferences.Editor editor = sharedpreferences.edit();
-//                editor.putBoolean(isPrioritizedFacebook, true);
-//                editor.commit();
-//            }
-//        }
-
         toolbar_main = (android.support.v7.widget.Toolbar) findViewById(R.id.toolbar_main);
         setSupportActionBar(toolbar_main);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
@@ -292,7 +267,7 @@ public class newsfeed_activity extends AppCompatActivity
         if (id == R.id.nav_hot_news) {
             categoriesHandler.getCurrentlyInUse().clear();
             globalClass.getCommunication().clientSend("126#");
-            while(categoriesHandler.getCurrentlyInUse().size() == 0);
+//            while(categoriesHandler.getCurrentlyInUse().size() == 0);
             Intent intent = new Intent(this, ExploreArticles.class);
             startActivity(intent);
         } else if (id == R.id.nav_news) {

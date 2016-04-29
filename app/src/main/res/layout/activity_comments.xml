@@ -8,21 +8,22 @@
 
     <android.support.design.widget.CoordinatorLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:id="@+id/cl_comments"
-        android:fitsSystemWindows="true">
+        android:fitsSystemWindows="true"
+        android:layout_above="@+id/line2">
 
         <android.support.design.widget.AppBarLayout
             android:id="@+id/app_bar_layout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
             android:fitsSystemWindows="true">
 
             <android.support.design.widget.CollapsingToolbarLayout
                 android:id="@+id/collapsing_toolbar"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 app:layout_scrollFlags="scroll|exitUntilCollapsed"
                 app:contentScrim="?attr/colorPrimary"
                 app:expandedTitleMarginStart="48dp"
@@ -104,7 +105,6 @@
                             android:id="@+id/ib_picture"
                             android:background="@drawable/buttonborder"
                             android:adjustViewBounds="true"
-                            android:minHeight="150dp"
                             android:scaleType="fitCenter"/>
 
                         <ImageView
@@ -170,7 +170,8 @@
                     android:id="@+id/toolbar"
                     android:layout_width="match_parent"
                     android:layout_height="?attr/actionBarSize"
-                    app:layout_collapseMode="pin">
+                    app:layout_collapseMode="pin"
+                    app:layout_scrollFlags="scroll|enterAlways">
 
                 </android.support.v7.widget.Toolbar>
 
@@ -178,83 +179,64 @@
 
         </android.support.design.widget.AppBarLayout>
 
-        <android.support.v4.widget.NestedScrollView
-            android:id="@+id/scroll"
+        <android.support.v7.widget.RecyclerView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:fillViewport="true"
-            android:clipToPadding="false"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior">
-
-            <android.support.v7.widget.RecyclerView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:id="@+id/rv_comments"/>
-
-        </android.support.v4.widget.NestedScrollView>
+            android:id="@+id/rv_comments"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 
     </android.support.design.widget.CoordinatorLayout>
 
-    <RelativeLayout
-        android:layout_below="@id/cl_comments"
+    <com.rockerhieu.emojicon.EmojiconEditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white"
+        android:id="@+id/commentText"
+        android:layout_alignParentBottom="true"
+        android:hint="כתוב תגובה..."
+        android:textColorHint="@color/disabledButton"
+        android:textColor="@color/black"
         android:layoutDirection="rtl"
-        android:id="@+id/comments_layout"
-        android:textDirection="rtl">
+        android:maxLength="200"
+        android:layout_toEndOf="@+id/btn_sendComment"
+        android:layout_toStartOf="@+id/btn_chooseSmile"/>
 
-        <com.rockerhieu.emojicon.EmojiconEditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/commentText"
-            android:layout_alignParentBottom="true"
-            android:hint="כתוב תגובה..."
-            android:textColorHint="@color/grey"
-            android:textColor="@color/black"
-            android:layoutDirection="rtl"
-            android:maxLength="200"
-            android:layout_toEndOf="@+id/btn_sendComment"
-            android:layout_toStartOf="@+id/btn_chooseSmile"/>
+    <Button
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:background="@drawable/send_icon"
+        android:id="@+id/btn_sendComment"
+        android:backgroundTint="@color/nb"
+        android:onClick="sendComment"
+        android:layout_below="@+id/line2"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="5dp"/>
 
-        <!--<fragment-->
-        <!--android:id="@+id/emojicons"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--class="com.rockerhieu.emojicon.EmojiconsFragment"/>-->
+    <Button
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:background="@drawable/emoji_icon"
+        android:id="@+id/btn_chooseSmile"
+        android:backgroundTint="@color/nb"
+        android:onClick="setFragmentVisibility"
+        android:layout_below="@+id/line2"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="5dp"/>
 
-        <Button
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:background="@drawable/send_icon"
-            android:id="@+id/btn_sendComment"
-            android:backgroundTint="@color/nb"
-            android:onClick="sendComment"
-            android:layout_below="@+id/line2"
-            android:layout_alignParentStart="true"
-            android:layout_marginTop="5dp"/>
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:id="@+id/line2"
+        android:layout_alignParentStart="true"
+        android:layout_marginLeft="3dip"
+        android:layout_marginRight="3dip"
+        android:layout_above="@+id/commentText"
+        android:background="@color/disabledButton" />
 
-        <Button
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:background="@drawable/ic_emoji_people_light"
-            android:id="@+id/btn_chooseSmile"
-            android:backgroundTint="@color/nb"
-            android:onClick="sendComment"
-            android:layout_below="@+id/line2"
-            android:layout_alignParentEnd="true"
-            android:layout_marginTop="5dp"/>
-
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="2dp"
-            android:id="@+id/line2"
-            android:layout_alignParentStart="true"
-            android:layout_marginLeft="3dip"
-            android:layout_marginRight="3dip"
-            android:layout_above="@+id/commentText"
-            android:background="@color/disabledButton" />
-
-    </RelativeLayout>
+    <fragment
+        android:id="@+id/fragment_emojicons"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_alignParentBottom="true"
+        class="com.rockerhieu.emojicon.EmojiconsFragment"/>
 
 </RelativeLayout>

@@ -28,6 +28,7 @@ public class Communication implements Runnable {
     private GlobalClass globalClass;
     private Socket serverSocket;
     private String serverIP;
+    private String serverDomain;
     private int dstport;
     private static int isConnect;
     private boolean userConnected;
@@ -40,7 +41,7 @@ public class Communication implements Runnable {
     public void run() {
         serverIP = "109.67.60.124";
         isConnect = 0;
-        dstport = 4444;
+        dstport = 4444; //4444
         userConnected = false;
         serverSocket = new Socket();
         try {
@@ -337,12 +338,17 @@ class ClientRead extends Thread {
                                     @Override
                                     public void run() {
                                         categoriesHandler.getRecyclerAdapter().notifyDataSetChanged();
-                                        ((Activity) globalClass.getCurrentActivity()).findViewById(R.id.pb_loadingArticles).setVisibility(View.INVISIBLE);
                                     }
                                 });
                             }
-                            categoriesHandler.setLoading(false);
                         }
+                        categoriesHandler.setLoading(false);
+                        ((Activity) globalClass.getCurrentActivity()).runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                ((Activity) globalClass.getCurrentActivity()).findViewById(R.id.pb_loadingArticles).setVisibility(View.INVISIBLE);
+                            }
+                        });
                     }
                     else if(line.contains("121◘"))
                     {

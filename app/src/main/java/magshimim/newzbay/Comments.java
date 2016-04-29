@@ -1,34 +1,32 @@
 package magshimim.newzbay;
 
-import android.app.Activity;
-import android.content.Context;
-import android.graphics.Point;
+import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.format.DateUtils;
-import android.view.Display;
-import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.PopupWindow;
 import android.widget.TextView;
 
+import com.rockerhieu.emojicon.EmojiconGridFragment;
+import com.rockerhieu.emojicon.EmojiconsFragment;
+import com.rockerhieu.emojicon.emoji.Emojicon;
 import com.squareup.picasso.Picasso;
 
 import java.util.Date;
 
-public class Comments extends AppCompatActivity {
+public class Comments extends AppCompatActivity implements EmojiconGridFragment.OnEmojiconClickedListener, EmojiconsFragment.OnEmojiconBackspaceClickedListener {
+
+
 
     private RecyclerView recyclerView_comments;
     private android.support.v7.widget.LinearLayoutManager recyclerLayoutManager;
@@ -36,6 +34,10 @@ public class Comments extends AppCompatActivity {
     private GlobalClass globalClass;
     private CommentsHandler commentsHandler;
     private User user;
+    private EditText commentText;
+    private Fragment emojicons;
+    private Boolean emojiconsOpen;
+    private AppBarLayout appBarLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,10 +47,29 @@ public class Comments extends AppCompatActivity {
         globalClass = (GlobalClass) getApplicationContext();
         commentsHandler = globalClass.getCommentsHandler();
         user = globalClass.getUser();
+        emojiconsOpen = false;
+        commentText = (EditText) findViewById(R.id.commentText);
+        emojicons = getSupportFragmentManager().findFragmentById(R.id.fragment_emojicons);
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.hide(emojicons);
+        ft.commit();
 
         CollapsingToolbarLayout collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
         collapsingToolbarLayout.setTitle(commentsHandler.getArticle().getMainHeadline());
         collapsingToolbarLayout.setExpandedTitleColor(getResources().getColor(android.R.color.transparent));
+        appBarLayout = (AppBarLayout) findViewById(R.id.app_bar_layout);
+        appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
+            @Override
+            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+                if (verticalOffset == 0) {
+                    getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+                }
+                else
+                {
+                    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                }
+            }
+        });
 
         ((TextView) findViewById(R.id.tv_mainHeadline)).setText(commentsHandler.getArticle().getMainHeadline());
         ((TextView) findViewById(R.id.tv_secondHeadline)).setText(commentsHandler.getArticle().getSecondHeadline());
@@ -67,11 +88,10 @@ public class Comments extends AppCompatActivity {
 
         final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(globalClass.getResources().getDrawable(R.drawable.ic_arrow_back_white_48dp));
 
         recyclerView_comments = (RecyclerView) findViewById(R.id.rv_comments);
-        recyclerLayoutManager = new CommentsLinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        recyclerLayoutManager = new LinearLayoutManager(this);
         recyclerView_comments.setLayoutManager(recyclerLayoutManager);
         recyclerAdapter = new CommentsAdapter(globalClass, Comments.this);
         commentsHandler.setRecyclerAdapter(recyclerAdapter);
@@ -81,7 +101,6 @@ public class Comments extends AppCompatActivity {
 
     public void sendComment(View v)
     {
-        EditText commentText = (EditText) findViewById(R.id.commentText);
         if(!commentText.getText().toString().equals(""))
         {
             globalClass.getCommunication().clientSend("122◘" + commentsHandler.getArticle().getUrl() + "○" + commentText.getText().toString() + "#");
@@ -91,6 +110,8 @@ public class Comments extends AppCompatActivity {
             commentsHandler.getArticle().incNumberOfComments();
             ViewGroup parent = (ViewGroup)v.getParent().getParent().getParent();
             ((TextView)parent.findViewById(R.id.tv_comments)).setText(commentsHandler.getArticle().getNumberOfComments() + "");
+            appBarLayout.setExpanded(false);
+            recyclerView_comments.scrollToPosition(commentsHandler.getCommentsofCurrentArticle().size()-1);
         }
     }
 
@@ -101,5 +122,47 @@ public class Comments extends AppCompatActivity {
             finish();
         }
         return super.onOptionsItemSelected(menuItem);
+    }
+
+    @Override
+    protected void onStop() {
+        commentsHandler.getCommentsofCurrentArticle().clear();
+        super.onStop();
+    }
+
+    @Override
+    public void onEmojiconBackspaceClicked(View v) {
+        EmojiconsFragment.backspace(commentText);
+    }
+
+    @Override
+    public void onEmojiconClicked(Emojicon emojicon) {
+        EmojiconsFragment.input(commentText, emojicon);
+    }
+
+    public void setFragmentVisibility(View v){
+
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        if (emojicons.isHidden()) {
+            ft.show(emojicons);
+            emojiconsOpen = true;
+        } else {
+            ft.hide(emojicons);
+            emojiconsOpen = false;
+        }
+        ft.commit();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if(emojiconsOpen)
+        {
+            setFragmentVisibility(null);
+        }
+        else
+        {
+            globalClass.getCategoriesHandler().getRecyclerAdapter().notifyDataSetChanged();
+            super.onBackPressed();
+        }
     }
 }

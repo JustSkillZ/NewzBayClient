@@ -29,11 +29,6 @@ import com.facebook.login.LoginManager;
 import com.google.android.gms.plus.Plus;
 import com.squareup.picasso.Picasso;
 
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.lang.reflect.Field;
 
 public class ActivityNewsFeed extends AppCompatActivity
@@ -50,7 +45,7 @@ public class ActivityNewsFeed extends AppCompatActivity
     private CategoriesHandler categoriesHandler;
     private User user;
     private RecyclerView recyclerViewArticle;
-    private RecyclerView.Adapter recyclerAdapter;
+    private RecyclerView.Adapter recyclerAdapterArticle;
     private android.support.v7.widget.LinearLayoutManager recyclerLayoutManager;
     private final Runnable refreshListView = new Runnable()
     {
@@ -77,9 +72,7 @@ public class ActivityNewsFeed extends AppCompatActivity
         globalClass.setCurrentActivity(ActivityNewsFeed.this);
         globalClass.setCurrentLayout(R.id.newsfeed_layout);
         categoriesHandler = globalClass.getCategoriesHandler();
-        SharedPreferences sharedpreferences;
-
-
+        SharedPreferences sharedpreferences; //If first time in this activity, show explanation activity.
         if (!getSharedPreferences(explanationPref, Context.MODE_PRIVATE).getBoolean(isExplanation1, false))
         {
             Intent welcome = new Intent(this, ActivityExplanationNewsFeed.class);
@@ -91,6 +84,7 @@ public class ActivityNewsFeed extends AppCompatActivity
             editor.commit();
         }
 
+        //********************************Init Main Toolbar*****************************************
         toolbarMain = (android.support.v7.widget.Toolbar) findViewById(R.id.toolbar_main);
         setSupportActionBar(toolbarMain);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
@@ -113,12 +107,14 @@ public class ActivityNewsFeed extends AppCompatActivity
                 }
             }
         }
+        //******************************************************************************************
 
+        //**************************Init RecyclerView of Articles***********************************
         recyclerViewArticle = (RecyclerView) findViewById(R.id.recyclerView_articles);
         recyclerLayoutManager = new LinearLayoutManager(this);
         recyclerViewArticle.setLayoutManager(recyclerLayoutManager);
-        recyclerAdapter = new ArticleAdapter(this, (GlobalClass) getApplicationContext());
-        recyclerViewArticle.setAdapter(recyclerAdapter);
+        recyclerAdapterArticle = new ArticleAdapter(this, (GlobalClass) getApplicationContext());
+        recyclerViewArticle.setAdapter(recyclerAdapterArticle);
         recyclerViewArticle.addOnScrollListener(new RecyclerView.OnScrollListener()
         {
             int pastVisibleItems, visibleItemCount, totalItemCount;
@@ -134,7 +130,7 @@ public class ActivityNewsFeed extends AppCompatActivity
 
                     if (pastVisibleItems + visibleItemCount == totalItemCount && totalItemCount != 0)
                     {
-                        if (!categoriesHandler.isLoading())
+                        if (!categoriesHandler.isLoading()) //If not asking, ask for more articles from current subject
                         {
                             categoriesHandler.setLoading(true);
                             globalClass.getCommunication().clientSend("118○" + categoriesHandler.getCurrentlyInUseCategoryServer() + "○" + categoriesHandler.getCurrentlyInUse().lastElement().getUrl() + "#");
@@ -144,11 +140,13 @@ public class ActivityNewsFeed extends AppCompatActivity
                 }
             }
         });
+        //******************************************************************************************
 
-        categoriesHandler.setArticlesRecyclerAdapter(recyclerAdapter);
+        categoriesHandler.setArticlesRecyclerAdapter(recyclerAdapterArticle);
 
         createSwipeRefreshLayout();
 
+        //**Open the possibility to drag and open the NavigationView from the middle of the screen**
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         Field mDragger = null;//mRightDragger for right obviously
         try
@@ -160,12 +158,12 @@ public class ActivityNewsFeed extends AppCompatActivity
         {
             e.printStackTrace();
         }
+        assert mDragger != null;
         mDragger.setAccessible(true);
         ViewDragHelper draggerObj = null;
         try
         {
-            draggerObj = (ViewDragHelper) mDragger
-                    .get(drawer);
+            draggerObj = (ViewDragHelper) mDragger.get(drawer);
         }
         catch (IllegalAccessException e)
         {
@@ -175,13 +173,14 @@ public class ActivityNewsFeed extends AppCompatActivity
         Field mEdgeSize = null;
         try
         {
-            mEdgeSize = draggerObj.getClass().getDeclaredField(
-                    "mEdgeSize");
+            assert draggerObj != null;
+            mEdgeSize = draggerObj.getClass().getDeclaredField("mEdgeSize");
         }
         catch (NoSuchFieldException e)
         {
             e.printStackTrace();
         }
+        assert mEdgeSize != null;
         mEdgeSize.setAccessible(true);
         int edge = 0;
         try
@@ -201,6 +200,9 @@ public class ActivityNewsFeed extends AppCompatActivity
         {
             e.printStackTrace();
         }
+        //******************************************************************************************
+
+        //*******************Init DrawerLayout in order to open NavigationView**********************
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbarMain, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
         {
@@ -224,7 +226,9 @@ public class ActivityNewsFeed extends AppCompatActivity
         });
         drawer.setDrawerListener(toggle);
         toggle.syncState();
+        //******************************************************************************************
 
+        //****************************Customize NavigationView**************************************
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         navigationView.getMenu().findItem(R.id.nav_hot_news).getIcon().setColorFilter(getResources().getColor(R.color.orange), PorterDuff.Mode.SRC_ATOP);
@@ -238,6 +242,7 @@ public class ActivityNewsFeed extends AppCompatActivity
             spanString.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.com_facebook_button_background_color_disabled)), 0, spanString.length(), 0); //fix the color to white
             navigationView.getMenu().findItem(R.id.nav_priority).setTitle(spanString);
         }
+        //******************************************************************************************
     }
 
     @Override
@@ -249,7 +254,7 @@ public class ActivityNewsFeed extends AppCompatActivity
         {
             drawer.closeDrawer(GravityCompat.START);
         }
-        else
+        else //Double click on back in order to close application
         {
             if (doubleBackToExitPressedOnce)
             {
@@ -257,10 +262,8 @@ public class ActivityNewsFeed extends AppCompatActivity
             }
             this.doubleBackToExitPressedOnce = true;
             Toast.makeText(this, "יש ללחוץ פעם נוספת בשביל לצאת", Toast.LENGTH_SHORT).show();
-
             new Handler().postDelayed(new Runnable()
             {
-
                 @Override
                 public void run()
                 {
@@ -280,7 +283,6 @@ public class ActivityNewsFeed extends AppCompatActivity
         {
             categoriesHandler.getCurrentlyInUse().clear();
             globalClass.getCommunication().clientSend("126#");
-//            while(categoriesHandler.getCurrentlyInUse().size() == 0);
             Intent intent = new Intent(this, ActivityHotNews.class);
             startActivity(intent);
         }

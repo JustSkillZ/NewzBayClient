@@ -1,6 +1,5 @@
 package magshimim.newzbay;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -74,33 +73,9 @@ public class newsfeed_activity extends AppCompatActivity
         SharedPreferences sharedpreferences;
 
 
-//        final ImageView loading = (ImageView) findViewById(R.id.iv_nb_loading);
-//        loading.setVisibility(View.VISIBLE);
-//        final Animation an = AnimationUtils.loadAnimation(getBaseContext(), R.anim.rotate);
-//        final Animation an2 = AnimationUtils.loadAnimation(getBaseContext(), R.anim.abc_fade_out);
-//
-//        loading.startAnimation(an);
-//        an.setAnimationListener(new Animation.AnimationListener() {
-//            @Override
-//            public void onAnimationStart(Animation animation) {
-//
-//            }
-//
-//            @Override
-//            public void onAnimationEnd(Animation animation) {
-//                loading.startAnimation(an2);
-//                loading.setVisibility(View.GONE);
-//            }
-//
-//            @Override
-//            public void onAnimationRepeat(Animation animation) {
-//
-//            }
-//        });
-
         if (!getSharedPreferences(explanationPref, Context.MODE_PRIVATE).getBoolean(isExplanation1, false))
         {
-            Intent welcome = new Intent(this,Explanation.class);
+            Intent welcome = new Intent(this,ExplanationNewsFeed.class);
             startActivity(welcome);
 
             sharedpreferences = getSharedPreferences(explanationPref, Context.MODE_PRIVATE);
@@ -296,11 +271,12 @@ public class newsfeed_activity extends AppCompatActivity
         } else if (id == R.id.nav_science) {
             changeCategory(9);
 
-        } else if (id == R.id.nav_settings) {
-            Intent settings = new Intent(this, settings_activity.class);
-            startActivity(settings);
-            this.onStop();
         }
+//        else if (id == R.id.nav_settings) {
+//            Intent settings = new Intent(this, settings_activity.class);
+//            startActivity(settings);
+//            this.onStop();
+//        }
         else if(id == R.id.nav_priority)
         {
             if(!user.getConnectedVia().equals("Guest"))

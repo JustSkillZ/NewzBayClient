@@ -1,5 +1,8 @@
 package magshimim.newzbay;
 
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.graphics.PorterDuff;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -46,6 +49,8 @@ public class ChoosePriority extends AppCompatActivity implements PopupMenu.OnMen
             subject.setTextColor(getResources().getColor(R.color.orange));
             ImageButton addSite = (ImageButton) findViewById(R.id.btn_add);
             addSite.getBackground().setColorFilter(getResources().getColor(R.color.orange), PorterDuff.Mode.SRC_ATOP);
+            ImageButton help = (ImageButton) findViewById(R.id.btn_help);
+            help.getBackground().setColorFilter(getResources().getColor(R.color.orange), PorterDuff.Mode.SRC_ATOP);
             Button sendPriority = (Button) findViewById(R.id.btn_sendPriority);
             sendPriority.setBackground(getResources().getDrawable(R.drawable.button_rounded_corners));
             ImageView recyclerViewStroke = (ImageView) findViewById(R.id.rv_orderSites_stroke);
@@ -97,9 +102,22 @@ public class ChoosePriority extends AppCompatActivity implements PopupMenu.OnMen
         {
             addRemoved.getMenu().add( priorityHandler.getRemovedSitesOfCurrentSubject().get(i));
         }
-//        MenuInflater inflater = addRemoved.getMenuInflater();
-//        inflater.inflate(R.menu.newsfeed_activity_drawer, addRemoved.getMenu());
         addRemoved.show();
+    }
+
+    public void showWhatTODO(View v)
+    {
+        DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+            }
+        };
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        String msg = getResources().getString(R.string.PriorityHelp1) + ": " + priorityHandler.getSubjects().get(priorityHandler.getCurrentPrioritySubject()) + ".\n\n";
+        msg = msg + getResources().getString(R.string.PriorityHelp2) + "\n\n" + getResources().getString(R.string.PriorityHelp3) + "\n\n";
+        msg = msg + getResources().getString(R.string.PriorityHelp4) + "\n\n" + getResources().getString(R.string.PriorityHelp5);
+        builder.setMessage(msg).setNeutralButton("הבנתי", dialogClickListener).show();
     }
 
     @Override

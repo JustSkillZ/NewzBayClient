@@ -1,5 +1,7 @@
 package magshimim.newzbay;
 
+import android.content.Context;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -13,6 +15,8 @@ import android.text.format.DateUtils;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -39,6 +43,9 @@ public class Comments extends AppCompatActivity implements EmojiconGridFragment.
     private Boolean emojiconsOpen;
     private AppBarLayout appBarLayout;
 
+    private int softKeyboardHeight = -1;
+    private boolean keyboardVisible = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,9 +57,34 @@ public class Comments extends AppCompatActivity implements EmojiconGridFragment.
         emojiconsOpen = false;
         commentText = (EditText) findViewById(R.id.commentText);
         emojicons = getSupportFragmentManager().findFragmentById(R.id.fragment_emojicons);
+
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.hide(emojicons);
         ft.commit();
+
+        final View rootView = findViewById(R.id.comments_layout);
+        rootView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                Rect r = new Rect();
+                rootView.getWindowVisibleDisplayFrame(r);
+                int screenHeight = rootView.getRootView().getHeight();
+                int heightDifference = screenHeight - (r.bottom - r.top);
+                if(heightDifference > 150)
+                {
+                    if(!keyboardVisible && emojiconsOpen)
+                    {
+                        setFragmentVisibility(null);
+                    }
+                    softKeyboardHeight = heightDifference - 75;
+                    keyboardVisible = true;
+                }
+                else
+                {
+                    keyboardVisible = false;
+                }
+            }
+        });
 
         CollapsingToolbarLayout collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
         collapsingToolbarLayout.setTitle(commentsHandler.getArticle().getMainHeadline());
@@ -143,7 +175,19 @@ public class Comments extends AppCompatActivity implements EmojiconGridFragment.
     public void setFragmentVisibility(View v){
 
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        if(softKeyboardHeight != -1)
+        {
+            ViewGroup.LayoutParams params = emojicons.getView().getLayoutParams();
+            params.height = softKeyboardHeight;
+            emojicons.getView().setLayoutParams(params);
+        }
         if (emojicons.isHidden()) {
+            if(keyboardVisible)
+            {
+                InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(commentText.getWindowToken(),
+                        InputMethodManager.RESULT_UNCHANGED_SHOWN);
+            }
             ft.show(emojicons);
             emojiconsOpen = true;
         } else {

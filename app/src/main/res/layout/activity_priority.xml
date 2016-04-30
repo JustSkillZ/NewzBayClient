@@ -25,6 +25,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginRight="5dp"
             android:text="יש ללחוץ על כל נושא ולתעדף את האתרים אותם תרצו לראות ובסדר אותם תרצו לראות"
             android:textStyle="bold"
             android:id="@+id/tv_explanation"

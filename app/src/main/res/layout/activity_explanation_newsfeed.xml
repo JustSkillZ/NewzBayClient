@@ -3,34 +3,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="magshimim.newzbay.Explanation">
+    tools:context=".ExplanationNewsFeed">
 
     <include
         android:id="@+id/toolbar_main"
         layout="@layout/toolbar_main">
     </include>
-
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/imageView"
-        android:background="@drawable/arrow_up2"
-        android:paddingRight="12dp"
-        android:layout_below="@+id/toolbar_main"
-        android:layout_alignParentEnd="true" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="חיפוש כתבות"
-        android:textColor="@color/ExplanationBlue"
-        android:textStyle="bold"
-        android:paddingRight="12dp"
-        android:id="@+id/textView"
-        android:layout_alignParentEnd="true"
-        android:layout_below="@+id/imageView"
-        android:layout_alignParentRight="true" />
 
     <ImageView
         android:layout_width="wrap_content"

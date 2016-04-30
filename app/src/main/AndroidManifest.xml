@@ -47,18 +47,17 @@
             android:label="@string/title_activity_settings_activity"
             android:theme="@style/AppTheme_NoActionBar" />
         <activity
-            android:name=".Explanation"
+            android:name=".ExplanationNewsFeed"
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:screenOrientation="portrait"
             android:theme="@style/Transparent" />
         <activity
-            android:name=".Explanation2"
+            android:name=".ExplanationInnerWeb"
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:screenOrientation="portrait"
             android:theme="@style/Transparent" />
         <activity
             android:name=".ExploreArticles"
-            android:label="@string/title_activity_explore_articles"
             android:theme="@style/AppTheme_NoActionBar" />
         <activity
             android:name=".InnerWeb"
@@ -74,11 +73,12 @@
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme_NoActionBar" />
-        <activity android:name=".Comments"
-            android:theme="@style/AppTheme_NoActionBar"
-            android:windowSoftInputMode="adjustPan"
+        <activity
+            android:name=".Comments"
+            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:screenOrientation="portrait"
-            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"/>
+            android:theme="@style/AppTheme_NoActionBar"
+            android:windowSoftInputMode="adjustPan"/>
     </application>
 
 </manifest>

@@ -93,4 +93,11 @@
     <string name="technology">טכנולוגיה</string>
     <string name="science">מדע</string>
     <string name="title_activity_del">del</string>
+    <string name="send">שלח</string>
+    <string name="WriteComment">כתוב תגובה...</string>
+    <string name="PriorityHelp1">במסך זה את/ה בוחר את האתרים שמהם אתה מעוניין לקבל כתבות בנושא</string>
+    <string name="PriorityHelp2">האתרים מתועדפים על פי המיקום שלהם ברשימה. ככל שהאתר יותר למעלה ברשימה ככה יראו אותו יותר.</string>
+    <string name="PriorityHelp3">על מנת לא לראות כתבות מאתר מסויים יש להחליק אתר זה ימינה.</string>
+    <string name="PriorityHelp4">על מנת להחזיר אתרים שנמחקו מהרשימה לחץ על הכפתור השמאלי למעלה (+).</string>
+    <string name="PriorityHelp5">תיעדוף האתרים: יש ללחוץ על אתר מסויים ולהחזיק את האצבע כשנייה, ולאחר מכן לגרור למקום הרצוי ברשימה.</string>
 </resources>

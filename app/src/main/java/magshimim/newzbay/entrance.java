@@ -167,7 +167,7 @@ public class entrance extends AppCompatActivity implements GoogleApiClient.Conne
             @Override
             public void onSuccess(LoginResult loginResult) {
                 Log.d(TAG, "facebook login");
-                GraphRequest request = GraphRequest.newMeRequest(
+                final GraphRequest request = GraphRequest.newMeRequest(
                         loginResult.getAccessToken(),
                         new GraphRequest.GraphJSONObjectCallback() {
                             @Override
@@ -188,13 +188,32 @@ public class entrance extends AppCompatActivity implements GoogleApiClient.Conne
                                 }
                             }
                         });
-                user = new FacebookUser(Profile.getCurrentProfile().getName(), Profile.getCurrentProfile().getProfilePictureUri(500, 500).toString(), null, Profile.getCurrentProfile(), "", globalClass);
-                globalClass.setUser(user);
-                Bundle parameters = new Bundle();
-                parameters.putString("fields", "id,name,email,gender, birthday");
-                request.setParameters(parameters);
-                request.executeAsync();
-                moveToNewsFeed();
+                if(Profile.getCurrentProfile() == null) {
+                    mProfileTracker = new ProfileTracker() {
+                        @Override
+                        protected void onCurrentProfileChanged(Profile profile, Profile profile2) {
+                            user = new FacebookUser(Profile.getCurrentProfile().getName(), Profile.getCurrentProfile().getProfilePictureUri(500, 500).toString(), null, Profile.getCurrentProfile(), "", globalClass);
+                            globalClass.setUser(user);
+                            Bundle parameters = new Bundle();
+                            parameters.putString("fields", "id,name,email,gender, birthday");
+                            request.setParameters(parameters);
+                            request.executeAsync();
+                            moveToNewsFeed();
+                            mProfileTracker.stopTracking();
+                        }
+                    };
+                    mProfileTracker.startTracking();
+                }
+                else
+                {
+                    user = new FacebookUser(Profile.getCurrentProfile().getName(), Profile.getCurrentProfile().getProfilePictureUri(500, 500).toString(), null, Profile.getCurrentProfile(), "", globalClass);
+                    globalClass.setUser(user);
+                    Bundle parameters = new Bundle();
+                    parameters.putString("fields", "id,name,email,gender, birthday");
+                    request.setParameters(parameters);
+                    request.executeAsync();
+                    moveToNewsFeed();
+                }
             }
 
             @Override

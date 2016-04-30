@@ -18,11 +18,4 @@
         android:textSize="28sp"
         android:textStyle="bold" />
 
-    <ImageButton
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:background="@drawable/search_white"
-        android:id="@+id/toolbar_search"
-        android:layout_gravity="right" />
-
 </android.support.v7.widget.Toolbar>

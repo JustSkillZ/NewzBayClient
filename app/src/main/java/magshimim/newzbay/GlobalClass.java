@@ -4,7 +4,8 @@ import android.app.Application;
 import android.content.Context;
 import android.content.res.Resources;
 
-public class GlobalClass extends Application {
+public class GlobalClass extends Application
+{
 
     private CategoriesHandler categoriesHandler;
     private CommentsHandler commentsHandler;
@@ -19,7 +20,7 @@ public class GlobalClass extends Application {
     public void initiateClass(Resources resources)
     {
         this.resources = resources;
-        categoriesHandler= new CategoriesHandler(null, "", "", false, this);
+        categoriesHandler = new CategoriesHandler(null, "", "", false, this);
         commentsHandler = new CommentsHandler();
         errorHandler = new ErrorHandler(this);
         user = null;
@@ -28,17 +29,19 @@ public class GlobalClass extends Application {
 
     public void endClass()
     {
-        categoriesHandler= null;
+        categoriesHandler = null;
         errorHandler = null;
         user = null;
     }
 
-    public CategoriesHandler getCategoriesHandler() {
+    public CategoriesHandler getCategoriesHandler()
+    {
 
         return categoriesHandler;
     }
 
-    public User getUser() {
+    public User getUser()
+    {
         return user;
     }
 
@@ -47,43 +50,53 @@ public class GlobalClass extends Application {
         this.user = user;
     }
 
-    public Communication getCommunication() {
+    public Communication getCommunication()
+    {
         return communication;
     }
 
-    public void setCommunication(Communication communication) {
+    public void setCommunication(Communication communication)
+    {
         this.communication = communication;
     }
 
-    public ErrorHandler getErrorHandler() {
+    public ErrorHandler getErrorHandler()
+    {
         return errorHandler;
     }
 
-    public PriorityHandler getPriorityHandler() {
+    public PriorityHandler getPriorityHandler()
+    {
         return priorityHandler;
     }
 
-    public Resources getAppResources() {
+    public Resources getAppResources()
+    {
         return resources;
     }
 
-    public Context getCurrentActivity() {
+    public Context getCurrentActivity()
+    {
         return currentActivity;
     }
 
-    public void setCurrentActivity(Context currentActivity) {
+    public void setCurrentActivity(Context currentActivity)
+    {
         this.currentActivity = currentActivity;
     }
 
-    public int getCurrentLayout() {
+    public int getCurrentLayout()
+    {
         return currentLayout;
     }
 
-    public void setCurrentLayout(int currentLayout) {
+    public void setCurrentLayout(int currentLayout)
+    {
         this.currentLayout = currentLayout;
     }
 
-    public CommentsHandler getCommentsHandler() {
+    public CommentsHandler getCommentsHandler()
+    {
         return commentsHandler;
     }
 }

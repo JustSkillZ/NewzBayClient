@@ -16,38 +16,14 @@ import com.squareup.picasso.Picasso;
 
 import java.util.Date;
 
-public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHolder> {
+public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHolder>
+{
 
     private Context context;
     private CategoriesHandler categoriesHandler;
     private Communication communication;
     private User user;
     private GlobalClass globalClass;
-
-    public static class ViewHolder extends RecyclerView.ViewHolder {
-        public TextView mainHeadline;
-        public TextView secondHeadline;
-        public TextView site;
-        public TextView date;
-        public ImageButton picture;
-        public TextView countLikes;
-        public TextView countComments;
-        public Button like;
-        public Button comment;
-
-        public ViewHolder(View itemView, TextView mainHeadline, TextView secondHeadline, TextView site, TextView date, ImageButton picture, TextView countLikes, TextView countComments, Button like, Button comment) {
-            super(itemView);
-            this.mainHeadline = mainHeadline;
-            this.secondHeadline = secondHeadline;
-            this.site = site;
-            this.date = date;
-            this.picture = picture;
-            this.countLikes = countLikes;
-            this.countComments = countComments;
-            this.like = like;
-            this.comment = comment;
-        }
-    }
 
     public ArticleAdapter(Context context, GlobalClass globalClass)
     {
@@ -59,78 +35,79 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
     }
 
     @Override
-    public ArticleAdapter.ViewHolder onCreateViewHolder(ViewGroup parent,
-                                                   int viewType) {
+    public ArticleAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
+    {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.recyclerview_article, parent, false);
-        TextView mainHeadline = (TextView) view.findViewById(R.id.tv_mainHeadline);
-        TextView secondHeadline = (TextView) view.findViewById(R.id.tv_secondHeadline);
-        TextView site = (TextView) view.findViewById(R.id.tv_site);
-        TextView date = (TextView) view.findViewById(R.id.tv_date);
-        ImageButton picture = (ImageButton) view.findViewById(R.id.ib_picture);
-        TextView countLikes = (TextView) view.findViewById(R.id.tv_likes);
-        TextView countComments = (TextView) view.findViewById(R.id.tv_comments);
-        Button like = (Button) view.findViewById(R.id.btn_like);
-        Button comment = (Button) view.findViewById(R.id.btn_comment);
-        ViewHolder vh = new ViewHolder(view, mainHeadline, secondHeadline, site, date, picture, countLikes, countComments, like, comment);
+        ViewHolder vh = new ViewHolder(view);
         return vh;
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
-        final int tempPosition = position;
-        if(categoriesHandler.getCurrentlyInUse().size() != 0) {
-            if (user.getConnectedVia().equals("Guest")) {
-
+    public void onBindViewHolder(ViewHolder holder, int position)
+    {
+        final int tempPosition = position; //Current position
+        if (categoriesHandler.getCurrentlyInUse().size() != 0)
+        {
+            if (user.getConnectedVia().equals("Guest")) //Guest cant like or comment
+            {
                 holder.like.setBackgroundResource(R.drawable.buttonborder_disabled);
                 holder.like.setAlpha((float) 0.3);
-                holder.like.setOnClickListener(new View.OnClickListener() {
+                holder.like.setOnClickListener(new View.OnClickListener()
+                {
                     @Override
-                    public void onClick(View v) {
+                    public void onClick(View v)
+                    {
                         Toast toast = Toast.makeText(context, "רק משתמשים מחוברים יכולים לעשות לייק", Toast.LENGTH_LONG);
                         toast.show();
                     }
                 });
-
                 holder.comment.setBackgroundResource(R.drawable.buttonborder_disabled);
                 holder.comment.setAlpha((float) 0.3);
-                holder.comment.setOnClickListener(new View.OnClickListener() {
+                holder.comment.setOnClickListener(new View.OnClickListener()
+                {
                     @Override
-                    public void onClick(View v) {
+                    public void onClick(View v)
+                    {
                         Toast toast = Toast.makeText(context, "רק משתמשים מחוברים יכולים להגיב", Toast.LENGTH_LONG);
                         toast.show();
                     }
                 });
 
-            } else {
-                if (categoriesHandler.getCurrentlyInUse().get(position).getLiked()) {
+            } else //The rest can like or comment
+            {
+                if (categoriesHandler.getCurrentlyInUse().get(position).isLiked())
+                {
                     holder.like.setTextColor(globalClass.getResources().getColor(R.color.nb));
-                } else {
+                } else
+                {
                     holder.like.setTextColor(globalClass.getResources().getColor(R.color.grey));
                 }
-                holder.like.setOnClickListener(new View.OnClickListener() {
+                holder.like.setOnClickListener(new View.OnClickListener()
+                {
                     @Override
-                    public void onClick(View v) {
-
+                    public void onClick(View v)
+                    {
                         Button like = (Button) v.findViewById(R.id.btn_like);
                         ViewGroup item = (ViewGroup) v.getParent().getParent();
                         TextView countLikes = (TextView) item.findViewById(R.id.tv_likes);
-                        if (categoriesHandler.getCurrentlyInUse().get(tempPosition).getLiked()) {
+                        if (categoriesHandler.getCurrentlyInUse().get(tempPosition).isLiked()) //Unlike
+                        {
                             like.setTextColor(globalClass.getResources().getColor(R.color.grey));
                             categoriesHandler.getCurrentlyInUse().get(tempPosition).setLiked(false);
                             categoriesHandler.getCurrentlyInUse().get(tempPosition).decNumberOfLikes();
                             communication.clientSend("110○" + categoriesHandler.getCurrentlyInUse().get(tempPosition).getUrl() + "#");
-                        } else {
+                        } else //Like
+                        {
                             like.setTextColor(globalClass.getResources().getColor(R.color.nb));
                             categoriesHandler.getCurrentlyInUse().get(tempPosition).setLiked(true);
                             categoriesHandler.getCurrentlyInUse().get(tempPosition).incNumberOfLikes();
                             communication.clientSend("110○" + categoriesHandler.getCurrentlyInUse().get(tempPosition).getUrl() + "#");
                         }
                         float numOfLikes = Integer.parseInt(String.valueOf(categoriesHandler.getCurrentlyInUse().get(tempPosition).getNumberOfLikes()));
-                        if(numOfLikes >= 1000)
+                        if (numOfLikes >= 1000) //Nice format, if there is more than 1000 likes. Example: (1.5k)
                         {
                             countLikes.setText(String.format("%.1f", (numOfLikes / 1000)) + "k");
-                        }
-                        else
+                        } else
                         {
                             countLikes.setText(categoriesHandler.getCurrentlyInUse().get(tempPosition).getNumberOfLikes() + "");
                         }
@@ -138,64 +115,73 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
                 });
             }
             holder.mainHeadline.setText(categoriesHandler.getCurrentlyInUse().elementAt(position).getMainHeadline());
-            holder.mainHeadline.setOnClickListener(new View.OnClickListener() {
+            holder.mainHeadline.setOnClickListener(new View.OnClickListener() //Go to comments activity
+            {
                 @Override
-                public void onClick(View v) {
+                public void onClick(View v)
+                {
                     globalClass.getCommentsHandler().setArticle(categoriesHandler.getCurrentlyInUse().elementAt(tempPosition));
-                    Intent comments = new Intent(context, Comments.class);
+                    Intent comments = new Intent(context, ActivityComments.class);
                     context.startActivity(comments);
                 }
             });
             holder.secondHeadline.setText(categoriesHandler.getCurrentlyInUse().elementAt(position).getSecondHeadline());
-            holder.secondHeadline.setOnClickListener(new View.OnClickListener() {
+            holder.secondHeadline.setOnClickListener(new View.OnClickListener() //Go to comments activity
+            {
                 @Override
-                public void onClick(View v) {
+                public void onClick(View v)
+                {
                     globalClass.getCommentsHandler().setArticle(categoriesHandler.getCurrentlyInUse().elementAt(tempPosition));
-                    Intent comments = new Intent(context, Comments.class);
+                    Intent comments = new Intent(context, ActivityComments.class);
                     context.startActivity(comments);
                 }
             });
             holder.site.setText(categoriesHandler.getCurrentlyInUse().elementAt(position).getSiteName());
-            if (categoriesHandler.getCurrentlyInUse().elementAt(position).getDate() != null) {
+            if (categoriesHandler.getCurrentlyInUse().elementAt(position).getDate() != null)
+            {
                 Date d = new Date();
                 holder.date.setText((String) DateUtils.getRelativeTimeSpanString(categoriesHandler.getCurrentlyInUse().elementAt(position).getDate().getTime(), d.getTime(), 0));
             }
             float numOfLikes = Integer.parseInt(String.valueOf(categoriesHandler.getCurrentlyInUse().get(position).getNumberOfLikes()));
-            if(numOfLikes >= 1000)
+            if (numOfLikes >= 1000) //Nice format, if there is more than 1000 likes. Example: (1.5k)
             {
                 holder.countLikes.setText(String.format("%.1f", (numOfLikes / 1000)) + "k");
-            }
-            else
+            } else
             {
                 holder.countLikes.setText(categoriesHandler.getCurrentlyInUse().get(position).getNumberOfLikes() + "");
             }
             float numOfComments = Integer.parseInt(String.valueOf(categoriesHandler.getCurrentlyInUse().get(position).getNumberOfComments()));
-            if(numOfComments >= 1000)
+            if (numOfComments >= 1000) //Nice format, if there is more than 1000 comments. Example: (1.5k)
             {
                 holder.countComments.setText(String.format("%.1f", (numOfComments / 1000)) + "k");
-            }
-            else
+            } else
             {
                 holder.countComments.setText(categoriesHandler.getCurrentlyInUse().get(position).getNumberOfComments() + "");
             }
-            if (!categoriesHandler.getCurrentlyInUse().get(position).getPicURL().equals("null")) {
+            if (!categoriesHandler.getCurrentlyInUse().get(position).getPicURL().equals("null")) //If there is a URL, load the pic.
+            {
                 Picasso.with(context).load(categoriesHandler.getCurrentlyInUse().get(position).getPicURL()).into(holder.picture);
-            } else {
+            } else //If there is no URL, set default image.
+            {
                 holder.picture.setImageBitmap(categoriesHandler.getCurrentlyInUse().get(position).getPicture());
             }
-            holder.picture.setOnClickListener(new View.OnClickListener() {
+            holder.picture.setOnClickListener(new View.OnClickListener() //Go to web activity
+            {
                 @Override
-                public void onClick(View v) {
+                public void onClick(View v)
+                {
                     categoriesHandler.setCurrentlyOpenURL(categoriesHandler.getCurrentlyInUse().elementAt(tempPosition).getUrl());
-                    Intent web = new Intent(context, InnerWeb.class);
+                    Intent web = new Intent(context, ActivityInnerWeb.class);
                     context.startActivity(web);
                 }
             });
-            holder.comment.setOnClickListener(new View.OnClickListener() {
+            holder.comment.setOnClickListener(new View.OnClickListener() //Go to comments activity
+            {
                 @Override
-                public void onClick(View v) {
+                public void onClick(View v)
+                {
                     globalClass.getCommentsHandler().setArticle(categoriesHandler.getCurrentlyInUse().elementAt(tempPosition));
-                    Intent comments = new Intent(context, Comments.class);
+                    Intent comments = new Intent(context, ActivityComments.class);
                     context.startActivity(comments);
                 }
             });
@@ -203,7 +189,35 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
     }
 
     @Override
-    public int getItemCount() {
+    public int getItemCount()
+    {
         return categoriesHandler.getCurrentlyInUse().size();
+    }
+
+    public static class ViewHolder extends RecyclerView.ViewHolder
+    {
+        public TextView mainHeadline;
+        public TextView secondHeadline;
+        public TextView site;
+        public TextView date;
+        public ImageButton picture;
+        public TextView countLikes;
+        public TextView countComments;
+        public Button like;
+        public Button comment;
+
+        public ViewHolder(View itemView)
+        {
+            super(itemView);
+            this.mainHeadline = (TextView) itemView.findViewById(R.id.tv_mainHeadline);
+            this.secondHeadline = (TextView) itemView.findViewById(R.id.tv_secondHeadline);
+            this.site = (TextView) itemView.findViewById(R.id.tv_site);
+            this.date = (TextView) itemView.findViewById(R.id.tv_date);
+            this.picture = (ImageButton) itemView.findViewById(R.id.ib_picture);
+            this.countLikes = (TextView) itemView.findViewById(R.id.tv_likes);
+            this.countComments = (TextView) itemView.findViewById(R.id.tv_comments);
+            this.like = (Button) itemView.findViewById(R.id.btn_like);
+            this.comment = (Button) itemView.findViewById(R.id.btn_comment);
+        }
     }
 }

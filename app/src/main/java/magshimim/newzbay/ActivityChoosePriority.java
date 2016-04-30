@@ -18,7 +18,8 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-public class ChoosePriority extends AppCompatActivity implements PopupMenu.OnMenuItemClickListener {
+public class ActivityChoosePriority extends AppCompatActivity implements PopupMenu.OnMenuItemClickListener
+{
 
     private GlobalClass globalClass;
     private PriorityHandler priorityHandler;
@@ -28,7 +29,8 @@ public class ChoosePriority extends AppCompatActivity implements PopupMenu.OnMen
     private PopupMenu addRemoved;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_choose_priority);
         globalClass = (GlobalClass) getApplicationContext();
@@ -38,9 +40,9 @@ public class ChoosePriority extends AppCompatActivity implements PopupMenu.OnMen
         subject.setText(priorityHandler.getSubjects().get(priorityHandler.getCurrentPrioritySubject()));
         Time now = new Time();
         now.setToNow();
-        if(now.hour >= 19 || now.hour >= 0 && now.hour <= 5)
+        if (now.hour >= 19 || now.hour >= 0 && now.hour <= 5) //Change Theme if the time is after 7 PM or before 6 AM
         {
-            RelativeLayout layout =(RelativeLayout)findViewById(R.id.activity_choosePriority);
+            RelativeLayout layout = (RelativeLayout) findViewById(R.id.activity_choosePriority);
             layout.setBackground(getResources().getDrawable(R.drawable.main_background_night));
             subject.setTextColor(getResources().getColor(R.color.orange));
             ImageButton addSite = (ImageButton) findViewById(R.id.btn_add);
@@ -52,30 +54,29 @@ public class ChoosePriority extends AppCompatActivity implements PopupMenu.OnMen
             ImageView recyclerViewStroke = (ImageView) findViewById(R.id.rv_orderSites_stroke);
             recyclerViewStroke.setBackground(getResources().getDrawable(R.drawable.rounded_stroke_orange));
         }
-
+        //***********************************Init RecyclerView*************************************
         recyclerViewSites = (RecyclerView) findViewById(R.id.rv_orderSites);
         recyclerLayoutManager = new LinearLayoutManager(this);
         recyclerViewSites.setLayoutManager(recyclerLayoutManager);
-        recyclerAdapter =  new SitesAdapter((GlobalClass)getApplicationContext());
+        recyclerAdapter = new SitesAdapter((GlobalClass) getApplicationContext());
         recyclerViewSites.setAdapter(recyclerAdapter);
-        ItemTouchHelper.Callback callback = new DragNSwipeHelper((SitesAdapter)recyclerAdapter);
+        ItemTouchHelper.Callback callback = new DragNSwipeHelper((SitesAdapter) recyclerAdapter);
         ItemTouchHelper touchHelper = new ItemTouchHelper(callback);
         touchHelper.attachToRecyclerView(recyclerViewSites);
-
-
+        //*****************************************************************************************
     }
 
     public void sendPriority(View v)
     {
-        globalClass.getCommunication().clientSend("194◘" + priorityHandler.getCurrentPrioritySubject() + "#");
+        globalClass.getCommunication().clientSend("194◘" + priorityHandler.getCurrentPrioritySubject() + "#"); //Delete previous priority in current subject
         String priority = "104◘";
-        for(int i = 0; i < priorityHandler.getClientPriority().size(); i++)
+        for (int i = 0; i < priorityHandler.getClientPriority().size(); i++) //Make the priority string
         {
-            for(int j = 0; j < priorityHandler.getCategorySites().size(); j++)
+            for (int j = 0; j < priorityHandler.getCategorySites().size(); j++)
             {
-                if(priorityHandler.getCategorySites().get(j).getSubject().equals(priorityHandler.getCurrentPrioritySubject()))
+                if (priorityHandler.getCategorySites().get(j).getSubject().equals(priorityHandler.getCurrentPrioritySubject())) //Get the id of each site that in user's priority
                 {
-                    if(priorityHandler.getCategorySites().get(j).getSite().equals(priorityHandler.getClientPriority().get(i)))
+                    if (priorityHandler.getCategorySites().get(j).getSite().equals(priorityHandler.getClientPriority().get(i)))
                     {
                         priority = priority + priorityHandler.getCategorySites().get(j).getId() + "○" + (i + 1) + "◘";
                     }
@@ -84,28 +85,32 @@ public class ChoosePriority extends AppCompatActivity implements PopupMenu.OnMen
         }
         priority = priority.substring(0, priority.length() - 1);
         priority = priority + "#";
-        if(priorityHandler.getClientPriority().size()!= 0)
+        if (priorityHandler.getClientPriority().size() != 0) //If the priority has sites
         {
             globalClass.getCommunication().clientSend(priority);
         }
         finish();
     }
 
-    public void addRemovedSites(View v) {
+    public void addRemovedSites(View v) //Open PopupMenu with the sites that the user removed from his priority
+    {
         addRemoved = new PopupMenu(this, v);
         addRemoved.setOnMenuItemClickListener(this);
-        for(int i = 0; i < priorityHandler.getRemovedSitesOfCurrentSubject().size(); i++)
+        for (int i = 0; i < priorityHandler.getRemovedSitesOfCurrentSubject().size(); i++)
         {
-            addRemoved.getMenu().add( priorityHandler.getRemovedSitesOfCurrentSubject().get(i));
+            addRemoved.getMenu().add(priorityHandler.getRemovedSitesOfCurrentSubject().get(i));
         }
         addRemoved.show();
     }
 
-    public void showWhatTODO(View v)
+    public void showWhatTODO(View v) //Information Dialog
     {
-        DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+        DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener()
+        {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
+            public void onClick(DialogInterface dialog, int which)
+            {
+
             }
         };
 
@@ -117,11 +122,12 @@ public class ChoosePriority extends AppCompatActivity implements PopupMenu.OnMen
     }
 
     @Override
-    public boolean onMenuItemClick(MenuItem item) {
+    public boolean onMenuItemClick(MenuItem item) //Return the chosen site to client's priority
+    {
         int position = -1;
-        for(int i = 0; i < priorityHandler.getRemovedSitesOfCurrentSubject().size(); i++)
+        for (int i = 0; i < priorityHandler.getRemovedSitesOfCurrentSubject().size(); i++)
         {
-            if(priorityHandler.getRemovedSitesOfCurrentSubject().get(i).equals(item.getTitle()))
+            if (priorityHandler.getRemovedSitesOfCurrentSubject().get(i).equals(item.getTitle()))
             {
                 position = i;
             }

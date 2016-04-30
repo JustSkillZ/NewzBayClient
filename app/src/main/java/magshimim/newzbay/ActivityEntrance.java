@@ -42,8 +42,13 @@ import org.json.JSONObject;
 
 import java.util.Arrays;
 
-public class EntranceActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, View.OnClickListener {
+public class ActivityEntrance extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, View.OnClickListener
+{
 
+    private static final String TAG = "check";
+    private static final int SIGN_IN_CODE = 0;
+    private static final String prefsConnection = "magshimim.newzbay.ConnectionPrefs";
+    private static final String facebookEmail = "facebookEmail";
     private LoginButton facebookLoginButton;
     private SignInButton googleSignInButton;
     private CallbackManager callbackManager;
@@ -52,24 +57,20 @@ public class EntranceActivity extends AppCompatActivity implements GoogleApiClie
     private ConnectionResult mConnectionResult;
     private int requestCode;
     private ProgressDialog mProgressDialog;
-    private static final String TAG = "check";
     private Communication communication;
-    private static final int SIGN_IN_CODE = 0;
     private boolean isIntentInprogress;
     private boolean isSignInBtnClicked;
     private GlobalClass globalClass;
     private User user;
 
-    private static final String prefsConnection = "magshimim.newzbay.ConnectionPrefs";
-    private static final String facebookEmail = "facebookEmail";
-
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
 
         ((GlobalClass) getApplicationContext()).initiateClass(getResources());
         globalClass = ((GlobalClass) getApplicationContext());
-        globalClass.setCurrentActivity(EntranceActivity.this);
+        globalClass.setCurrentActivity(ActivityEntrance.this);
         globalClass.setCurrentLayout(R.id.entrance_layout);
         LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         globalClass.getErrorHandler().setPopupWindowViewNoConnectionWithServer(inflater.inflate(R.layout.popup_no_connection, null, false));
@@ -84,7 +85,7 @@ public class EntranceActivity extends AppCompatActivity implements GoogleApiClie
         guestLoginBtn.setAlpha((float) 0.1);
         guestLoginBtn.setEnabled(false);
         Drawable logo = getResources().getDrawable(R.drawable.anchor_logo);
-        logo.setBounds(0, 0, (int)(logo.getIntrinsicWidth()*0.5),(int)(logo.getIntrinsicHeight()*0.5));
+        logo.setBounds(0, 0, (int) (logo.getIntrinsicWidth() * 0.5), (int) (logo.getIntrinsicHeight() * 0.5));
         guestLoginBtn.setCompoundDrawables(logo, null, null, null);
 
         LoginButton facebookLoginBtn = (LoginButton) findViewById(R.id.btn_Facebook);
@@ -99,7 +100,8 @@ public class EntranceActivity extends AppCompatActivity implements GoogleApiClie
 
         Time now = new Time();
         now.setToNow();
-        if (now.hour >= 19 || now.hour >= 0 && now.hour <= 5) {
+        if (now.hour >= 19 || now.hour >= 0 && now.hour <= 5)
+        {
             RelativeLayout layout = (RelativeLayout) findViewById(R.id.entrance_layout);
             layout.setBackground(getResources().getDrawable(R.drawable.main_background_night));
             TextView newzBay = (TextView) findViewById(R.id.tv_newzbay);
@@ -113,12 +115,13 @@ public class EntranceActivity extends AppCompatActivity implements GoogleApiClie
         Thread t = new Thread(communication);
         t.start();
 
-//        Intent priority = new Intent(this,Priority.class);
+//        Intent priority = new Intent(this,ActivityPriority.class);
 //        startActivity(priority);
     }
 
     @Override
-    protected void onResume() {
+    protected void onResume()
+    {
         super.onResume();
 
         // Logs 'install' and 'app activate' App Events.
@@ -126,14 +129,16 @@ public class EntranceActivity extends AppCompatActivity implements GoogleApiClie
     }
 
     @Override
-    protected void onPause() {
+    protected void onPause()
+    {
         super.onPause();
 
         // Logs 'app deactivate' App Event.
         AppEventsLogger.deactivateApp(this);
     }
 
-    public void signInAsGuest(View v) {
+    public void signInAsGuest(View v)
+    {
         Log.d(TAG, "guest login");
         user = new User("Guest", "", "Guest");
         globalClass.setUser(user);
@@ -143,38 +148,45 @@ public class EntranceActivity extends AppCompatActivity implements GoogleApiClie
         moveToNewsFeed();
     }
 
-    public void moveToNewsFeed() {
-        if(user.getConnectedVia().equals("Google"))
+    public void moveToNewsFeed()
+    {
+        if (user.getConnectedVia().equals("Google"))
         {
             String send = "102○" + Plus.AccountApi.getAccountName(mGoogleApiClient) + "○" + ((GoogleUser) user).getGoogleProfile().getName().getGivenName() + "○" + user.getPicURL() + "#";
             globalClass.getErrorHandler().setConnectingClientMsg(send);
             globalClass.getCommunication().clientSend(send);
             Log.d("Server", "102○" + Plus.AccountApi.getAccountName(mGoogleApiClient) + "○" + ((GoogleUser) user).getGoogleProfile().getName().getGivenName() + "○" + user.getPicURL() + "#");
         }
-        Intent nfScreen = new Intent(this, NewsFeedActivity.class);
+        Intent nfScreen = new Intent(this, ActivityNewsFeed.class);
         startActivity(nfScreen);
         finish();
     }
 
-    public void facebookLogin() {
+    public void facebookLogin()
+    {
         facebookLoginButton = (LoginButton) findViewById(R.id.btn_Facebook);
         facebookLoginButton.setReadPermissions(Arrays.asList("email", "user_friends"));
-        facebookLoginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+        facebookLoginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>()
+        {
 
             private ProfileTracker mProfileTracker;
 
             @Override
-            public void onSuccess(LoginResult loginResult) {
+            public void onSuccess(LoginResult loginResult)
+            {
                 Log.d(TAG, "facebook login");
                 final GraphRequest request = GraphRequest.newMeRequest(
                         loginResult.getAccessToken(),
-                        new GraphRequest.GraphJSONObjectCallback() {
+                        new GraphRequest.GraphJSONObjectCallback()
+                        {
                             @Override
-                            public void onCompleted(JSONObject object, GraphResponse response) {
+                            public void onCompleted(JSONObject object, GraphResponse response)
+                            {
                                 Log.v("LoginActivity", response.toString());
-                                try {
+                                try
+                                {
                                     String email = object.getString("email");
-                                    ((FacebookUser)user).setFacebookUserEmail(email);
+                                    ((FacebookUser) user).setFacebookUserEmail(email);
                                     String send = "102○" + ((FacebookUser) user).getFacebookUserEmail() + "○" + ((FacebookUser) user).getFacebookProfile().getFirstName() + "○" + user.getPicURL() + "#";
                                     globalClass.getErrorHandler().setConnectingClientMsg(send);
                                     globalClass.getCommunication().clientSend(send);
@@ -182,15 +194,19 @@ public class EntranceActivity extends AppCompatActivity implements GoogleApiClie
                                     SharedPreferences.Editor editor = sharedpreferences.edit();
                                     editor.putString(facebookEmail, email);
                                     editor.commit();
-                                } catch (JSONException e) {
+                                } catch (JSONException e)
+                                {
                                     e.printStackTrace();
                                 }
                             }
                         });
-                if(Profile.getCurrentProfile() == null) {
-                    mProfileTracker = new ProfileTracker() {
+                if (Profile.getCurrentProfile() == null)
+                {
+                    mProfileTracker = new ProfileTracker()
+                    {
                         @Override
-                        protected void onCurrentProfileChanged(Profile profile, Profile profile2) {
+                        protected void onCurrentProfileChanged(Profile profile, Profile profile2)
+                        {
                             user = new FacebookUser(Profile.getCurrentProfile().getName(), Profile.getCurrentProfile().getProfilePictureUri(500, 500).toString(), Profile.getCurrentProfile(), "");
                             globalClass.setUser(user);
                             Bundle parameters = new Bundle();
@@ -202,8 +218,7 @@ public class EntranceActivity extends AppCompatActivity implements GoogleApiClie
                         }
                     };
                     mProfileTracker.startTracking();
-                }
-                else
+                } else
                 {
                     user = new FacebookUser(Profile.getCurrentProfile().getName(), Profile.getCurrentProfile().getProfilePictureUri(500, 500).toString(), Profile.getCurrentProfile(), "");
                     globalClass.setUser(user);
@@ -216,12 +231,14 @@ public class EntranceActivity extends AppCompatActivity implements GoogleApiClie
             }
 
             @Override
-            public void onCancel() {
+            public void onCancel()
+            {
                 globalClass.setUser(null);
             }
 
             @Override
-            public void onError(FacebookException e) {
+            public void onError(FacebookException e)
+            {
                 globalClass.setUser(null);
             }
         });
@@ -232,12 +249,13 @@ public class EntranceActivity extends AppCompatActivity implements GoogleApiClie
     While initializing the GoogleApiClient object, request the Plus.SCOPE_PLUS_LOGIN scope.
     */
 
-    private void buildNewGoogleApiClient(){
+    private void buildNewGoogleApiClient()
+    {
 
-        mGoogleApiClient =  new GoogleApiClient.Builder(this)
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
-                .addApi(Plus.API,Plus.PlusOptions.builder().build())
+                .addApi(Plus.API, Plus.PlusOptions.builder().build())
                 .addScope(Plus.SCOPE_PLUS_LOGIN)
                 .build();
     }
@@ -251,7 +269,8 @@ public class EntranceActivity extends AppCompatActivity implements GoogleApiClie
       Plus.SCOPE_PLUS_LOGIN scope to see the  difference.
     */
 
-    private void customizeSignBtn(){
+    private void customizeSignBtn()
+    {
 
         googleSignInButton = (SignInButton) findViewById(R.id.btn_Google);
         googleSignInButton.setSize(SignInButton.SIZE_STANDARD);
@@ -265,28 +284,34 @@ public class EntranceActivity extends AppCompatActivity implements GoogleApiClie
       Set on click Listeners on the sign-in sign-out and disconnect buttons
      */
 
-    private void setBtnClickListeners(){
+    private void setBtnClickListeners()
+    {
         // Button listeners
         googleSignInButton.setOnClickListener(this);
     }
 
-    protected void onStart() {
+    protected void onStart()
+    {
         super.onStart();
 //        mGoogleApiClient.connect();
     }
 
     @Override
-    public void onConnectionFailed(ConnectionResult result) {
-        if (!result.hasResolution()) {
+    public void onConnectionFailed(ConnectionResult result)
+    {
+        if (!result.hasResolution())
+        {
             mGoogleApiAvailability.getErrorDialog(this, result.getErrorCode(), requestCode).show();
             return;
         }
 
-        if (!isIntentInprogress) {
+        if (!isIntentInprogress)
+        {
 
             mConnectionResult = result;
 
-            if (isSignInBtnClicked) {
+            if (isSignInBtnClicked)
+            {
 
                 resolveSignInError();
             }
@@ -301,29 +326,34 @@ public class EntranceActivity extends AppCompatActivity implements GoogleApiClie
     @Override
     // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
     protected void onActivityResult(int requestCode, int responseCode,
-                                    Intent intent) {
+                                    Intent intent)
+    {
         super.onActivityResult(requestCode, responseCode, intent);
         callbackManager.onActivityResult(requestCode, responseCode, intent);
 
         // Check which request we're responding to
 
-        if (requestCode == SIGN_IN_CODE) {
+        if (requestCode == SIGN_IN_CODE)
+        {
             this.requestCode = requestCode;
-            if (responseCode != RESULT_OK) {
+            if (responseCode != RESULT_OK)
+            {
                 isSignInBtnClicked = false;
                 mProgressDialog.dismiss();
 
             }
             isIntentInprogress = false;
 
-            if (!mGoogleApiClient.isConnecting()) {
+            if (!mGoogleApiClient.isConnecting())
+            {
                 mGoogleApiClient.connect();
             }
         }
     }
 
     @Override
-    public void onConnected(Bundle arg0) {
+    public void onConnected(Bundle arg0)
+    {
         isSignInBtnClicked = false;
         // Get user's information and set it into the layout
         user = new GoogleUser(Plus.PeopleApi.getCurrentPerson(mGoogleApiClient).getDisplayName(), Plus.PeopleApi.getCurrentPerson(mGoogleApiClient).getImage().getUrl(), Plus.PeopleApi.getCurrentPerson(mGoogleApiClient), mGoogleApiClient);
@@ -334,7 +364,8 @@ public class EntranceActivity extends AppCompatActivity implements GoogleApiClie
     }
 
     @Override
-    public void onConnectionSuspended(int arg0) {
+    public void onConnectionSuspended(int arg0)
+    {
         mGoogleApiClient.connect();
         user = new GoogleUser(Plus.PeopleApi.getCurrentPerson(mGoogleApiClient).getDisplayName(), Plus.PeopleApi.getCurrentPerson(mGoogleApiClient).getImage().getUrl(), Plus.PeopleApi.getCurrentPerson(mGoogleApiClient), mGoogleApiClient);
         globalClass.setUser(user);
@@ -342,8 +373,10 @@ public class EntranceActivity extends AppCompatActivity implements GoogleApiClie
     }
 
     @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
+    public void onClick(View v)
+    {
+        switch (v.getId())
+        {
             case R.id.btn_Google:
                 gPlusSignIn();
                 break;
@@ -354,9 +387,11 @@ public class EntranceActivity extends AppCompatActivity implements GoogleApiClie
       Sign-in into the Google + account
      */
 
-    private void gPlusSignIn() {
-        if (!mGoogleApiClient.isConnecting()) {
-            Log.d("user connected","connected");
+    private void gPlusSignIn()
+    {
+        if (!mGoogleApiClient.isConnecting())
+        {
+            Log.d("user connected", "connected");
             isSignInBtnClicked = true;
 //            mProgressDialog.show();
             resolveSignInError();
@@ -368,13 +403,17 @@ public class EntranceActivity extends AppCompatActivity implements GoogleApiClie
       Method to resolve any signin errors
      */
 
-    private void resolveSignInError() {
-        if (mConnectionResult.hasResolution()) {
-            try {
+    private void resolveSignInError()
+    {
+        if (mConnectionResult.hasResolution())
+        {
+            try
+            {
                 isIntentInprogress = true;
                 mConnectionResult.startResolutionForResult(this, SIGN_IN_CODE);
                 Log.d("resolve error", "sign in error resolved");
-            } catch (IntentSender.SendIntentException e) {
+            } catch (IntentSender.SendIntentException e)
+            {
                 isIntentInprogress = false;
                 mGoogleApiClient.connect();
             }
@@ -385,13 +424,17 @@ public class EntranceActivity extends AppCompatActivity implements GoogleApiClie
      Revoking access from Google+ account
      */
 
-    private void gPlusRevokeAccess() {
-        if (mGoogleApiClient.isConnected()) {
+    private void gPlusRevokeAccess()
+    {
+        if (mGoogleApiClient.isConnected())
+        {
             Plus.AccountApi.clearDefaultAccount(mGoogleApiClient);
             Plus.AccountApi.revokeAccessAndDisconnect(mGoogleApiClient)
-                    .setResultCallback(new ResultCallback<Status>() {
+                    .setResultCallback(new ResultCallback<Status>()
+                    {
                         @Override
-                        public void onResult(Status arg0) {
+                        public void onResult(Status arg0)
+                        {
                             Log.d("MainActivity", "User access revoked!");
                             buildNewGoogleApiClient();
                             mGoogleApiClient.connect();
@@ -401,10 +444,13 @@ public class EntranceActivity extends AppCompatActivity implements GoogleApiClie
         }
     }
 
-    protected void setGooglePlusButtonText(SignInButton signInButton) {
-        for (int i = 0; i < signInButton.getChildCount(); i++) {
+    protected void setGooglePlusButtonText(SignInButton signInButton)
+    {
+        for (int i = 0; i < signInButton.getChildCount(); i++)
+        {
             View v = signInButton.getChildAt(i);
-            if (v instanceof TextView) {
+            if (v instanceof TextView)
+            {
                 TextView mTextView = (TextView) v;
                 mTextView.setText(R.string.SignInWithGoogle);
                 mTextView.setTypeface(mTextView.getTypeface(), Typeface.BOLD);
@@ -416,7 +462,8 @@ public class EntranceActivity extends AppCompatActivity implements GoogleApiClie
     public void connectToSocialNets()
     {
         facebookLogin();
-        if (Profile.getCurrentProfile() != null) {
+        if (Profile.getCurrentProfile() != null)
+        {
             Log.d(TAG, "facebook login");
             SharedPreferences sharedpreferences = getSharedPreferences(prefsConnection, Context.MODE_PRIVATE);
             user = new FacebookUser(Profile.getCurrentProfile().getName(), Profile.getCurrentProfile().getProfilePictureUri(500, 500).toString(), Profile.getCurrentProfile(), sharedpreferences.getString(facebookEmail, ""));
@@ -425,8 +472,7 @@ public class EntranceActivity extends AppCompatActivity implements GoogleApiClie
             globalClass.getErrorHandler().setConnectingClientMsg(send);
             globalClass.getCommunication().clientSend(send);
             moveToNewsFeed();
-        }
-        else
+        } else
         {
             buildNewGoogleApiClient();
             customizeSignBtn();

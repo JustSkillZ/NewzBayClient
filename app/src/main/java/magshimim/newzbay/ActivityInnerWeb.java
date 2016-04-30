@@ -14,28 +14,25 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
 
-public class InnerWeb extends AppCompatActivity {
+public class ActivityInnerWeb extends AppCompatActivity
+{
 
+    private static final String prefsConnection = "magshimim.newzbay.ConnectionPrefs";
+    private static final String isExplanation2 = "isExplanation2";
     private WebView web;
     private WebBackForwardList webBackForwardList;
     private android.support.v7.widget.Toolbar toolbar_web;
     private CategoriesHandler categoriesHandler;
 
-    private static final String prefsConnection = "magshimim.newzbay.ConnectionPrefs";
-    private static final String isExplanation2 = "isExplanation2";
-
-
-
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_inner_web);
-
         categoriesHandler = ((GlobalClass) getApplicationContext()).getCategoriesHandler();
-
         if (!getSharedPreferences(prefsConnection, Context.MODE_PRIVATE).getBoolean(isExplanation2, false))
         {
-            Intent explanation2 = new Intent(this,ExplanationInnerWeb.class);
+            Intent explanation2 = new Intent(this, ActivityExplanationInnerWeb.class);
             startActivity(explanation2);
 
             SharedPreferences sharedpreferences = getSharedPreferences(prefsConnection, Context.MODE_PRIVATE);
@@ -51,42 +48,45 @@ public class InnerWeb extends AppCompatActivity {
     }
 
     @Override
-    protected void onPause() {
+    protected void onPause()
+    {
         super.onPause();
         web.onPause();
     }
 
     @Override
-    protected void onResume() {
+    protected void onResume()
+    {
         super.onResume();
         web.onResume();
     }
 
     @Override
-    public void onBackPressed() {
+    public void onBackPressed()
+    {
 
-        if(web.canGoBack()) {
+        if (web.canGoBack())
+        {
             webBackForwardList = web.copyBackForwardList();
-            if(webBackForwardList.getCurrentIndex() == 1)
+            if (webBackForwardList.getCurrentIndex() == 1)
             {
                 closeWeb(null);
-            }
-            else
+            } else
             {
                 web.goBack();
             }
-        }
-        else
+        } else
         {
             closeWeb(null);
         }
     }
 
     @Override
-    public boolean onKeyLongPress(int keyCode, KeyEvent event) {
+    public boolean onKeyLongPress(int keyCode, KeyEvent event)
+    {
         if (keyCode == KeyEvent.KEYCODE_BACK)
         {
-            if(web.getVisibility() != View.GONE)
+            if (web.getVisibility() != View.GONE)
             {
                 closeWeb(null);
             }
@@ -101,24 +101,29 @@ public class InnerWeb extends AppCompatActivity {
         web.getSettings().setJavaScriptEnabled(true);
         web.getSettings().setBuiltInZoomControls(true);
         web.getSettings().setDisplayZoomControls(false);
-        web.setWebViewClient(new WebViewClient() {
+        web.setWebViewClient(new WebViewClient()
+        {
 
             @Override
-            public void onPageStarted(WebView view, String url, Bitmap favicon) {
+            public void onPageStarted(WebView view, String url, Bitmap favicon)
+            {
                 super.onPageStarted(view, url, favicon);
             }
 
             @Override
-            public void onPageFinished(WebView view, String url) {
+            public void onPageFinished(WebView view, String url)
+            {
                 super.onPageFinished(view, url);
-                if (web.getVisibility() == View.GONE) {
+                if (web.getVisibility() == View.GONE)
+                {
                     web.clearHistory();
                 }
                 treatPageControllers();
             }
 
             @Override
-            public void onLoadResource(WebView view, String url) {
+            public void onLoadResource(WebView view, String url)
+            {
                 super.onLoadResource(view, url);
                 treatPageControllers();
             }
@@ -138,18 +143,22 @@ public class InnerWeb extends AppCompatActivity {
         webBackForwardList = web.copyBackForwardList();
         Button previousPage = (Button) toolbar_web.findViewById(R.id.btn_previousPage);
         Button nextPage = (Button) toolbar_web.findViewById(R.id.btn_nextPage);
-        if (webBackForwardList.getCurrentIndex() <= 1) {
+        if (webBackForwardList.getCurrentIndex() <= 1)
+        {
             previousPage.setAlpha((float) 0.65);
             previousPage.getBackground().setColorFilter(getResources().getColor(R.color.disabledButton), PorterDuff.Mode.MULTIPLY);
-        } else {
+        } else
+        {
             previousPage.setAlpha((float) 1);
             previousPage.getBackground().setColorFilter(null);
         }
 
-        if (webBackForwardList.getCurrentIndex() == webBackForwardList.getSize() - 1) {
+        if (webBackForwardList.getCurrentIndex() == webBackForwardList.getSize() - 1)
+        {
             nextPage.setAlpha((float) 0.65);
             nextPage.getBackground().setColorFilter(getResources().getColor(R.color.disabledButton), PorterDuff.Mode.MULTIPLY);
-        } else {
+        } else
+        {
             nextPage.setAlpha((float) 1);
             nextPage.getBackground().setColorFilter(null);
         }
@@ -162,10 +171,10 @@ public class InnerWeb extends AppCompatActivity {
 
     public void previousPage(View v)
     {
-        if(web.canGoBack())
+        if (web.canGoBack())
         {
             webBackForwardList = web.copyBackForwardList();
-            if(webBackForwardList.getCurrentIndex() > 1)
+            if (webBackForwardList.getCurrentIndex() > 1)
             {
                 web.goBack();
             }
@@ -174,7 +183,7 @@ public class InnerWeb extends AppCompatActivity {
 
     public void nextPage(View v)
     {
-        if(web.canGoForward())
+        if (web.canGoForward())
         {
             web.goForward();
         }

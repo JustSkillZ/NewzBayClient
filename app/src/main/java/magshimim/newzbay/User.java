@@ -1,6 +1,7 @@
 package magshimim.newzbay;
 
-public class User {
+public class User
+{
     private String fullName;
     private String picURL;
     private String connectedVia;
@@ -12,19 +13,23 @@ public class User {
         this.connectedVia = connectedVia;
     }
 
-    public String getFullName() {
+    public String getFullName()
+    {
         return fullName;
     }
 
-    public void setFullName(String fullName) {
+    public void setFullName(String fullName)
+    {
         this.fullName = fullName;
     }
 
-    public String getPicURL() {
+    public String getPicURL()
+    {
         return picURL;
     }
 
-    public String getConnectedVia() {
+    public String getConnectedVia()
+    {
         return connectedVia;
     }
 }

@@ -1,6 +1,7 @@
 package magshimim.newzbay;
 
-public interface DragNSwipeHelperAdapter {
+public interface DragNSwipeHelperAdapter
+{
 
     void onItemMove(int fromPosition, int toPosition);
 

@@ -7,7 +7,7 @@
     android:background="@drawable/main_background"
     android:orientation="vertical"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context=".NewsFeedActivity"
+    tools:context=".ActivityNewsFeed"
     android:supportsRtl="true"
     tools:showIn="@layout/app_bar_newsfeed_activity"
     android:id="@+id/newsfeed_layout">

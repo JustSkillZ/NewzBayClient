@@ -4,33 +4,40 @@ import android.support.v7.widget.RecyclerView;
 
 import java.util.Vector;
 
-public class CommentsHandler {
+public class CommentsHandler
+{
 
     private Vector<Comment> commentsofCurrentArticle;
-    private RecyclerView.Adapter recyclerAdapter;
+    private RecyclerView.Adapter commentsRecyclerAdapter;
     private Article article;
 
-    public CommentsHandler() {
+    public CommentsHandler()
+    {
         this.commentsofCurrentArticle = new Vector<>();
     }
 
-    public Vector<Comment> getCommentsofCurrentArticle() {
+    public Vector<Comment> getCommentsofCurrentArticle()
+    {
         return commentsofCurrentArticle;
     }
 
-    public RecyclerView.Adapter getRecyclerAdapter() {
-        return recyclerAdapter;
+    public RecyclerView.Adapter getCommentsRecyclerAdapter()
+    {
+        return commentsRecyclerAdapter;
     }
 
-    public void setRecyclerAdapter(RecyclerView.Adapter recyclerAdapter) {
-        this.recyclerAdapter = recyclerAdapter;
+    public void setCommentsRecyclerAdapter(RecyclerView.Adapter commentsRecyclerAdapter)
+    {
+        this.commentsRecyclerAdapter = commentsRecyclerAdapter;
     }
 
-    public Article getArticle() {
+    public Article getArticle()
+    {
         return article;
     }
 
-    public void setArticle(Article article) {
+    public void setArticle(Article article)
+    {
         this.article = article;
     }
 }

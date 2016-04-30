@@ -4,7 +4,8 @@ import android.graphics.Bitmap;
 
 import java.util.Date;
 
-public class Article{
+public class Article
+{
     private String subject;
     private String mainHeadline;
     private String secondHeadline;
@@ -72,7 +73,7 @@ public class Article{
         return this.numberOfComments;
     }
 
-    public boolean getLiked()
+    public boolean isLiked()
     {
         return this.liked;
     }
@@ -102,7 +103,8 @@ public class Article{
         numberOfComments--;
     }
 
-    public String getPicURL() {
+    public String getPicURL()
+    {
         return picURL;
     }
 }

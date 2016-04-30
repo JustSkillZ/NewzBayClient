@@ -16,7 +16,7 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="נסה להתחבר שוב"
+        android:text="@string/reconnect"
         android:id="@+id/btn_reconnect"
         android:textStyle="bold"
         android:layout_below="@+id/imageView6"

@@ -10,24 +10,28 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-public class Priority extends AppCompatActivity {
+public class ActivityPriority extends AppCompatActivity
+{
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_priority);
         Time now = new Time();
         now.setToNow();
-        if(now.hour >= 19 || now.hour >= 0 && now.hour <= 5)
+        if (now.hour >= 19 || now.hour >= 0 && now.hour <= 5)
         {
-            LinearLayout layout =(LinearLayout)findViewById(R.id.activity_priority);
+            LinearLayout layout = (LinearLayout) findViewById(R.id.activity_priority);
             layout.setBackground(getResources().getDrawable(R.drawable.main_background_night));
-            for (int i = 0; i < layout.getChildCount(); i++) {
+            for (int i = 0; i < layout.getChildCount(); i++)
+            {
                 View v = layout.getChildAt(i);
-                for(int j = 0; j < ((ViewGroup)v).getChildCount(); j++)
+                for (int j = 0; j < ((ViewGroup) v).getChildCount(); j++)
                 {
-                    View nextChild = ((ViewGroup)v).getChildAt(j);
-                    if (nextChild instanceof TextView) {
+                    View nextChild = ((ViewGroup) v).getChildAt(j);
+                    if (nextChild instanceof TextView)
+                    {
                         ((TextView) nextChild).setTextColor(getResources().getColor(R.color.white));
                     }
                 }
@@ -42,9 +46,11 @@ public class Priority extends AppCompatActivity {
             explanation.setTextColor(getResources().getColor(R.color.disabledButton));
         }
         Button sendPriority = (Button) findViewById(R.id.btn_endPriority);
-        sendPriority.setOnClickListener(new View.OnClickListener() {
+        sendPriority.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v)
+            {
                 finish();
             }
         });
@@ -53,7 +59,7 @@ public class Priority extends AppCompatActivity {
     public void choosePriorityBySubject(View v)
     {
         ((GlobalClass) getApplicationContext()).getPriorityHandler().setCurrentPrioritySubject(v.getContentDescription().toString());
-        Intent priority = new Intent(this,ChoosePriority.class);
+        Intent priority = new Intent(this, ActivityChoosePriority.class);
         startActivity(priority);
     }
 }

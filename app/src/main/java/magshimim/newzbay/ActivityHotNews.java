@@ -20,7 +20,8 @@ import com.squareup.picasso.Picasso;
 import java.util.Date;
 import java.util.Vector;
 
-public class ExploreArticles extends AppCompatActivity {
+public class ActivityHotNews extends AppCompatActivity
+{
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -38,7 +39,8 @@ public class ExploreArticles extends AppCompatActivity {
     private ViewPager mViewPager;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_explore_articles);
         // Create the adapter that will return a fragment for each of the primary sections of the activity.
@@ -50,17 +52,19 @@ public class ExploreArticles extends AppCompatActivity {
     }
 
     @Override
-    public void onBackPressed() {
+    public void onBackPressed()
+    {
         super.onBackPressed();
         ((GlobalClass) getApplicationContext()).getCategoriesHandler().setHotNewsPageAdapter(null);
         ((GlobalClass) getApplicationContext()).getCategoriesHandler().getCurrentlyInUse().clear();
-        ((GlobalClass) getApplicationContext()).getCategoriesHandler().getRecyclerAdapter().notifyDataSetChanged();
+        ((GlobalClass) getApplicationContext()).getCategoriesHandler().getArticlesRecyclerAdapter().notifyDataSetChanged();
     }
 
     /**
      * A placeholder fragment containing a simple view.
      */
-    public static class PlaceholderFragment extends Fragment {
+    public static class PlaceholderFragment extends Fragment
+    {
         /**
          * The fragment argument representing the section number for this
          * fragment.
@@ -70,96 +74,105 @@ public class ExploreArticles extends AppCompatActivity {
         private GlobalClass globalClass;
         private Vector<Article> hotNews;
 
-        public PlaceholderFragment() {
+        public PlaceholderFragment()
+        {
         }
 
         /**
          * Returns a new instance of this fragment for the given section
          * number.
          */
-        public static PlaceholderFragment newInstance(int sectionNumber) {
+        public static PlaceholderFragment newInstance(int sectionNumber)
+        {
             PlaceholderFragment fragment = new PlaceholderFragment();
             Bundle args = new Bundle();
             args.putInt("NB", sectionNumber);
             fragment.setArguments(args);
             return fragment;
         }
+
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
+                                 Bundle savedInstanceState)
+        {
             globalClass = (GlobalClass) getActivity().getApplicationContext();
             hotNews = globalClass.getCategoriesHandler().getCurrentlyInUse();
             View rootView = inflater.inflate(R.layout.fragment_explore_articles, container, false);
             TextView headline = (TextView) rootView.findViewById(R.id.tv_article_title);
             headline.setText(hotNews.get(getArguments().getInt("NB")).getMainHeadline());
             TextView source = (TextView) rootView.findViewById(R.id.tv_article_site);
-            source.setText(hotNews.get(getArguments().getInt("NB")).getSiteName() + "  /" );
-            if (hotNews.get(getArguments().getInt("NB")).getDate() != null) {
+            source.setText(hotNews.get(getArguments().getInt("NB")).getSiteName() + "  /");
+            if (hotNews.get(getArguments().getInt("NB")).getDate() != null)
+            {
                 Date d = new Date();
                 TextView date = (TextView) rootView.findViewById(R.id.tv_article_time);
                 date.setText((String) DateUtils.getRelativeTimeSpanString(hotNews.get(getArguments().getInt("NB")).getDate().getTime(), d.getTime(), 0));
             }
             ImageButton articlePic = (ImageButton) rootView.findViewById(R.id.ib_article_pic);
-            if (!hotNews.get(getArguments().getInt("NB")).getPicURL().equals("null")) {
+            if (!hotNews.get(getArguments().getInt("NB")).getPicURL().equals("null"))
+            {
                 Picasso.with(getContext()).load(hotNews.get(getArguments().getInt("NB")).getPicURL()).fit().centerCrop().into(articlePic);
-            } else {
+            } else
+            {
                 articlePic.setImageBitmap(hotNews.get(getArguments().getInt("NB")).getPicture());
             }
-            articlePic.setOnClickListener(new View.OnClickListener() {
+            articlePic.setOnClickListener(new View.OnClickListener()
+            {
                 @Override
-                public void onClick(View v) {
+                public void onClick(View v)
+                {
                     globalClass.getCategoriesHandler().setCurrentlyOpenURL(hotNews.get(getArguments().getInt("NB")).getUrl());
-                    Intent web = new Intent(getActivity(),InnerWeb.class);
+                    Intent web = new Intent(getActivity(), ActivityInnerWeb.class);
                     startActivity(web);
                 }
             });
             numberOfLikes = (TextView) rootView.findViewById(R.id.tv_article_likes);
             float numOfLikes = Integer.parseInt(String.valueOf(hotNews.get(getArguments().getInt("NB")).getNumberOfLikes()));
-            if(numOfLikes >= 1000)
+            if (numOfLikes >= 1000)
             {
                 numberOfLikes.setText(String.format("%.1f", (numOfLikes / 1000)) + "k");
-            }
-            else
+            } else
             {
                 numberOfLikes.setText(hotNews.get(getArguments().getInt("NB")).getNumberOfLikes() + "");
             }
             ImageButton like = (ImageButton) rootView.findViewById(R.id.ib_like);
-            if(like != null)
+            if (like != null)
             {
-                if(!globalClass.getUser().getConnectedVia().equals("Facebook") && !globalClass.getUser().getConnectedVia().equals("Google"))
+                if (!globalClass.getUser().getConnectedVia().equals("Facebook") && !globalClass.getUser().getConnectedVia().equals("Google"))
                 {
                     Picasso.with(getContext()).load(R.drawable.hot_article_liked).into(like);
                     like.setAlpha((float) 0.3);
-                    like.setOnClickListener(new View.OnClickListener() {
+                    like.setOnClickListener(new View.OnClickListener()
+                    {
                         @Override
-                        public void onClick(View v) {
+                        public void onClick(View v)
+                        {
                             Toast toast = Toast.makeText(getContext(), "רק משתמשים מחוברים יכולים לעשות לייק", Toast.LENGTH_LONG);
                             toast.show();
                         }
                     });
-                }
-                else
+                } else
                 {
-                    if(hotNews.get(getArguments().getInt("NB")).getLiked())
+                    if (hotNews.get(getArguments().getInt("NB")).isLiked())
                     {
                         Picasso.with(getContext()).load(R.drawable.hot_article_liked).into(like);
-                    }
-                    else
+                    } else
                     {
                         Picasso.with(getContext()).load(R.drawable.like_hot_article).into(like);
                     }
-                    like.setOnClickListener(new View.OnClickListener() {
+                    like.setOnClickListener(new View.OnClickListener()
+                    {
                         @Override
-                        public void onClick(View v) {
+                        public void onClick(View v)
+                        {
                             ImageButton like = (ImageButton) v.findViewById(R.id.ib_like);
-                            if(hotNews.get(getArguments().getInt("NB")).getLiked())
+                            if (hotNews.get(getArguments().getInt("NB")).isLiked())
                             {
                                 Picasso.with(getContext()).load(R.drawable.like_hot_article).into(like);
                                 hotNews.get(getArguments().getInt("NB")).setLiked(false);
                                 hotNews.get(getArguments().getInt("NB")).decNumberOfLikes();
                                 globalClass.getCommunication().clientSend("110○" + globalClass.getCategoriesHandler().getCurrentlyInUse().get(getArguments().getInt("NB")).getUrl() + "#");
-                            }
-                            else
+                            } else
                             {
                                 Picasso.with(getContext()).load(R.drawable.hot_article_liked).into(like);
                                 hotNews.get(getArguments().getInt("NB")).setLiked(true);
@@ -167,11 +180,10 @@ public class ExploreArticles extends AppCompatActivity {
                                 globalClass.getCommunication().clientSend("110○" + globalClass.getCategoriesHandler().getCurrentlyInUse().get(getArguments().getInt("NB")).getUrl() + "#");
                             }
                             float numOfLikes = Integer.parseInt(String.valueOf(hotNews.get(getArguments().getInt("NB")).getNumberOfLikes()));
-                            if(numOfLikes >= 1000)
+                            if (numOfLikes >= 1000)
                             {
                                 numberOfLikes.setText(String.format("%.1f", (numOfLikes / 1000)) + "k");
-                            }
-                            else
+                            } else
                             {
                                 numberOfLikes.setText(hotNews.get(getArguments().getInt("NB")).getNumberOfLikes() + "");
                             }
@@ -187,29 +199,34 @@ public class ExploreArticles extends AppCompatActivity {
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
      * one of the sections/tabs/pages.
      */
-    public class SectionsPagerAdapter extends FragmentPagerAdapter {
+    public class SectionsPagerAdapter extends FragmentPagerAdapter
+    {
 
         private GlobalClass globalClass;
 
-        public SectionsPagerAdapter(FragmentManager fm) {
+        public SectionsPagerAdapter(FragmentManager fm)
+        {
             super(fm);
-            globalClass = (GlobalClass)getApplicationContext();
+            globalClass = (GlobalClass) getApplicationContext();
         }
 
         @Override
-        public Fragment getItem(int position) {
+        public Fragment getItem(int position)
+        {
             // getItem is called to instantiate the fragment for the given page.
             // Return a PlaceholderFragment (defined as a static inner class below).
             return PlaceholderFragment.newInstance(position);
         }
 
         @Override
-        public int getCount() {
+        public int getCount()
+        {
             return globalClass.getCategoriesHandler().getCurrentlyInUse().size();
         }
 
         @Override
-        public CharSequence getPageTitle(int position) {
+        public CharSequence getPageTitle(int position)
+        {
             return null;
         }
     }

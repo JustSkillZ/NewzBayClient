@@ -11,33 +11,33 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
 
-public class CategoriesHandler {
-    private Vector<Article> currentlyInUse;
-    private String currentlyInUseCategory;
-    private String currentlyInUseCategoryServer;
+public class CategoriesHandler
+{
+    private Vector<Article> currentlyInUse; //Articles of current subject
+    private String currentlyInUseCategory; //Category to show
+    private String currentlyInUseCategoryServer; //Category to server
     private int currentCategoryID;
-    private String currentlyOpenURL;
+    private String currentlyOpenURL; //URL for ActivityInnerWeb
 
-    private HashMap<String, Bitmap> siteLogo;
+    private HashMap<String, Bitmap> siteLogo; //Map: Key - Site name | Value - Site default pic
     private boolean loadingArticles;
-    private List<String> categoriesForServer = Arrays.asList("", "israelNewz", "worldNewz", "politics", "economy", "sport", "culture", "celebs", "technology", "science");
-    private RecyclerView.Adapter recyclerAdapter;
-    private PagerAdapter hotNewsPageAdapter;
+    private List<String> categoriesForServer = Arrays.asList("", "israelNewz", "worldNewz", "politics", "economy", "sport", "culture", "celebs", "technology", "science"); //Sites for server
+    private RecyclerView.Adapter articlesRecyclerAdapter; //Article Adapter - notifyDataSetChanged in ClientRead Thread
+    private PagerAdapter hotNewsPageAdapter; //Hot News Adapter - notifyDataSetChanged in ClientRead Thread
 
     public CategoriesHandler(Vector<Article> currentlyInUse, String currentlyInUseCategory, String currentlyInUseCategoryServer, boolean loadingArticles, GlobalClass globalClass)
     {
-        if(currentlyInUse == null)
+        if (currentlyInUse == null)
         {
             this.currentlyInUse = new Vector<>();
-        }
-        else
+        } else
         {
             this.currentlyInUse = currentlyInUse;
         }
         this.currentlyInUseCategory = currentlyInUseCategory;
         this.currentlyInUseCategoryServer = currentlyInUseCategoryServer;
         this.loadingArticles = loadingArticles;
-        siteLogo = new HashMap<>();
+        siteLogo = new HashMap<>(); //Map: Key - Site name | Value - Site default pic
         siteLogo.put("ynet", BitmapFactory.decodeResource(globalClass.getResources(), R.drawable.site_ynet));
         siteLogo.put("one", BitmapFactory.decodeResource(globalClass.getResources(), R.drawable.site_one));
         siteLogo.put("walla", BitmapFactory.decodeResource(globalClass.getResources(), R.drawable.site_walla));
@@ -48,24 +48,28 @@ public class CategoriesHandler {
         siteLogo.put("calcalist", BitmapFactory.decodeResource(globalClass.getResources(), R.drawable.site_calcalist));
     }
 
-    public String getCurrentlyOpenURL() {
+    public String getCurrentlyOpenURL()
+    {
         return currentlyOpenURL;
     }
 
-    public void setCurrentlyOpenURL(String currentlyOpenURL) {
+    public void setCurrentlyOpenURL(String currentlyOpenURL)
+    {
         this.currentlyOpenURL = currentlyOpenURL;
     }
 
-    public int getCurrentCategoryID() {
+    public int getCurrentCategoryID()
+    {
         return currentCategoryID;
     }
 
-    public String getCurrentlyInUseCategory(User user) {
-        if (currentlyInUseCategory.equals(""))
+    public String getCurrentlyInUseCategory(User user)
+    {
+        if (currentlyInUseCategory.equals("")) //When welcome screen
         {
-            if(user.getConnectedVia() == "Google")
+            if (user.getConnectedVia().equals("Google"))
             {
-                switch(((GoogleUser) user).getGoogleProfile().getGender())
+                switch (((GoogleUser) user).getGoogleProfile().getGender())
                 {
                     case 0:
                         return "ברוך הבא";
@@ -74,8 +78,7 @@ public class CategoriesHandler {
                     case 2:
                         return "ברוך/ה הבא/ה";
                 }
-            }
-            else
+            } else
             {
                 return "ברוך/ה הבא/ה";
             }
@@ -83,7 +86,8 @@ public class CategoriesHandler {
         return currentlyInUseCategory;
     }
 
-    public void setCurrentlyInUseCategory(int categoryID, Context context) {
+    public void setCurrentlyInUseCategory(int categoryID, Context context)
+    {
         currentCategoryID = categoryID;
         switch (categoryID)
         {
@@ -127,46 +131,55 @@ public class CategoriesHandler {
                 currentlyInUseCategoryServer = "science";
                 break;
         }
-
     }
 
-    public Vector<Article> getCurrentlyInUse() {
+    public Vector<Article> getCurrentlyInUse()
+    {
         return currentlyInUse;
     }
 
-    public String getCurrentlyInUseCategoryServer() {
+    public String getCurrentlyInUseCategoryServer()
+    {
         return currentlyInUseCategoryServer;
     }
 
-    public boolean isLoading() {
+    public boolean isLoading()
+    {
         return loadingArticles;
     }
 
-    public void setLoading(boolean loading) {
+    public void setLoading(boolean loading)
+    {
         this.loadingArticles = loading;
     }
 
-    public List<String> getCategoriesForServer() {
+    public List<String> getCategoriesForServer()
+    {
         return categoriesForServer;
     }
 
-    public RecyclerView.Adapter getRecyclerAdapter() {
-        return recyclerAdapter;
+    public RecyclerView.Adapter getArticlesRecyclerAdapter()
+    {
+        return articlesRecyclerAdapter;
     }
 
-    public void setRecyclerAdapter(RecyclerView.Adapter recyclerAdapter) {
-        this.recyclerAdapter = recyclerAdapter;
+    public void setArticlesRecyclerAdapter(RecyclerView.Adapter articlesRecyclerAdapter)
+    {
+        this.articlesRecyclerAdapter = articlesRecyclerAdapter;
     }
 
-    public HashMap<String, Bitmap> getSiteLogo() {
+    public HashMap<String, Bitmap> getSiteLogo()
+    {
         return siteLogo;
     }
 
-    public PagerAdapter getHotNewsPageAdapter() {
+    public PagerAdapter getHotNewsPageAdapter()
+    {
         return hotNewsPageAdapter;
     }
 
-    public void setHotNewsPageAdapter(PagerAdapter hotNewsPageAdapter) {
+    public void setHotNewsPageAdapter(PagerAdapter hotNewsPageAdapter)
+    {
         this.hotNewsPageAdapter = hotNewsPageAdapter;
     }
 }

@@ -28,8 +28,8 @@ import com.squareup.picasso.Picasso;
 
 import java.util.Date;
 
-public class Comments extends AppCompatActivity implements EmojiconGridFragment.OnEmojiconClickedListener, EmojiconsFragment.OnEmojiconBackspaceClickedListener {
-
+public class ActivityComments extends AppCompatActivity implements EmojiconGridFragment.OnEmojiconClickedListener, EmojiconsFragment.OnEmojiconBackspaceClickedListener
+{
 
 
     private RecyclerView recyclerViewComments;
@@ -47,7 +47,8 @@ public class Comments extends AppCompatActivity implements EmojiconGridFragment.
     private boolean keyboardVisible = false;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_comments);
 
@@ -63,23 +64,24 @@ public class Comments extends AppCompatActivity implements EmojiconGridFragment.
         ft.commit();
 
         final View rootView = findViewById(R.id.comments_layout);
-        rootView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+        rootView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener()
+        {
             @Override
-            public void onGlobalLayout() {
+            public void onGlobalLayout()
+            {
                 Rect r = new Rect();
                 rootView.getWindowVisibleDisplayFrame(r);
                 int screenHeight = rootView.getRootView().getHeight();
                 int heightDifference = screenHeight - (r.bottom - r.top);
-                if(heightDifference > 150)
+                if (heightDifference > 150)
                 {
-                    if(!keyboardVisible && emojiconsOpen)
+                    if (!keyboardVisible && emojiconsOpen)
                     {
                         setFragmentVisibility(null);
                     }
                     softKeyboardHeight = heightDifference - 75;
                     keyboardVisible = true;
-                }
-                else
+                } else
                 {
                     keyboardVisible = false;
                 }
@@ -90,13 +92,15 @@ public class Comments extends AppCompatActivity implements EmojiconGridFragment.
         collapsingToolbarLayout.setTitle(commentsHandler.getArticle().getMainHeadline());
         collapsingToolbarLayout.setExpandedTitleColor(getResources().getColor(android.R.color.transparent));
         appBarLayout = (AppBarLayout) findViewById(R.id.app_bar_layout);
-        appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
+        appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener()
+        {
             @Override
-            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-                if (verticalOffset == 0) {
+            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset)
+            {
+                if (verticalOffset == 0)
+                {
                     getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-                }
-                else
+                } else
                 {
                     getSupportActionBar().setDisplayHomeAsUpEnabled(true);
                 }
@@ -106,13 +110,16 @@ public class Comments extends AppCompatActivity implements EmojiconGridFragment.
         ((TextView) findViewById(R.id.tv_mainHeadline)).setText(commentsHandler.getArticle().getMainHeadline());
         ((TextView) findViewById(R.id.tv_secondHeadline)).setText(commentsHandler.getArticle().getSecondHeadline());
         ((TextView) findViewById(R.id.tv_site)).setText(commentsHandler.getArticle().getSiteName());
-        if (commentsHandler.getArticle().getDate() != null) {
+        if (commentsHandler.getArticle().getDate() != null)
+        {
             Date d = new Date();
             ((TextView) findViewById(R.id.tv_date)).setText((String) DateUtils.getRelativeTimeSpanString(commentsHandler.getArticle().getDate().getTime(), d.getTime(), 0));
         }
-        if (!commentsHandler.getArticle().getPicURL().equals("null")) {
+        if (!commentsHandler.getArticle().getPicURL().equals("null"))
+        {
             Picasso.with(this).load(commentsHandler.getArticle().getPicURL()).into(((ImageButton) findViewById(R.id.ib_picture)));
-        } else {
+        } else
+        {
             ((ImageButton) findViewById(R.id.ib_picture)).setImageBitmap(commentsHandler.getArticle().getPicture());
         }
         ((TextView) findViewById(R.id.tv_likes)).setText(commentsHandler.getArticle().getNumberOfLikes() + "");
@@ -125,31 +132,33 @@ public class Comments extends AppCompatActivity implements EmojiconGridFragment.
         recyclerViewComments = (RecyclerView) findViewById(R.id.rv_comments);
         recyclerLayoutManager = new LinearLayoutManager(this);
         recyclerViewComments.setLayoutManager(recyclerLayoutManager);
-        recyclerAdapter = new CommentsAdapter(globalClass, Comments.this);
-        commentsHandler.setRecyclerAdapter(recyclerAdapter);
+        recyclerAdapter = new CommentsAdapter(globalClass, ActivityComments.this);
+        commentsHandler.setCommentsRecyclerAdapter(recyclerAdapter);
         recyclerViewComments.setAdapter(recyclerAdapter);
         globalClass.getCommunication().clientSend("120◘" + commentsHandler.getArticle().getUrl() + "#");
     }
 
     public void sendComment(View v)
     {
-        if(!commentText.getText().toString().equals(""))
+        if (!commentText.getText().toString().equals(""))
         {
             globalClass.getCommunication().clientSend("122◘" + commentsHandler.getArticle().getUrl() + "○" + commentText.getText().toString() + "#");
             commentsHandler.getCommentsofCurrentArticle().addElement(new Comment(user.getFullName(), user.getPicURL(), commentText.getText().toString()));
             recyclerAdapter.notifyDataSetChanged();
             commentText.setText("");
             commentsHandler.getArticle().incNumberOfComments();
-            ViewGroup parent = (ViewGroup)v.getParent().getParent().getParent();
-            ((TextView)parent.findViewById(R.id.tv_comments)).setText(commentsHandler.getArticle().getNumberOfComments() + "");
+            ViewGroup parent = (ViewGroup) v.getParent().getParent().getParent();
+            ((TextView) parent.findViewById(R.id.tv_comments)).setText(commentsHandler.getArticle().getNumberOfComments() + "");
             appBarLayout.setExpanded(false);
-            recyclerViewComments.scrollToPosition(commentsHandler.getCommentsofCurrentArticle().size()-1);
+            recyclerViewComments.scrollToPosition(commentsHandler.getCommentsofCurrentArticle().size() - 1);
         }
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem menuItem) {
-        if (menuItem.getItemId() == android.R.id.home) {
+    public boolean onOptionsItemSelected(MenuItem menuItem)
+    {
+        if (menuItem.getItemId() == android.R.id.home)
+        {
             this.onStop();
             finish();
         }
@@ -157,40 +166,46 @@ public class Comments extends AppCompatActivity implements EmojiconGridFragment.
     }
 
     @Override
-    protected void onStop() {
+    protected void onStop()
+    {
         commentsHandler.getCommentsofCurrentArticle().clear();
         super.onStop();
     }
 
     @Override
-    public void onEmojiconBackspaceClicked(View v) {
+    public void onEmojiconBackspaceClicked(View v)
+    {
         EmojiconsFragment.backspace(commentText);
     }
 
     @Override
-    public void onEmojiconClicked(Emojicon emojicon) {
+    public void onEmojiconClicked(Emojicon emojicon)
+    {
         EmojiconsFragment.input(commentText, emojicon);
     }
 
-    public void setFragmentVisibility(View v){
+    public void setFragmentVisibility(View v)
+    {
 
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        if(softKeyboardHeight != -1)
+        if (softKeyboardHeight != -1)
         {
             ViewGroup.LayoutParams params = emojicons.getView().getLayoutParams();
             params.height = softKeyboardHeight;
             emojicons.getView().setLayoutParams(params);
         }
-        if (emojicons.isHidden()) {
-            if(keyboardVisible)
+        if (emojicons.isHidden())
+        {
+            if (keyboardVisible)
             {
-                InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(commentText.getWindowToken(),
                         InputMethodManager.RESULT_UNCHANGED_SHOWN);
             }
             ft.show(emojicons);
             emojiconsOpen = true;
-        } else {
+        } else
+        {
             ft.hide(emojicons);
             emojiconsOpen = false;
         }
@@ -198,14 +213,14 @@ public class Comments extends AppCompatActivity implements EmojiconGridFragment.
     }
 
     @Override
-    public void onBackPressed() {
-        if(emojiconsOpen)
+    public void onBackPressed()
+    {
+        if (emojiconsOpen)
         {
             setFragmentVisibility(null);
-        }
-        else
+        } else
         {
-            globalClass.getCategoriesHandler().getRecyclerAdapter().notifyDataSetChanged();
+            globalClass.getCategoriesHandler().getArticlesRecyclerAdapter().notifyDataSetChanged();
             super.onBackPressed();
         }
     }

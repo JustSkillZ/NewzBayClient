@@ -21,7 +21,7 @@ public class ActivityInnerWeb extends AppCompatActivity
     private static final String isExplanation2 = "isExplanation2";
     private WebView web;
     private WebBackForwardList webBackForwardList;
-    private android.support.v7.widget.Toolbar toolbar_web;
+    private android.support.v7.widget.Toolbar toolbarWeb;
     private CategoriesHandler categoriesHandler;
 
     @Override
@@ -30,7 +30,7 @@ public class ActivityInnerWeb extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_inner_web);
         categoriesHandler = ((GlobalClass) getApplicationContext()).getCategoriesHandler();
-        if (!getSharedPreferences(prefsConnection, Context.MODE_PRIVATE).getBoolean(isExplanation2, false))
+        if (!getSharedPreferences(prefsConnection, Context.MODE_PRIVATE).getBoolean(isExplanation2, false)) //If opened this screen first time, open explanation activity.
         {
             Intent explanation2 = new Intent(this, ActivityExplanationInnerWeb.class);
             startActivity(explanation2);
@@ -41,10 +41,10 @@ public class ActivityInnerWeb extends AppCompatActivity
             editor.commit();
         }
         createWebView();
-        toolbar_web = (android.support.v7.widget.Toolbar) findViewById(R.id.toolbar_web);
-        setSupportActionBar(toolbar_web);
+        toolbarWeb = (android.support.v7.widget.Toolbar) findViewById(R.id.toolbar_web);
+        setSupportActionBar(toolbarWeb);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
-        web.loadUrl(categoriesHandler.getCurrentlyOpenURL());
+        web.loadUrl(categoriesHandler.getCurrentlyOpenURL()); //Load article's web page
     }
 
     @Override
@@ -65,17 +65,19 @@ public class ActivityInnerWeb extends AppCompatActivity
     public void onBackPressed()
     {
 
-        if (web.canGoBack())
+        if (web.canGoBack()) //If there are any pages before
         {
             webBackForwardList = web.copyBackForwardList();
-            if (webBackForwardList.getCurrentIndex() == 1)
+            if (webBackForwardList.getCurrentIndex() == 1)  //If there is 1 page before
             {
-                closeWeb(null);
-            } else
+                closeWeb(null); //Close it, because the page on index 0 is a white page...
+            }
+            else //Go to previous page
             {
                 web.goBack();
             }
-        } else
+        }
+        else //Close it
         {
             closeWeb(null);
         }
@@ -95,7 +97,7 @@ public class ActivityInnerWeb extends AppCompatActivity
         return super.onKeyLongPress(keyCode, event);
     }
 
-    private void createWebView()
+    private void createWebView() //Init the WebView and customize its settings
     {
         web = (WebView) findViewById(R.id.wv_article);
         web.getSettings().setJavaScriptEnabled(true);
@@ -132,56 +134,58 @@ public class ActivityInnerWeb extends AppCompatActivity
     }
 
 
-    public void closeWeb(View v)
+    public void closeWeb(View v) //Close the activity
     {
         categoriesHandler.setCurrentlyOpenURL("");
         finish();
     }
 
-    public void treatPageControllers()
+    public void treatPageControllers() //Handle forward and backward controllers
     {
         webBackForwardList = web.copyBackForwardList();
-        Button previousPage = (Button) toolbar_web.findViewById(R.id.btn_previousPage);
-        Button nextPage = (Button) toolbar_web.findViewById(R.id.btn_nextPage);
-        if (webBackForwardList.getCurrentIndex() <= 1)
+        Button previousPage = (Button) toolbarWeb.findViewById(R.id.btn_previousPage);
+        Button nextPage = (Button) toolbarWeb.findViewById(R.id.btn_nextPage);
+        if (webBackForwardList.getCurrentIndex() <= 1) //If you cant go backwards
         {
             previousPage.setAlpha((float) 0.65);
             previousPage.getBackground().setColorFilter(getResources().getColor(R.color.disabledButton), PorterDuff.Mode.MULTIPLY);
-        } else
+        }
+        else
         {
             previousPage.setAlpha((float) 1);
             previousPage.getBackground().setColorFilter(null);
         }
 
-        if (webBackForwardList.getCurrentIndex() == webBackForwardList.getSize() - 1)
+        if (webBackForwardList.getCurrentIndex() == webBackForwardList.getSize() - 1) //If you cant go forward
         {
             nextPage.setAlpha((float) 0.65);
             nextPage.getBackground().setColorFilter(getResources().getColor(R.color.disabledButton), PorterDuff.Mode.MULTIPLY);
-        } else
+        }
+        else
         {
             nextPage.setAlpha((float) 1);
             nextPage.getBackground().setColorFilter(null);
         }
     }
 
-    public void reloadWebPage(View v)
+    public void reloadWebPage(View v) //Refresh page
     {
         web.reload();
     }
 
-    public void previousPage(View v)
+    public void previousPage(View v) //Go backward (previous page)
     {
         if (web.canGoBack())
         {
             webBackForwardList = web.copyBackForwardList();
-            if (webBackForwardList.getCurrentIndex() > 1)
+            if (webBackForwardList.getCurrentIndex() > 1) //First page is blank
             {
                 web.goBack();
             }
         }
     }
 
-    public void nextPage(View v)
+    public void nextPage(View v) //Go forward (next page)
     {
         if (web.canGoForward())
         {

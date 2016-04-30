@@ -23,7 +23,6 @@ import java.util.Date;
 
 public class Communication implements Runnable
 {
-    private static int isConnect;
     private ClientRead clientRead;
     private GlobalClass globalClass;
     private Socket serverSocket;
@@ -36,32 +35,20 @@ public class Communication implements Runnable
         this.globalClass = globalClass;
     }
 
-    public static int isConnect()
-    {
-        return isConnect;
-    }
-
-    public static void setIsConnect(int isConnect)
-    {
-        Communication.isConnect = isConnect;
-    }
-
     @Override
     public void run()
     {
-        serverIP = "109.67.60.124";
-        isConnect = 0;
-        dstport = 4444; //4444
+        serverIP = "109.67.60.124"; //Nir PC's IP
+        dstport = 4444; //Communication port
         userConnected = false;
         serverSocket = new Socket();
         try
         {
             serverSocket.connect(new InetSocketAddress(serverIP, dstport), 5000);
-            isConnect = 1;
-            ((Activity) globalClass.getCurrentActivity()).runOnUiThread(new Runnable()
+            ((Activity) globalClass.getCurrentActivity()).runOnUiThread(new Runnable() //Connected to NB server
             {
                 @Override
-                public void run()
+                public void run() //Set GUI buttons clickable in order to choose social net or guest
                 {
                     Button guestLoginBtn = (Button) ((Activity) globalClass.getCurrentActivity()).findViewById(R.id.btn_NB);
                     if (guestLoginBtn != null)
@@ -86,22 +73,24 @@ public class Communication implements Runnable
                     {
                         googleLoginBtn.setEnabled(true);
                     }
-                    if (globalClass.getUser() != null)
+
+                    if (globalClass.getUser() != null) //If user reconnected to the server
                     {
                         userConnected = true;
-                    } else
+                    }
+                    else //If first entrance, log in into social nets or guest
                     {
                         ((ActivityEntrance) globalClass.getCurrentActivity()).connectToSocialNets();
                     }
-                    clientRead = new ClientRead(serverSocket, globalClass, userConnected);
+                    clientRead = new ClientRead(serverSocket, globalClass, userConnected); //Open read from server thread
                     Thread t = new Thread(clientRead);
                     t.start();
                 }
             });
-        } catch (IOException e)
-        { //No connection to server
-            isConnect = -1;
-            globalClass.getErrorHandler().reConnect();
+        }
+        catch (IOException e) //No connection to server
+        {
+            globalClass.getErrorHandler().reConnect(); //Reconnect
         }
     }
 
@@ -146,23 +135,26 @@ class ClientRead extends Thread
             out = new PrintWriter(serverSocket.getOutputStream());
             bufferedWriter = new BufferedWriter(out);
             in = new BufferedReader(new InputStreamReader(serverSocket.getInputStream()));
-        } catch (IOException e)
+        }
+        catch (IOException e)
         {
             Log.d("check", "IO Error/ Client terminated abruptly");
-        } catch (NullPointerException e)
+        }
+        catch (NullPointerException e)
         {
             Log.d("check", "Client Closed");
         }
-        out.println("404◘" + aesEncryption.getAesKey() + "##");
+        out.println("404◘" + aesEncryption.getAesKey() + "##"); //Get AES Encryption key, and send it to NB server
         out.flush();
         try
         {
-            if (in.readLine().equals("405#"))
+            if (in.readLine().equals("405#")) //When server returns 405, connect officially to the server
             {
-                send("100#");
-                read();
+                send("100#"); //First message with encryption. Its like an ID that the user uses NB legal application
+                read(); //Loop of reading messages
             }
-        } catch (IOException e)
+        }
+        catch (IOException e)
         {
             e.printStackTrace();
         }
@@ -178,31 +170,33 @@ class ClientRead extends Thread
             do
             {
                 line = line + in.readLine();
-                if (line.contains("##"))
+                if (line.contains("##")) //Read until get ##
                 {
                     line = line.substring(0, line.length() - 2);
                     line = aesEncryption.decrypt(line);
                 }
                 if (line.contains("#"))
                 {
-                    //line = aesEncryption.decryptText(line.getBytes(), AESKey);
                     Log.d("check", "Response from server :  " + line);
-                    if (line.equals("101#"))
+                    if (line.equals("101#")) //Client Accepted by the server
                     {
                         if (userConnected)
                         {
                             send(globalClass.getErrorHandler().getConnectingClientMsg());
                             send(globalClass.getErrorHandler().getLastMsgToServer());
                             globalClass.getErrorHandler().setLastMsgToServer("");
-                        } else
+                        }
+                        else
                         {
-                            send("106#");
-                            if (!globalClass.getErrorHandler().getConnectingClientMsg().equals(""))
+                            send("106#"); //Client asks for sites of each subject
+
+                            if (!globalClass.getErrorHandler().getConnectingClientMsg().equals("")) //If was problem with sending 102 to server (connect a user to social net or guest)
                             {
                                 send(globalClass.getErrorHandler().getConnectingClientMsg());
                             }
                         }
-                    } else if (line.equals("103#"))
+                    }
+                    else if (line.equals("103#")) //User registered successfully
                     {
                         ((Activity) globalClass.getCurrentActivity()).runOnUiThread(new Runnable()
                         {
@@ -213,7 +207,8 @@ class ClientRead extends Thread
                                 globalClass.getCurrentActivity().startActivity(priority);
                             }
                         });
-                    } else if (line.contains("107◘"))
+                    }
+                    else if (line.contains("107◘")) //Client got sites of each subject, and id of each site
                     {
                         String id, subject, site;
                         line = line.substring(line.indexOf("◘") + 1);
@@ -228,9 +223,10 @@ class ClientRead extends Thread
                             line = line.substring(line.indexOf("◘") + 1);
                             priorityHandler.getCategorySites().add(new CategorySite(id, subject, site));
                         }
-                    } else if (line.contains("115◘") || line.contains("127◘"))
+                    }
+                    else if (line.contains("115◘") || line.contains("127◘")) //Client got articles from a category. 127 is hot news.
                     {
-                        if (!line.equals("115◘#"))
+                        if (!line.equals("115◘#")) //If empty don't parse line
                         {
                             line = line.substring(line.indexOf("◘") + 1);
                             categoriesHandler.getCurrentlyInUse().clear();
@@ -258,7 +254,8 @@ class ClientRead extends Thread
                                 if ((Integer.parseInt(temp)) == 1)
                                 {
                                     liked = true;
-                                } else
+                                }
+                                else
                                 {
                                     liked = false;
                                 }
@@ -269,7 +266,8 @@ class ClientRead extends Thread
                                 {
                                     dates = formatter.parse(date);
 
-                                } catch (ParseException e)
+                                }
+                                catch (ParseException e)
                                 {
                                     e.printStackTrace();
                                 }
@@ -296,7 +294,8 @@ class ClientRead extends Thread
                                     }
                                 });
                             }
-                        } else
+                        }
+                        else
                         {
                             ((Activity) globalClass.getCurrentActivity()).runOnUiThread(new Runnable()
                             {
@@ -310,9 +309,10 @@ class ClientRead extends Thread
                                 }
                             });
                         }
-                    } else if (line.contains("119◘"))
+                    }
+                    else if (line.contains("119◘")) //Client got more articles from current subject
                     {
-                        if (!line.equals("119◘#"))
+                        if (!line.equals("119◘#")) //If empty don't parse line
                         {
                             line = line.substring(line.indexOf("◘") + 1);
                             while (line.contains("◘"))
@@ -339,7 +339,8 @@ class ClientRead extends Thread
                                 if ((Integer.parseInt(temp)) == 1)
                                 {
                                     liked = true;
-                                } else
+                                }
+                                else
                                 {
                                     liked = false;
                                 }
@@ -353,7 +354,8 @@ class ClientRead extends Thread
                                     System.out.println(dates);
                                     System.out.println(formatter.format(dates));
 
-                                } catch (ParseException e)
+                                }
+                                catch (ParseException e)
                                 {
                                     e.printStackTrace();
                                 }
@@ -385,11 +387,12 @@ class ClientRead extends Thread
                                 ((Activity) globalClass.getCurrentActivity()).findViewById(R.id.pb_loadingArticles).setVisibility(View.INVISIBLE);
                             }
                         });
-                    } else if (line.contains("121◘"))
+                    }
+                    else if (line.contains("121◘")) //Client got comments of current article
                     {
-                        if (!line.equals("121◘◘#"))
+                        if (!line.equals("121◘◘#")) //If empty don't parse line
                         {
-                            commentsHandler.getCommentsofCurrentArticle().clear();
+                            commentsHandler.getCommentsOfCurrentArticle().clear();
                             line = line.substring(line.indexOf("◘") + 1);
                             while (line.contains("◘"))
                             {
@@ -402,7 +405,7 @@ class ClientRead extends Thread
                                 commentText = temp;
                                 line = line.substring(line.indexOf("◘") + 1);
                                 Comment comment = new Comment(username, picURL, commentText);
-                                commentsHandler.getCommentsofCurrentArticle().addElement(comment);
+                                commentsHandler.getCommentsOfCurrentArticle().addElement(comment);
                             }
                             ((Activity) globalClass.getCurrentActivity()).runOnUiThread(new Runnable()
                             {
@@ -416,16 +419,18 @@ class ClientRead extends Thread
                     }
                     line = "";
                 }
-            } while (line.compareTo("501#") != 0);
-        } catch (IOException e)
+            }
+            while (line.compareTo("501#") != 0); //501 is disconnected from the server
+        }
+        catch (IOException e)
         {
-
             Log.d("check", "IO Error/ Client terminated abruptly");
-
-        } catch (NullPointerException e)
+        }
+        catch (NullPointerException e)
         {
             Log.d("check", "Client Closed");
-        } catch (Exception e)
+        }
+        catch (Exception e)
         {
             e.printStackTrace();
         }
@@ -444,7 +449,8 @@ class ClientRead extends Thread
                 globalClass.getErrorHandler().setLastMsgToServer(str);
                 globalClass.getErrorHandler().reConnect();
             }
-        } catch (Exception e)
+        }
+        catch (Exception e)
         {
             e.printStackTrace();
         }

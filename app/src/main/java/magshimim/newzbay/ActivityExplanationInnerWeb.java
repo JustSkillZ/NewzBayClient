@@ -17,13 +17,13 @@ public class ActivityExplanationInnerWeb extends AppCompatActivity
         getSupportActionBar().setDisplayShowTitleEnabled(false);
     }
 
-    public void closeExplanation(View v)
+    public void closeExplanation(View v) //Close the Activity
     {
         finish();
     }
 
     @Override
-    public void onBackPressed()
+    public void onBackPressed() //Cant close it with back button
     {
     }
 }

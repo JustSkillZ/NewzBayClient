@@ -6,7 +6,6 @@ import android.content.res.Resources;
 
 public class GlobalClass extends Application
 {
-
     private CategoriesHandler categoriesHandler;
     private CommentsHandler commentsHandler;
     private Communication communication;
@@ -17,7 +16,7 @@ public class GlobalClass extends Application
     private Context currentActivity;
     private int currentLayout;
 
-    public void initiateClass(Resources resources)
+    public void initiateClass(Resources resources) //Init the fields of the class
     {
         this.resources = resources;
         categoriesHandler = new CategoriesHandler(null, "", "", false, this);
@@ -27,7 +26,7 @@ public class GlobalClass extends Application
         priorityHandler = new PriorityHandler();
     }
 
-    public void endClass()
+    public void endClass() //Reset the fields of the class
     {
         categoriesHandler = null;
         errorHandler = null;

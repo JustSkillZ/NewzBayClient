@@ -30,7 +30,8 @@ public class CategoriesHandler
         if (currentlyInUse == null)
         {
             this.currentlyInUse = new Vector<>();
-        } else
+        }
+        else
         {
             this.currentlyInUse = currentlyInUse;
         }
@@ -78,7 +79,8 @@ public class CategoriesHandler
                     case 2:
                         return "ברוך/ה הבא/ה";
                 }
-            } else
+            }
+            else
             {
                 return "ברוך/ה הבא/ה";
             }

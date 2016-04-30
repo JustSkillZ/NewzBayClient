@@ -20,7 +20,7 @@ public class ActivityPriority extends AppCompatActivity
         setContentView(R.layout.activity_priority);
         Time now = new Time();
         now.setToNow();
-        if (now.hour >= 19 || now.hour >= 0 && now.hour <= 5)
+        if (now.hour >= 19 || now.hour >= 0 && now.hour <= 5) //Change Theme if the time is after 7 PM or before 6 AM
         {
             LinearLayout layout = (LinearLayout) findViewById(R.id.activity_priority);
             layout.setBackground(getResources().getDrawable(R.drawable.main_background_night));
@@ -46,7 +46,7 @@ public class ActivityPriority extends AppCompatActivity
             explanation.setTextColor(getResources().getColor(R.color.disabledButton));
         }
         Button sendPriority = (Button) findViewById(R.id.btn_endPriority);
-        sendPriority.setOnClickListener(new View.OnClickListener()
+        sendPriority.setOnClickListener(new View.OnClickListener() //Close Activity
         {
             @Override
             public void onClick(View v)
@@ -56,7 +56,7 @@ public class ActivityPriority extends AppCompatActivity
         });
     }
 
-    public void choosePriorityBySubject(View v)
+    public void choosePriorityBySubject(View v) //Enter to ActivityChoosePriority, and prioritize selected subject
     {
         ((GlobalClass) getApplicationContext()).getPriorityHandler().setCurrentPrioritySubject(v.getContentDescription().toString());
         Intent priority = new Intent(this, ActivityChoosePriority.class);

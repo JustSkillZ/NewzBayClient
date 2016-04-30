@@ -73,12 +73,14 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
                     }
                 });
 
-            } else //The rest can like or comment
+            }
+            else //The rest can like or comment
             {
                 if (categoriesHandler.getCurrentlyInUse().get(position).isLiked())
                 {
                     holder.like.setTextColor(globalClass.getResources().getColor(R.color.nb));
-                } else
+                }
+                else
                 {
                     holder.like.setTextColor(globalClass.getResources().getColor(R.color.grey));
                 }
@@ -90,13 +92,14 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
                         Button like = (Button) v.findViewById(R.id.btn_like);
                         ViewGroup item = (ViewGroup) v.getParent().getParent();
                         TextView countLikes = (TextView) item.findViewById(R.id.tv_likes);
-                        if (categoriesHandler.getCurrentlyInUse().get(tempPosition).isLiked()) //Unlike
+                        if (categoriesHandler.getCurrentlyInUse().get(tempPosition).isLiked()) //Dislike
                         {
                             like.setTextColor(globalClass.getResources().getColor(R.color.grey));
                             categoriesHandler.getCurrentlyInUse().get(tempPosition).setLiked(false);
                             categoriesHandler.getCurrentlyInUse().get(tempPosition).decNumberOfLikes();
                             communication.clientSend("110○" + categoriesHandler.getCurrentlyInUse().get(tempPosition).getUrl() + "#");
-                        } else //Like
+                        }
+                        else //Like
                         {
                             like.setTextColor(globalClass.getResources().getColor(R.color.nb));
                             categoriesHandler.getCurrentlyInUse().get(tempPosition).setLiked(true);
@@ -107,10 +110,21 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
                         if (numOfLikes >= 1000) //Nice format, if there is more than 1000 likes. Example: (1.5k)
                         {
                             countLikes.setText(String.format("%.1f", (numOfLikes / 1000)) + "k");
-                        } else
+                        }
+                        else
                         {
                             countLikes.setText(categoriesHandler.getCurrentlyInUse().get(tempPosition).getNumberOfLikes() + "");
                         }
+                    }
+                });
+                holder.comment.setOnClickListener(new View.OnClickListener() //Go to comments activity
+                {
+                    @Override
+                    public void onClick(View v)
+                    {
+                        globalClass.getCommentsHandler().setArticle(categoriesHandler.getCurrentlyInUse().elementAt(tempPosition));
+                        Intent comments = new Intent(context, ActivityComments.class);
+                        context.startActivity(comments);
                     }
                 });
             }
@@ -146,7 +160,8 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
             if (numOfLikes >= 1000) //Nice format, if there is more than 1000 likes. Example: (1.5k)
             {
                 holder.countLikes.setText(String.format("%.1f", (numOfLikes / 1000)) + "k");
-            } else
+            }
+            else
             {
                 holder.countLikes.setText(categoriesHandler.getCurrentlyInUse().get(position).getNumberOfLikes() + "");
             }
@@ -154,14 +169,16 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
             if (numOfComments >= 1000) //Nice format, if there is more than 1000 comments. Example: (1.5k)
             {
                 holder.countComments.setText(String.format("%.1f", (numOfComments / 1000)) + "k");
-            } else
+            }
+            else
             {
                 holder.countComments.setText(categoriesHandler.getCurrentlyInUse().get(position).getNumberOfComments() + "");
             }
             if (!categoriesHandler.getCurrentlyInUse().get(position).getPicURL().equals("null")) //If there is a URL, load the pic.
             {
                 Picasso.with(context).load(categoriesHandler.getCurrentlyInUse().get(position).getPicURL()).into(holder.picture);
-            } else //If there is no URL, set default image.
+            }
+            else //If there is no URL, set default image.
             {
                 holder.picture.setImageBitmap(categoriesHandler.getCurrentlyInUse().get(position).getPicture());
             }
@@ -173,16 +190,6 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
                     categoriesHandler.setCurrentlyOpenURL(categoriesHandler.getCurrentlyInUse().elementAt(tempPosition).getUrl());
                     Intent web = new Intent(context, ActivityInnerWeb.class);
                     context.startActivity(web);
-                }
-            });
-            holder.comment.setOnClickListener(new View.OnClickListener() //Go to comments activity
-            {
-                @Override
-                public void onClick(View v)
-                {
-                    globalClass.getCommentsHandler().setArticle(categoriesHandler.getCurrentlyInUse().elementAt(tempPosition));
-                    Intent comments = new Intent(context, ActivityComments.class);
-                    context.startActivity(comments);
                 }
             });
         }

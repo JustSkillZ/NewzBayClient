@@ -41,7 +41,7 @@ public class SitesAdapter extends RecyclerView.Adapter<SitesAdapter.ViewHolder> 
     }
 
     @Override
-    public void onItemDismiss(int position)
+    public void onItemDismiss(int position) //On swipe remove item from the vector, and add it to vector of removed sites.
     {
         priorityHandler.getRemovedSitesOfCurrentSubject().add(priorityHandler.getClientPriority().get(position));
         priorityHandler.getClientPriority().remove(position);
@@ -49,7 +49,7 @@ public class SitesAdapter extends RecyclerView.Adapter<SitesAdapter.ViewHolder> 
     }
 
     @Override
-    public void onItemMove(int fromPosition, int toPosition)
+    public void onItemMove(int fromPosition, int toPosition) //On change position of an item change it in the vector too
     {
         if (fromPosition < toPosition)
         {
@@ -57,7 +57,8 @@ public class SitesAdapter extends RecyclerView.Adapter<SitesAdapter.ViewHolder> 
             {
                 Collections.swap(priorityHandler.getClientPriority(), i, i + 1);
             }
-        } else
+        }
+        else
         {
             for (int i = fromPosition; i > toPosition; i--)
             {

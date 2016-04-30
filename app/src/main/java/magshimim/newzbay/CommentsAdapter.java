@@ -27,7 +27,7 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.ViewHo
     {
         this.globalClass = globalClass;
         commentsHandler = globalClass.getCommentsHandler();
-        comments = commentsHandler.getCommentsofCurrentArticle();
+        comments = commentsHandler.getCommentsOfCurrentArticle();
         this.context = context;
     }
 
@@ -62,8 +62,8 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.ViewHo
                             switch (which)
                             {
                                 case DialogInterface.BUTTON_POSITIVE:
-                                    globalClass.getCommunication().clientSend("124◘" + commentsHandler.getArticle().getUrl() + "○" + commentsHandler.getCommentsofCurrentArticle().get(tempPosition).getCommentText() + "#");
-                                    commentsHandler.getCommentsofCurrentArticle().remove(tempPosition);
+                                    globalClass.getCommunication().clientSend("124◘" + commentsHandler.getArticle().getUrl() + "○" + commentsHandler.getCommentsOfCurrentArticle().get(tempPosition).getCommentText() + "#");
+                                    commentsHandler.getCommentsOfCurrentArticle().remove(tempPosition);
                                     commentsHandler.getArticle().decNumberOfComments();
                                     commentsHandler.getCommentsRecyclerAdapter().notifyDataSetChanged();
                                     ((TextView) ((Activity) context).findViewById(R.id.tv_comments)).setText(commentsHandler.getArticle().getNumberOfComments() + "");
@@ -76,7 +76,8 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.ViewHo
                             .setNegativeButton("ביטול", dialogClickListener).show();
                 }
             });
-        } else //If the user is not the one who wrote it, so he cant delete it
+        }
+        else //If the user is not the one who wrote it, so he cant delete it
         {
             holder.deleteComment.setVisibility(View.GONE);
         }
@@ -85,7 +86,7 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.ViewHo
     @Override
     public int getItemCount()
     {
-        return commentsHandler.getCommentsofCurrentArticle().size();
+        return commentsHandler.getCommentsOfCurrentArticle().size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder

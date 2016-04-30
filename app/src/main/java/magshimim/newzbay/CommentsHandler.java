@@ -7,18 +7,18 @@ import java.util.Vector;
 public class CommentsHandler
 {
 
-    private Vector<Comment> commentsofCurrentArticle;
+    private Vector<Comment> commentsOfCurrentArticle;
     private RecyclerView.Adapter commentsRecyclerAdapter;
     private Article article;
 
     public CommentsHandler()
     {
-        this.commentsofCurrentArticle = new Vector<>();
+        this.commentsOfCurrentArticle = new Vector<>();
     }
 
-    public Vector<Comment> getCommentsofCurrentArticle()
+    public Vector<Comment> getCommentsOfCurrentArticle()
     {
-        return commentsofCurrentArticle;
+        return commentsOfCurrentArticle;
     }
 
     public RecyclerView.Adapter getCommentsRecyclerAdapter()

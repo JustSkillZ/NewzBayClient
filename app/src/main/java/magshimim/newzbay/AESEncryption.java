@@ -24,7 +24,8 @@ public class AESEncryption
             SecretKey secretKey = keyGen.generateKey();
             this.encryptionKey = secretKeyToString(secretKey);
             this.encryptionKey = this.encryptionKey.substring(0, encryptionKey.length() - 1);
-        } catch (NoSuchAlgorithmException e)
+        }
+        catch (NoSuchAlgorithmException e)
         {
             e.printStackTrace();
         }

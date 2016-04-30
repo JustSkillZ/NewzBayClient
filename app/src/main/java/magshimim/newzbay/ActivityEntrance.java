@@ -68,13 +68,20 @@ public class ActivityEntrance extends AppCompatActivity implements GoogleApiClie
     {
         super.onCreate(savedInstanceState);
 
+        //******************************Init GlobalClass************************
+        //getApplicationContext() set for returning GlobalClass
         ((GlobalClass) getApplicationContext()).initiateClass(getResources());
         globalClass = ((GlobalClass) getApplicationContext());
         globalClass.setCurrentActivity(ActivityEntrance.this);
         globalClass.setCurrentLayout(R.id.entrance_layout);
+        //**********************************************************************
+
+        //******************************Init Error Handler***********************************************************************************
         LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         globalClass.getErrorHandler().setPopupWindowViewNoConnectionWithServer(inflater.inflate(R.layout.popup_no_connection, null, false));
         globalClass.getErrorHandler().handleNoConnectionToTheServer();
+        //***********************************************************************************************************************************
+
         FacebookSdk.sdkInitialize(getApplicationContext());
         callbackManager = CallbackManager.Factory.create();
         setContentView(R.layout.activity_entrance);
@@ -97,10 +104,9 @@ public class ActivityEntrance extends AppCompatActivity implements GoogleApiClie
         SignInButton googleLoginBtn = (SignInButton) findViewById(R.id.btn_Google);
         googleLoginBtn.setEnabled(false);
 
-
         Time now = new Time();
         now.setToNow();
-        if (now.hour >= 19 || now.hour >= 0 && now.hour <= 5)
+        if (now.hour >= 19 || now.hour >= 0 && now.hour <= 5) //Change Theme if the time is after 7 PM or before 6 AM
         {
             RelativeLayout layout = (RelativeLayout) findViewById(R.id.entrance_layout);
             layout.setBackground(getResources().getDrawable(R.drawable.main_background_night));
@@ -110,13 +116,10 @@ public class ActivityEntrance extends AppCompatActivity implements GoogleApiClie
             slogen.setTextColor(getResources().getColor(R.color.white));
         }
 
-        communication = new Communication((GlobalClass) getApplicationContext());
+        communication = new Communication((GlobalClass) getApplicationContext()); //Connect to NB server
         globalClass.setCommunication(communication);
-        Thread t = new Thread(communication);
+        Thread t = new Thread(communication); //This is write to server thread
         t.start();
-
-//        Intent priority = new Intent(this,ActivityPriority.class);
-//        startActivity(priority);
     }
 
     @Override
@@ -144,17 +147,17 @@ public class ActivityEntrance extends AppCompatActivity implements GoogleApiClie
         globalClass.setUser(user);
         String send = "102○guest@guest.com○guest○#";
         globalClass.getErrorHandler().setConnectingClientMsg(send);
-        globalClass.getCommunication().clientSend(send);
+        globalClass.getCommunication().clientSend(send); //Connect as guest
         moveToNewsFeed();
     }
 
-    public void moveToNewsFeed()
+    public void moveToNewsFeed() //Connect and open NewsFeed activity
     {
         if (user.getConnectedVia().equals("Google"))
         {
             String send = "102○" + Plus.AccountApi.getAccountName(mGoogleApiClient) + "○" + ((GoogleUser) user).getGoogleProfile().getName().getGivenName() + "○" + user.getPicURL() + "#";
             globalClass.getErrorHandler().setConnectingClientMsg(send);
-            globalClass.getCommunication().clientSend(send);
+            globalClass.getCommunication().clientSend(send); //Connect via Google
             Log.d("Server", "102○" + Plus.AccountApi.getAccountName(mGoogleApiClient) + "○" + ((GoogleUser) user).getGoogleProfile().getName().getGivenName() + "○" + user.getPicURL() + "#");
         }
         Intent nfScreen = new Intent(this, ActivityNewsFeed.class);
@@ -162,7 +165,7 @@ public class ActivityEntrance extends AppCompatActivity implements GoogleApiClie
         finish();
     }
 
-    public void facebookLogin()
+    public void facebookLogin() //Login via Facebook
     {
         facebookLoginButton = (LoginButton) findViewById(R.id.btn_Facebook);
         facebookLoginButton.setReadPermissions(Arrays.asList("email", "user_friends"));
@@ -172,7 +175,7 @@ public class ActivityEntrance extends AppCompatActivity implements GoogleApiClie
             private ProfileTracker mProfileTracker;
 
             @Override
-            public void onSuccess(LoginResult loginResult)
+            public void onSuccess(LoginResult loginResult) //Logged to Facebook successfully
             {
                 Log.d(TAG, "facebook login");
                 final GraphRequest request = GraphRequest.newMeRequest(
@@ -189,18 +192,19 @@ public class ActivityEntrance extends AppCompatActivity implements GoogleApiClie
                                     ((FacebookUser) user).setFacebookUserEmail(email);
                                     String send = "102○" + ((FacebookUser) user).getFacebookUserEmail() + "○" + ((FacebookUser) user).getFacebookProfile().getFirstName() + "○" + user.getPicURL() + "#";
                                     globalClass.getErrorHandler().setConnectingClientMsg(send);
-                                    globalClass.getCommunication().clientSend(send);
+                                    globalClass.getCommunication().clientSend(send); //Connect via Facebook
                                     SharedPreferences sharedpreferences = getSharedPreferences(prefsConnection, Context.MODE_PRIVATE);
                                     SharedPreferences.Editor editor = sharedpreferences.edit();
                                     editor.putString(facebookEmail, email);
                                     editor.commit();
-                                } catch (JSONException e)
+                                }
+                                catch (JSONException e)
                                 {
                                     e.printStackTrace();
                                 }
                             }
                         });
-                if (Profile.getCurrentProfile() == null)
+                if (Profile.getCurrentProfile() == null) //While first logging to facebook connected app, getCurrentProfile() returns null
                 {
                     mProfileTracker = new ProfileTracker()
                     {
@@ -210,7 +214,7 @@ public class ActivityEntrance extends AppCompatActivity implements GoogleApiClie
                             user = new FacebookUser(Profile.getCurrentProfile().getName(), Profile.getCurrentProfile().getProfilePictureUri(500, 500).toString(), Profile.getCurrentProfile(), "");
                             globalClass.setUser(user);
                             Bundle parameters = new Bundle();
-                            parameters.putString("fields", "id,name,email,gender, birthday");
+                            parameters.putString("fields", "id,name,email,gender, birthday"); //Request extra information about the user
                             request.setParameters(parameters);
                             request.executeAsync();
                             moveToNewsFeed();
@@ -218,12 +222,13 @@ public class ActivityEntrance extends AppCompatActivity implements GoogleApiClie
                         }
                     };
                     mProfileTracker.startTracking();
-                } else
+                }
+                else
                 {
                     user = new FacebookUser(Profile.getCurrentProfile().getName(), Profile.getCurrentProfile().getProfilePictureUri(500, 500).toString(), Profile.getCurrentProfile(), "");
                     globalClass.setUser(user);
                     Bundle parameters = new Bundle();
-                    parameters.putString("fields", "id,name,email,gender, birthday");
+                    parameters.putString("fields", "id,name,email,gender, birthday"); //Request extra information about the user
                     request.setParameters(parameters);
                     request.executeAsync();
                     moveToNewsFeed();
@@ -244,11 +249,9 @@ public class ActivityEntrance extends AppCompatActivity implements GoogleApiClie
         });
     }
 
-    /*
-    create and  initialize GoogleApiClient object to use Google Plus Api.
-    While initializing the GoogleApiClient object, request the Plus.SCOPE_PLUS_LOGIN scope.
-    */
 
+    /*create and  initialize GoogleApiClient object to use Google Plus Api.
+      While initializing the GoogleApiClient object, request the Plus.SCOPE_PLUS_LOGIN scope. */
     private void buildNewGoogleApiClient()
     {
 
@@ -260,44 +263,23 @@ public class ActivityEntrance extends AppCompatActivity implements GoogleApiClie
                 .build();
     }
 
-    /*
-      Customize sign-in button. The sign-in button can be displayed in
-      multiple sizes and color schemes. It can also be contextually
-      rendered based on the requested scopes. For example. a red button may
-      be displayed when Google+ scopes are requested, but a white button
-      may be displayed when only basic profile is requested. Try adding the
-      Plus.SCOPE_PLUS_LOGIN scope to see the  difference.
-    */
 
-    private void customizeSignBtn()
+    private void customizeGoogleSignBtn()
     {
-
         googleSignInButton = (SignInButton) findViewById(R.id.btn_Google);
         googleSignInButton.setSize(SignInButton.SIZE_STANDARD);
         googleSignInButton.setColorScheme(SignInButton.COLOR_DARK);
         googleSignInButton.setScopes(new Scope[]{Plus.SCOPE_PLUS_LOGIN});
         setGooglePlusButtonText(googleSignInButton);
-
-    }
-
-    /*
-      Set on click Listeners on the sign-in sign-out and disconnect buttons
-     */
-
-    private void setBtnClickListeners()
-    {
-        // Button listeners
-        googleSignInButton.setOnClickListener(this);
     }
 
     protected void onStart()
     {
         super.onStart();
-//        mGoogleApiClient.connect();
     }
 
     @Override
-    public void onConnectionFailed(ConnectionResult result)
+    public void onConnectionFailed(ConnectionResult result) //if Google connection failed
     {
         if (!result.hasResolution())
         {
@@ -319,20 +301,15 @@ public class ActivityEntrance extends AppCompatActivity implements GoogleApiClie
 
     }
 
-    /*
-      Will receive the activity result and check which request we are responding to
-
-     */
     @Override
-    // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
+    /*Will receive the activity result and check which request we are responding to
+      Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...); */
     protected void onActivityResult(int requestCode, int responseCode,
                                     Intent intent)
     {
         super.onActivityResult(requestCode, responseCode, intent);
         callbackManager.onActivityResult(requestCode, responseCode, intent);
-
         // Check which request we're responding to
-
         if (requestCode == SIGN_IN_CODE)
         {
             this.requestCode = requestCode;
@@ -352,19 +329,17 @@ public class ActivityEntrance extends AppCompatActivity implements GoogleApiClie
     }
 
     @Override
-    public void onConnected(Bundle arg0)
+    public void onConnected(Bundle arg0) //Google+ connected
     {
         isSignInBtnClicked = false;
-        // Get user's information and set it into the layout
         user = new GoogleUser(Plus.PeopleApi.getCurrentPerson(mGoogleApiClient).getDisplayName(), Plus.PeopleApi.getCurrentPerson(mGoogleApiClient).getImage().getUrl(), Plus.PeopleApi.getCurrentPerson(mGoogleApiClient), mGoogleApiClient);
         globalClass.setUser(user);
-        // Update the UI after signin
-        moveToNewsFeed();
+        moveToNewsFeed(); // Update the UI after sign-in
 
     }
 
     @Override
-    public void onConnectionSuspended(int arg0)
+    public void onConnectionSuspended(int arg0) //Google connection suspended
     {
         mGoogleApiClient.connect();
         user = new GoogleUser(Plus.PeopleApi.getCurrentPerson(mGoogleApiClient).getDisplayName(), Plus.PeopleApi.getCurrentPerson(mGoogleApiClient).getImage().getUrl(), Plus.PeopleApi.getCurrentPerson(mGoogleApiClient), mGoogleApiClient);
@@ -383,27 +358,18 @@ public class ActivityEntrance extends AppCompatActivity implements GoogleApiClie
         }
     }
 
-    /*
-      Sign-in into the Google + account
-     */
-
-    private void gPlusSignIn()
+    private void gPlusSignIn() //Sign-in into the Google+ account
     {
         if (!mGoogleApiClient.isConnecting())
         {
             Log.d("user connected", "connected");
             isSignInBtnClicked = true;
-//            mProgressDialog.show();
             resolveSignInError();
 
         }
     }
 
-    /*
-      Method to resolve any signin errors
-     */
-
-    private void resolveSignInError()
+    private void resolveSignInError() //Resolve any sign-in errors
     {
         if (mConnectionResult.hasResolution())
         {
@@ -412,7 +378,8 @@ public class ActivityEntrance extends AppCompatActivity implements GoogleApiClie
                 isIntentInprogress = true;
                 mConnectionResult.startResolutionForResult(this, SIGN_IN_CODE);
                 Log.d("resolve error", "sign in error resolved");
-            } catch (IntentSender.SendIntentException e)
+            }
+            catch (IntentSender.SendIntentException e)
             {
                 isIntentInprogress = false;
                 mGoogleApiClient.connect();
@@ -420,11 +387,7 @@ public class ActivityEntrance extends AppCompatActivity implements GoogleApiClie
         }
     }
 
-    /*
-     Revoking access from Google+ account
-     */
-
-    private void gPlusRevokeAccess()
+    private void gPlusRevokeAccess() //Revoking access from Google+ account
     {
         if (mGoogleApiClient.isConnected())
         {
@@ -459,24 +422,25 @@ public class ActivityEntrance extends AppCompatActivity implements GoogleApiClie
         }
     }
 
-    public void connectToSocialNets()
+    public void connectToSocialNets() //If connected successfully to NB server, now connect to social nets.
     {
         facebookLogin();
-        if (Profile.getCurrentProfile() != null)
+        if (Profile.getCurrentProfile() != null) //If connected once and still connected with Facebook, auto connect to Facebook.
         {
             Log.d(TAG, "facebook login");
-            SharedPreferences sharedpreferences = getSharedPreferences(prefsConnection, Context.MODE_PRIVATE);
+            SharedPreferences sharedpreferences = getSharedPreferences(prefsConnection, Context.MODE_PRIVATE); //If auto-connect: take last saved Facebook email
             user = new FacebookUser(Profile.getCurrentProfile().getName(), Profile.getCurrentProfile().getProfilePictureUri(500, 500).toString(), Profile.getCurrentProfile(), sharedpreferences.getString(facebookEmail, ""));
             globalClass.setUser(user);
             String send = "102○" + ((FacebookUser) user).getFacebookUserEmail() + "○" + ((FacebookUser) user).getFacebookProfile().getFirstName() + "○" + user.getPicURL() + "#";
             globalClass.getErrorHandler().setConnectingClientMsg(send);
-            globalClass.getCommunication().clientSend(send);
+            globalClass.getCommunication().clientSend(send); //Connect via Facebook
             moveToNewsFeed();
-        } else
+        }
+        else //Connect via Google
         {
             buildNewGoogleApiClient();
-            customizeSignBtn();
-            setBtnClickListeners();
+            customizeGoogleSignBtn();
+            googleSignInButton.setOnClickListener(this);
             mProgressDialog = new ProgressDialog(this);
             mProgressDialog.setMessage("Loading...");
             mGoogleApiClient.connect();

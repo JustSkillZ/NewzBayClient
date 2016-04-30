@@ -40,12 +40,12 @@ public class ErrorHandler
         this.popupWindowViewNoConnectionWithServer = popupWindowViewNoConnectionWithServer;
     }
 
-    public void handleNoConnectionToTheServer()
+    public void handleNoConnectionToTheServer() //Handle PopupWindow reconnect button
     {
         Button refreshConnection = (Button) globalClass.getErrorHandler().getPopupWindowViewNoConnectionWithServer().findViewById(R.id.btn_reconnect);
         refreshConnection.setOnClickListener(new View.OnClickListener()
         {
-            public void onClick(View v)
+            public void onClick(View v) //Rerun communication thread
             {
                 if (globalClass.getErrorHandler().getNoConnectionWithServer() != null)
                 {
@@ -79,7 +79,7 @@ public class ErrorHandler
         this.lastMsgToServer = lastMsgToServer;
     }
 
-    public void reConnect()
+    public void reConnect() //Open no connection PopupWindow
     {
         ((Activity) globalClass.getCurrentActivity()).runOnUiThread(new Runnable()
         {

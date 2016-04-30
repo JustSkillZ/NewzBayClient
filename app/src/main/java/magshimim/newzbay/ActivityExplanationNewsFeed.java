@@ -18,13 +18,13 @@ public class ActivityExplanationNewsFeed extends AppCompatActivity
         toolbarMain.setNavigationIcon(R.drawable.anchor);
     }
 
-    public void closeExplanation(View v)
+    public void closeExplanation(View v) //Close the Activity
     {
         finish();
     }
 
     @Override
-    public void onBackPressed()
+    public void onBackPressed() //Cant close it with back button
     {
     }
 }

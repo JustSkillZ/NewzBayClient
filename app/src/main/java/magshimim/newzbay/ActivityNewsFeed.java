@@ -105,15 +105,14 @@ public class ActivityNewsFeed extends AppCompatActivity
                     try
                     {
                         ((TextView) v).setText(categoriesHandler.getCurrentlyInUseCategory(user));
-                    } catch (NullPointerException e)
+                    }
+                    catch (NullPointerException e)
                     {
                         e.printStackTrace();
                     }
                 }
             }
         }
-
-        saveInInternalFolder("NewzBay", "check");
 
         recyclerViewArticle = (RecyclerView) findViewById(R.id.recyclerView_articles);
         recyclerLayoutManager = new LinearLayoutManager(this);
@@ -156,7 +155,8 @@ public class ActivityNewsFeed extends AppCompatActivity
         {
             mDragger = drawer.getClass().getDeclaredField(
                     "mLeftDragger");
-        } catch (NoSuchFieldException e)
+        }
+        catch (NoSuchFieldException e)
         {
             e.printStackTrace();
         }
@@ -166,7 +166,8 @@ public class ActivityNewsFeed extends AppCompatActivity
         {
             draggerObj = (ViewDragHelper) mDragger
                     .get(drawer);
-        } catch (IllegalAccessException e)
+        }
+        catch (IllegalAccessException e)
         {
             e.printStackTrace();
         }
@@ -176,7 +177,8 @@ public class ActivityNewsFeed extends AppCompatActivity
         {
             mEdgeSize = draggerObj.getClass().getDeclaredField(
                     "mEdgeSize");
-        } catch (NoSuchFieldException e)
+        }
+        catch (NoSuchFieldException e)
         {
             e.printStackTrace();
         }
@@ -185,7 +187,8 @@ public class ActivityNewsFeed extends AppCompatActivity
         try
         {
             edge = mEdgeSize.getInt(draggerObj);
-        } catch (IllegalAccessException e)
+        }
+        catch (IllegalAccessException e)
         {
             e.printStackTrace();
         }
@@ -193,7 +196,8 @@ public class ActivityNewsFeed extends AppCompatActivity
         try
         {
             mEdgeSize.setInt(draggerObj, edge * 5); //optimal value as for me, you may set any constant in dp
-        } catch (IllegalAccessException e)
+        }
+        catch (IllegalAccessException e)
         {
             e.printStackTrace();
         }
@@ -244,7 +248,8 @@ public class ActivityNewsFeed extends AppCompatActivity
         if (drawer.isDrawerOpen(GravityCompat.START))
         {
             drawer.closeDrawer(GravityCompat.START);
-        } else
+        }
+        else
         {
             if (doubleBackToExitPressedOnce)
             {
@@ -278,71 +283,84 @@ public class ActivityNewsFeed extends AppCompatActivity
 //            while(categoriesHandler.getCurrentlyInUse().size() == 0);
             Intent intent = new Intent(this, ActivityHotNews.class);
             startActivity(intent);
-        } else if (id == R.id.nav_news)
+        }
+        else if (id == R.id.nav_news)
         {
             changeCategory(1);
 
-        } else if (id == R.id.nav_global_news)
+        }
+        else if (id == R.id.nav_global_news)
         {
             changeCategory(2);
 
-        } else if (id == R.id.nav_politics)
+        }
+        else if (id == R.id.nav_politics)
         {
             changeCategory(3);
 
-        } else if (id == R.id.nav_economy)
+        }
+        else if (id == R.id.nav_economy)
         {
             changeCategory(4);
-        } else if (id == R.id.nav_sport)
+        }
+        else if (id == R.id.nav_sport)
         {
             changeCategory(5);
 
-        } else if (id == R.id.nav_culture)
+        }
+        else if (id == R.id.nav_culture)
         {
             changeCategory(6);
 
-        } else if (id == R.id.nav_celebrities)
+        }
+        else if (id == R.id.nav_celebrities)
         {
             changeCategory(7);
 
-        } else if (id == R.id.nav_technology)
+        }
+        else if (id == R.id.nav_technology)
         {
             changeCategory(8);
 
-        } else if (id == R.id.nav_science)
+        }
+        else if (id == R.id.nav_science)
         {
             changeCategory(9);
 
-        } else if (id == R.id.nav_priority)
+        }
+        else if (id == R.id.nav_priority)
         {
             if (!user.getConnectedVia().equals("Guest"))
             {
                 Intent priority1 = new Intent(this, ActivityPriority.class);
                 startActivity(priority1);
                 this.onStop();
-            } else
+            }
+            else
             {
                 Toast.makeText(globalClass.getCurrentActivity(), "רק משתמשים מחוברים יכולים לעשות תיעדוף לאתרים", Toast.LENGTH_LONG).show();
             }
-        } else if (id == R.id.nav_helpNB)
+        }
+        else if (id == R.id.nav_helpNB) //Contact with NB developers
         {
             Intent intent = new Intent(Intent.ACTION_SEND);
             intent.setType("plain/text");
             intent.putExtra(Intent.EXTRA_EMAIL, new String[]{"nnewzbay@gmail.com"});
             startActivity(Intent.createChooser(intent, ""));
-        } else if (id == R.id.nav_discconect)
+        }
+        else if (id == R.id.nav_discconect)
         {
             if (user.getConnectedVia().equals("Google"))
             {
                 Plus.AccountApi.clearDefaultAccount(((GoogleUser) user).getGoogleApiClient());
                 ((GoogleUser) user).getGoogleApiClient().disconnect();
                 ((GoogleUser) user).getGoogleApiClient().connect();
-            } else if (user.getConnectedVia().equals("Facebook"))
+            }
+            else if (user.getConnectedVia().equals("Facebook"))
             {
                 LoginManager.getInstance().logOut();
             }
             globalClass.getCommunication().clientSend("500#"); //Disconnect from the server
-            globalClass.getCommunication().setIsConnect(0);
             Log.d("Server", "500#");
             globalClass.endClass();
             Intent intent = new Intent(this, ActivityEntrance.class);
@@ -367,26 +385,29 @@ public class ActivityNewsFeed extends AppCompatActivity
         if (drawer.isDrawerOpen(GravityCompat.START))
         {
             drawer.closeDrawer(GravityCompat.START);
-        } else
+        }
+        else
         {
             drawer.openDrawer(GravityCompat.START);
         }
         TextView userFullName = (TextView) drawer.findViewById(R.id.tv_userFullName);
-        if (userFullName != null)
+        if (userFullName != null) //Set user's name
         {
             userFullName.setText(user.getFullName());
         }
         de.hdodenhof.circleimageview.CircleImageView userPic = (de.hdodenhof.circleimageview.CircleImageView) drawer.findViewById(R.id.ib_userPic);
-        if (userPic != null)
+        if (userPic != null) //Set user's profile pic
         {
             if (user.getConnectedVia().equals("Guest"))
             {
                 Picasso.with(globalClass.getCurrentActivity()).load(R.drawable.user_icon).into(userPic);
-            } else if (user.getConnectedVia().equals("Facebook"))
+            }
+            else if (user.getConnectedVia().equals("Facebook"))
             {
                 Picasso.with(globalClass.getCurrentActivity()).load(((FacebookUser) user).getFacebookProfile().getProfilePictureUri(500, 500)).into(userPic);
                 user.setFullName(((FacebookUser) user).getFacebookProfile().getName());
-            } else if (user.getConnectedVia().equals("Google"))
+            }
+            else if (user.getConnectedVia().equals("Google"))
             {
                 Picasso.with(globalClass.getCurrentActivity()).load(((GoogleUser) user).getGoogleProfile().getImage().getUrl().replace("sz=50", "sz=500")).into(userPic);
                 user.setFullName(((GoogleUser) user).getGoogleProfile().getDisplayName());
@@ -409,45 +430,6 @@ public class ActivityNewsFeed extends AppCompatActivity
                 android.R.color.holo_orange_light,
                 android.R.color.holo_green_light,
                 android.R.color.holo_red_light);
-    }
-
-    private void saveInInternalFolder(String str1, String fileName)
-    {
-        FileOutputStream fos = null;
-        try
-        {
-            fos = openFileOutput(fileName, this.MODE_PRIVATE);
-            fos.write(str1.getBytes());
-            fos.close();
-        } catch (IOException e)
-        {
-            Toast.makeText(this, "Error write internals", Toast.LENGTH_SHORT).show();
-            e.printStackTrace();
-        }
-    }
-
-    private String readInInternalFolder(String fileName)
-    {
-        Context context = getApplicationContext();
-        try
-        {
-            FileInputStream fis = context.openFileInput(fileName);
-            InputStreamReader isr = new InputStreamReader(fis, "UTF-8");
-            BufferedReader bufferedReader = new BufferedReader(isr);
-            StringBuilder sb = new StringBuilder();
-            String line;
-            while ((line = bufferedReader.readLine()) != null)
-            {
-                sb.append(line + "\n");
-            }
-            fis.close();
-            return (sb.toString());
-        } catch (IOException e)
-        {
-            Toast.makeText(this, "Error read internals", Toast.LENGTH_SHORT).show();
-            e.printStackTrace();
-            return "";
-        }
     }
 
     private void updateArticles()

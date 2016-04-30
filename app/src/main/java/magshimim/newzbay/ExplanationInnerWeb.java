@@ -10,8 +10,8 @@ public class ExplanationInnerWeb extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_explanation_innerweb);
-        android.support.v7.widget.Toolbar toolbar_web = (android.support.v7.widget.Toolbar) findViewById(R.id.toolbar_web);
-        setSupportActionBar(toolbar_web);
+        android.support.v7.widget.Toolbar toolbarWeb = (android.support.v7.widget.Toolbar) findViewById(R.id.toolbar_web);
+        setSupportActionBar(toolbarWeb);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
     }
 

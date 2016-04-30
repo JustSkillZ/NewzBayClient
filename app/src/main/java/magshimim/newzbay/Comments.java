@@ -32,7 +32,7 @@ public class Comments extends AppCompatActivity implements EmojiconGridFragment.
 
 
 
-    private RecyclerView recyclerView_comments;
+    private RecyclerView recyclerViewComments;
     private android.support.v7.widget.LinearLayoutManager recyclerLayoutManager;
     private RecyclerView.Adapter recyclerAdapter;
     private GlobalClass globalClass;
@@ -122,12 +122,12 @@ public class Comments extends AppCompatActivity implements EmojiconGridFragment.
         setSupportActionBar(toolbar);
         getSupportActionBar().setHomeAsUpIndicator(globalClass.getResources().getDrawable(R.drawable.ic_arrow_back_white_48dp));
 
-        recyclerView_comments = (RecyclerView) findViewById(R.id.rv_comments);
+        recyclerViewComments = (RecyclerView) findViewById(R.id.rv_comments);
         recyclerLayoutManager = new LinearLayoutManager(this);
-        recyclerView_comments.setLayoutManager(recyclerLayoutManager);
+        recyclerViewComments.setLayoutManager(recyclerLayoutManager);
         recyclerAdapter = new CommentsAdapter(globalClass, Comments.this);
         commentsHandler.setRecyclerAdapter(recyclerAdapter);
-        recyclerView_comments.setAdapter(recyclerAdapter);
+        recyclerViewComments.setAdapter(recyclerAdapter);
         globalClass.getCommunication().clientSend("120◘" + commentsHandler.getArticle().getUrl() + "#");
     }
 
@@ -143,7 +143,7 @@ public class Comments extends AppCompatActivity implements EmojiconGridFragment.
             ViewGroup parent = (ViewGroup)v.getParent().getParent().getParent();
             ((TextView)parent.findViewById(R.id.tv_comments)).setText(commentsHandler.getArticle().getNumberOfComments() + "");
             appBarLayout.setExpanded(false);
-            recyclerView_comments.scrollToPosition(commentsHandler.getCommentsofCurrentArticle().size()-1);
+            recyclerViewComments.scrollToPosition(commentsHandler.getCommentsofCurrentArticle().size()-1);
         }
     }
 

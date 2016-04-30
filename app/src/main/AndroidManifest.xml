@@ -20,7 +20,7 @@
             android:value="@integer/google_play_services_version" />
 
         <activity
-            android:name=".entrance"
+            android:name=".EntranceActivity"
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
@@ -37,14 +37,9 @@
             android:label="@string/app_name"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
         <activity
-            android:name=".newsfeed_activity"
+            android:name=".NewsFeedActivity"
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:label="@string/title_activity_newsfeed_activity"
-            android:theme="@style/AppTheme_NoActionBar" />
-        <activity
-            android:name=".settings_activity"
-            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
-            android:label="@string/title_activity_settings_activity"
             android:theme="@style/AppTheme_NoActionBar" />
         <activity
             android:name=".ExplanationNewsFeed"

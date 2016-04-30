@@ -1,24 +1,20 @@
 package magshimim.newzbay;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.graphics.PorterDuff;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.text.format.Time;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -26,7 +22,7 @@ public class ChoosePriority extends AppCompatActivity implements PopupMenu.OnMen
 
     private GlobalClass globalClass;
     private PriorityHandler priorityHandler;
-    private RecyclerView recyclerView_sites;
+    private RecyclerView recyclerViewSites;
     private RecyclerView.Adapter recyclerAdapter;
     private android.support.v7.widget.LinearLayoutManager recyclerLayoutManager;
     private PopupMenu addRemoved;
@@ -57,14 +53,14 @@ public class ChoosePriority extends AppCompatActivity implements PopupMenu.OnMen
             recyclerViewStroke.setBackground(getResources().getDrawable(R.drawable.rounded_stroke_orange));
         }
 
-        recyclerView_sites = (RecyclerView) findViewById(R.id.rv_orderSites);
+        recyclerViewSites = (RecyclerView) findViewById(R.id.rv_orderSites);
         recyclerLayoutManager = new LinearLayoutManager(this);
-        recyclerView_sites.setLayoutManager(recyclerLayoutManager);
+        recyclerViewSites.setLayoutManager(recyclerLayoutManager);
         recyclerAdapter =  new SitesAdapter((GlobalClass)getApplicationContext());
-        recyclerView_sites.setAdapter(recyclerAdapter);
+        recyclerViewSites.setAdapter(recyclerAdapter);
         ItemTouchHelper.Callback callback = new DragNSwipeHelper((SitesAdapter)recyclerAdapter);
         ItemTouchHelper touchHelper = new ItemTouchHelper(callback);
-        touchHelper.attachToRecyclerView(recyclerView_sites);
+        touchHelper.attachToRecyclerView(recyclerViewSites);
 
 
     }
@@ -73,13 +69,13 @@ public class ChoosePriority extends AppCompatActivity implements PopupMenu.OnMen
     {
         globalClass.getCommunication().clientSend("194◘" + priorityHandler.getCurrentPrioritySubject() + "#");
         String priority = "104◘";
-        for(int i = 0; i < priorityHandler.getClientsPriority().size(); i++)
+        for(int i = 0; i < priorityHandler.getClientPriority().size(); i++)
         {
             for(int j = 0; j < priorityHandler.getCategorySites().size(); j++)
             {
                 if(priorityHandler.getCategorySites().get(j).getSubject().equals(priorityHandler.getCurrentPrioritySubject()))
                 {
-                    if(priorityHandler.getCategorySites().get(j).getSite().equals(priorityHandler.getClientsPriority().get(i)))
+                    if(priorityHandler.getCategorySites().get(j).getSite().equals(priorityHandler.getClientPriority().get(i)))
                     {
                         priority = priority + priorityHandler.getCategorySites().get(j).getId() + "○" + (i + 1) + "◘";
                     }
@@ -88,7 +84,7 @@ public class ChoosePriority extends AppCompatActivity implements PopupMenu.OnMen
         }
         priority = priority.substring(0, priority.length() - 1);
         priority = priority + "#";
-        if(priorityHandler.getClientsPriority().size()!= 0)
+        if(priorityHandler.getClientPriority().size()!= 0)
         {
             globalClass.getCommunication().clientSend(priority);
         }
@@ -130,7 +126,7 @@ public class ChoosePriority extends AppCompatActivity implements PopupMenu.OnMen
                 position = i;
             }
         }
-        priorityHandler.getClientsPriority().add(priorityHandler.getRemovedSitesOfCurrentSubject().get(position));
+        priorityHandler.getClientPriority().add(priorityHandler.getRemovedSitesOfCurrentSubject().get(position));
         priorityHandler.getRemovedSitesOfCurrentSubject().remove(position);
         addRemoved.getMenu().removeItem(item.getItemId());
         recyclerAdapter.notifyDataSetChanged();

@@ -1,7 +1,5 @@
 package magshimim.newzbay;
 
-import android.graphics.Bitmap;
-
 import com.facebook.Profile;
 
 public class FacebookUser extends User{
@@ -9,18 +7,14 @@ public class FacebookUser extends User{
     private Profile facebookProfile;
     private String facebookUserEmail;
 
-    public FacebookUser(String fullName, String picURL, Bitmap profilePic, Profile facebookProfile, String facebookUserEmail, GlobalClass globalClass) {
-        super(fullName, picURL, profilePic, "Facebook", globalClass);
+    public FacebookUser(String fullName, String picURL, Profile facebookProfile, String facebookUserEmail) {
+        super(fullName, picURL, "Facebook");
         this.facebookProfile = facebookProfile;
         this.facebookUserEmail = facebookUserEmail;
     }
 
     public Profile getFacebookProfile() {
         return facebookProfile;
-    }
-
-    public void setFacebookProfile(Profile facebookProfile) {
-        this.facebookProfile = facebookProfile;
     }
 
     public String getFacebookUserEmail() {

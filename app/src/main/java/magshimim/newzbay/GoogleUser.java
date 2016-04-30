@@ -1,34 +1,24 @@
 package magshimim.newzbay;
 
-import android.graphics.Bitmap;
-
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.plus.model.people.Person;
 
 public class GoogleUser extends User{
 
     private Person googleProfile;
-    private GoogleApiClient mGoogleApiClient;
+    private GoogleApiClient googleApiClient;
 
-    public GoogleUser(String fullName, String picURL, Bitmap profilePic, Person googleProfile, GoogleApiClient mGoogleApiClient, GlobalClass globalClass) {
-        super(fullName, picURL, profilePic, "Google", globalClass);
+    public GoogleUser(String fullName, String picURL, Person googleProfile, GoogleApiClient googleApiClient) {
+        super(fullName, picURL, "Google");
         this.googleProfile = googleProfile;
-        this.mGoogleApiClient = mGoogleApiClient;
+        this.googleApiClient = googleApiClient;
     }
 
     public Person getGoogleProfile() {
         return googleProfile;
     }
 
-    public void setGoogleProfile(Person googleProfile) {
-        this.googleProfile = googleProfile;
-    }
-
-    public GoogleApiClient getmGoogleApiClient() {
-        return mGoogleApiClient;
-    }
-
-    public void setmGoogleApiClient(GoogleApiClient mGoogleApiClient) {
-        this.mGoogleApiClient = mGoogleApiClient;
+    public GoogleApiClient getGoogleApiClient() {
+        return googleApiClient;
     }
 }

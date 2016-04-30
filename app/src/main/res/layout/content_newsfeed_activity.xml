@@ -7,7 +7,7 @@
     android:background="@drawable/main_background"
     android:orientation="vertical"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="magshimim.newzbay.newsfeed_activity"
+    tools:context=".NewsFeedActivity"
     android:supportsRtl="true"
     tools:showIn="@layout/app_bar_newsfeed_activity"
     android:id="@+id/newsfeed_layout">
@@ -18,7 +18,7 @@
         android:textColor="@color/nb"
         android:id="@+id/tv_hello2"
         android:textStyle="bold"
-        android:textSize="28dp"
+        android:textSize="28sp"
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="30dp"
@@ -29,11 +29,11 @@
         android:layout_height="wrap_content"
         android:textColor="@color/nb"
         android:textStyle="bold"
-        android:textSize="28dp"
+        android:textSize="28sp"
         android:id="@+id/tv_hello1"
         android:layout_centerHorizontal="true"
         android:layout_above="@id/tv_hello2"
-        android:text="ברוכים הבאים למפרץ"/>
+        android:text="@string/WelcomeToBay"/>
 
     <ImageButton
         android:layout_width="50dp"

@@ -15,23 +15,11 @@ public class Comment {
         return username;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
     public String getProfilePicURL() {
         return profilePicURL;
     }
 
-    public void setProfilePicURL(String profilePicURL) {
-        this.profilePicURL = profilePicURL;
-    }
-
     public String getCommentText() {
         return commentText;
-    }
-
-    public void setCommentText(String commentText) {
-        this.commentText = commentText;
     }
 }

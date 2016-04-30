@@ -38,10 +38,6 @@ public class GlobalClass extends Application {
         return categoriesHandler;
     }
 
-    public void setCategoriesHandler(CategoriesHandler categoriesHandler) {
-        this.categoriesHandler = categoriesHandler;
-    }
-
     public User getUser() {
         return user;
     }
@@ -63,16 +59,8 @@ public class GlobalClass extends Application {
         return errorHandler;
     }
 
-    public void setErrorHandler(ErrorHandler errorHandler) {
-        this.errorHandler = errorHandler;
-    }
-
     public PriorityHandler getPriorityHandler() {
         return priorityHandler;
-    }
-
-    public void setPriorityHandler(PriorityHandler priorityHandler) {
-        this.priorityHandler = priorityHandler;
     }
 
     public Resources getAppResources() {
@@ -97,9 +85,5 @@ public class GlobalClass extends Application {
 
     public CommentsHandler getCommentsHandler() {
         return commentsHandler;
-    }
-
-    public void setCommentsHandler(CommentsHandler commentsHandler) {
-        this.commentsHandler = commentsHandler;
     }
 }

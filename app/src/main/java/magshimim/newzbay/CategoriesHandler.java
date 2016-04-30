@@ -1,12 +1,10 @@
 package magshimim.newzbay;
 
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.v4.view.PagerAdapter;
 import android.support.v7.widget.RecyclerView;
-import android.widget.ListAdapter;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -21,18 +19,16 @@ public class CategoriesHandler {
     private String currentlyOpenURL;
 
     private HashMap<String, Bitmap> siteLogo;
-    private boolean loadingArticles = false;
+    private boolean loadingArticles;
     private List<String> categoriesForServer = Arrays.asList("", "israelNewz", "worldNewz", "politics", "economy", "sport", "culture", "celebs", "technology", "science");
     private RecyclerView.Adapter recyclerAdapter;
     private PagerAdapter hotNewsPageAdapter;
-    private GlobalClass globalClass;
 
     public CategoriesHandler(Vector<Article> currentlyInUse, String currentlyInUseCategory, String currentlyInUseCategoryServer, boolean loadingArticles, GlobalClass globalClass)
     {
-        this.globalClass = globalClass;
         if(currentlyInUse == null)
         {
-            this.currentlyInUse = new Vector<Article>();
+            this.currentlyInUse = new Vector<>();
         }
         else
         {
@@ -60,16 +56,8 @@ public class CategoriesHandler {
         this.currentlyOpenURL = currentlyOpenURL;
     }
 
-    public void setCurrentlyInUseCategory(String currentlyInUseCategory) {
-        this.currentlyInUseCategory = currentlyInUseCategory;
-    }
-
     public int getCurrentCategoryID() {
         return currentCategoryID;
-    }
-
-    public void setCurrentCategoryID(int currentCategoryID) {
-        this.currentCategoryID = currentCategoryID;
     }
 
     public String getCurrentlyInUseCategory(User user) {
@@ -146,16 +134,8 @@ public class CategoriesHandler {
         return currentlyInUse;
     }
 
-    public void setCurrentlyInUse(Vector<Article> currentlyInUse) {
-        this.currentlyInUse = currentlyInUse;
-    }
-
     public String getCurrentlyInUseCategoryServer() {
         return currentlyInUseCategoryServer;
-    }
-
-    public void setCurrentlyInUseCategoryServer(String currentlyInUseCategoryServer) {
-        this.currentlyInUseCategoryServer = currentlyInUseCategoryServer;
     }
 
     public boolean isLoading() {
@@ -166,16 +146,8 @@ public class CategoriesHandler {
         this.loadingArticles = loading;
     }
 
-    public String getCurrentlyInUseCategory() {
-        return currentlyInUseCategory;
-    }
-
     public List<String> getCategoriesForServer() {
         return categoriesForServer;
-    }
-
-    public void setCategoriesForServer(List<String> categoriesForServer) {
-        this.categoriesForServer = categoriesForServer;
     }
 
     public RecyclerView.Adapter getRecyclerAdapter() {
@@ -188,10 +160,6 @@ public class CategoriesHandler {
 
     public HashMap<String, Bitmap> getSiteLogo() {
         return siteLogo;
-    }
-
-    public void setSiteLogo(HashMap<String, Bitmap> siteLogo) {
-        this.siteLogo = siteLogo;
     }
 
     public PagerAdapter getHotNewsPageAdapter() {

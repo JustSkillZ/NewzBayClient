@@ -2,7 +2,6 @@ package magshimim.newzbay;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.support.design.widget.Snackbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -21,7 +20,6 @@ import java.net.Socket;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Vector;
 
 public class Communication implements Runnable {
     private ClientRead clientRead;
@@ -76,7 +74,7 @@ public class Communication implements Runnable {
                     }
                     else
                     {
-                        ((entrance) globalClass.getCurrentActivity()).connectToSocialNets();
+                        ((EntranceActivity) globalClass.getCurrentActivity()).connectToSocialNets();
                     }
                     clientRead = new ClientRead(serverSocket, globalClass, userConnected);
                     Thread t = new Thread(clientRead);

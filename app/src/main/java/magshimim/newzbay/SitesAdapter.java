@@ -40,18 +40,18 @@ public class SitesAdapter extends RecyclerView.Adapter<SitesAdapter.ViewHolder> 
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        holder.siteLogo.setImageBitmap(categoriesHandler.getSiteLogo().get(priorityHandler.getClientsPriority().get(position)));
+        holder.siteLogo.setImageBitmap(categoriesHandler.getSiteLogo().get(priorityHandler.getClientPriority().get(position)));
     }
 
     @Override
     public int getItemCount() {
-        return priorityHandler.getClientsPriority().size();
+        return priorityHandler.getClientPriority().size();
     }
 
     @Override
     public void onItemDismiss(int position) {
-        priorityHandler.getRemovedSitesOfCurrentSubject().add(priorityHandler.getClientsPriority().get(position));
-        priorityHandler.getClientsPriority().remove(position);
+        priorityHandler.getRemovedSitesOfCurrentSubject().add(priorityHandler.getClientPriority().get(position));
+        priorityHandler.getClientPriority().remove(position);
         notifyItemRemoved(position);
     }
 
@@ -59,11 +59,11 @@ public class SitesAdapter extends RecyclerView.Adapter<SitesAdapter.ViewHolder> 
     public void onItemMove(int fromPosition, int toPosition) {
         if (fromPosition < toPosition) {
             for (int i = fromPosition; i < toPosition; i++) {
-                Collections.swap(priorityHandler.getClientsPriority(), i, i + 1);
+                Collections.swap(priorityHandler.getClientPriority(), i, i + 1);
             }
         } else {
             for (int i = fromPosition; i > toPosition; i--) {
-                Collections.swap(priorityHandler.getClientsPriority(), i, i - 1);
+                Collections.swap(priorityHandler.getClientPriority(), i, i - 1);
             }
         }
         notifyItemMoved(fromPosition, toPosition);

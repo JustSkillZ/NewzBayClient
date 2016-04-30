@@ -23,15 +23,7 @@ public class CategorySite {
         return subject;
     }
 
-    public void setSubject(String subject) {
-        this.subject = subject;
-    }
-
     public String getSite() {
         return site;
-    }
-
-    public void setSite(String site) {
-        this.site = site;
     }
 }

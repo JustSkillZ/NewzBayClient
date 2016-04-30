@@ -36,10 +36,10 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.reflect.Field;
 
-public class newsfeed_activity extends AppCompatActivity
+public class NewsFeedActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    private android.support.v7.widget.Toolbar toolbar_main;
+    private android.support.v7.widget.Toolbar toolbarMain;
     private SwipeRefreshLayout refreshList;
     private Handler handler = new Handler();
     private DrawerLayout drawer;
@@ -47,17 +47,14 @@ public class newsfeed_activity extends AppCompatActivity
     private CategoriesHandler categoriesHandler;
     private User user;
 
-    private RecyclerView recyclerView_article;
+    private RecyclerView recyclerViewArticle;
     private RecyclerView.Adapter recyclerAdapter;
     private android.support.v7.widget.LinearLayoutManager recyclerLayoutManager;
 
     private boolean doubleBackToExitPressedOnce = false;
 
     private final String explanationPref = "magshimim.newzbay.ExplanationPref" ;
-    private final String prefsConnection = "magshimim.newzbay.ConnectionPrefs";
     private final String isExplanation1 = "isExplanation1";
-    private final String isPrioritizedGoogle = "isPrioritizedGoogle";
-    private final String isPrioritizedFacebook = "isPrioritizedFacebook";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,7 +64,7 @@ public class newsfeed_activity extends AppCompatActivity
         changeTheme();
         globalClass = ((GlobalClass) getApplicationContext());
         user = globalClass.getUser();
-        globalClass.setCurrentActivity(newsfeed_activity.this);
+        globalClass.setCurrentActivity(NewsFeedActivity.this);
         globalClass.setCurrentLayout(R.id.newsfeed_layout);
         categoriesHandler = globalClass.getCategoriesHandler();
         SharedPreferences sharedpreferences;
@@ -84,12 +81,12 @@ public class newsfeed_activity extends AppCompatActivity
             editor.commit();
         }
 
-        toolbar_main = (android.support.v7.widget.Toolbar) findViewById(R.id.toolbar_main);
-        setSupportActionBar(toolbar_main);
+        toolbarMain = (android.support.v7.widget.Toolbar) findViewById(R.id.toolbar_main);
+        setSupportActionBar(toolbarMain);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
-        for (int i = 0; i <= toolbar_main.getChildCount(); i++) {
-            View v = toolbar_main.getChildAt(i);
+        for (int i = 0; i <= toolbarMain.getChildCount(); i++) {
+            View v = toolbarMain.getChildAt(i);
             if(v != null)
             {
                 if (v instanceof TextView) {
@@ -107,12 +104,12 @@ public class newsfeed_activity extends AppCompatActivity
 
         saveInInternalFolder("NewzBay", "check");
 
-        recyclerView_article = (RecyclerView) findViewById(R.id.recyclerView_articles);
+        recyclerViewArticle = (RecyclerView) findViewById(R.id.recyclerView_articles);
         recyclerLayoutManager = new LinearLayoutManager(this);
-        recyclerView_article.setLayoutManager(recyclerLayoutManager);
+        recyclerViewArticle.setLayoutManager(recyclerLayoutManager);
         recyclerAdapter =  new ArticleAdapter(this, (GlobalClass)getApplicationContext());
-        recyclerView_article.setAdapter(recyclerAdapter);
-        recyclerView_article.addOnScrollListener(new RecyclerView.OnScrollListener() {
+        recyclerViewArticle.setAdapter(recyclerAdapter);
+        recyclerViewArticle.addOnScrollListener(new RecyclerView.OnScrollListener() {
             int pastVisibleItems, visibleItemCount, totalItemCount;
 
             @Override
@@ -175,7 +172,7 @@ public class newsfeed_activity extends AppCompatActivity
             e.printStackTrace();
         }
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar_main, R.string.navigation_drawer_open, R.string.navigation_drawer_close) {
+                this, drawer, toolbarMain, R.string.navigation_drawer_open, R.string.navigation_drawer_close) {
             @Override
             public void onDrawerSlide(View drawerView, float slideOffset) {
                 super.onDrawerSlide(drawerView, slideOffset);
@@ -183,8 +180,8 @@ public class newsfeed_activity extends AppCompatActivity
             }
         };
         toggle.setDrawerIndicatorEnabled(false);
-        toolbar_main.setNavigationIcon(R.drawable.anchor);
-        toolbar_main.setNavigationOnClickListener(new View.OnClickListener() {
+        toolbarMain.setNavigationIcon(R.drawable.anchor);
+        toolbarMain.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 drawerHandler(drawer);
@@ -272,11 +269,6 @@ public class newsfeed_activity extends AppCompatActivity
             changeCategory(9);
 
         }
-//        else if (id == R.id.nav_settings) {
-//            Intent settings = new Intent(this, settings_activity.class);
-//            startActivity(settings);
-//            this.onStop();
-//        }
         else if(id == R.id.nav_priority)
         {
             if(!user.getConnectedVia().equals("Guest"))
@@ -299,9 +291,9 @@ public class newsfeed_activity extends AppCompatActivity
         }
         else if (id == R.id.nav_discconect) {
             if (user.getConnectedVia().equals("Google")) {
-                Plus.AccountApi.clearDefaultAccount(((GoogleUser) user).getmGoogleApiClient());
-                ((GoogleUser) user).getmGoogleApiClient().disconnect();
-                ((GoogleUser) user).getmGoogleApiClient().connect();
+                Plus.AccountApi.clearDefaultAccount(((GoogleUser) user).getGoogleApiClient());
+                ((GoogleUser) user).getGoogleApiClient().disconnect();
+                ((GoogleUser) user).getGoogleApiClient().connect();
             }
             else if(user.getConnectedVia().equals("Facebook"))
             {
@@ -311,12 +303,12 @@ public class newsfeed_activity extends AppCompatActivity
             globalClass.getCommunication().setIsConnect(0);
             Log.d("Server", "500#");
             globalClass.endClass();
-            Intent intent = new Intent(this, entrance.class);
+            Intent intent = new Intent(this, EntranceActivity.class);
             startActivity(intent);
             finish();
         }
-        for (int i = 0; i <= toolbar_main.getChildCount(); i++) {
-            View v = toolbar_main.getChildAt(i);
+        for (int i = 0; i <= toolbarMain.getChildCount(); i++) {
+            View v = toolbarMain.getChildAt(i);
             if (v instanceof TextView) {
                 ((TextView) v).setText(categoriesHandler.getCurrentlyInUseCategory(user));
             }
@@ -343,16 +335,16 @@ public class newsfeed_activity extends AppCompatActivity
         if(userPic != null)
         {
             if(user.getConnectedVia().equals("Guest")) {
-                Picasso.with(globalClass.getCurrentActivity()).load(R.drawable.user_icon).transform(new RoundedImage()).into(userPic);
+                Picasso.with(globalClass.getCurrentActivity()).load(R.drawable.user_icon).into(userPic);
             }
             else if(user.getConnectedVia().equals("Facebook"))
             {
-                Picasso.with(globalClass.getCurrentActivity()).load(((FacebookUser) user).getFacebookProfile().getProfilePictureUri(500, 500)).transform(new RoundedImage()).into(userPic);
+                Picasso.with(globalClass.getCurrentActivity()).load(((FacebookUser) user).getFacebookProfile().getProfilePictureUri(500, 500)).into(userPic);
                 user.setFullName(((FacebookUser) user).getFacebookProfile().getName());
             }
             else if(user.getConnectedVia().equals("Google"))
             {
-                Picasso.with(globalClass.getCurrentActivity()).load(((GoogleUser) user).getGoogleProfile().getImage().getUrl().replace("sz=50", "sz=500")).transform(new RoundedImage()).into(userPic);
+                Picasso.with(globalClass.getCurrentActivity()).load(((GoogleUser) user).getGoogleProfile().getImage().getUrl().replace("sz=50", "sz=500")).into(userPic);
                 user.setFullName(((GoogleUser) user).getGoogleProfile().getDisplayName());
             }
         }
@@ -444,8 +436,8 @@ public class newsfeed_activity extends AppCompatActivity
         {
             RelativeLayout layout =(RelativeLayout)findViewById(R.id.newsfeed_layout);
             layout.setBackground(getResources().getDrawable(R.drawable.main_background_night));
-            TextView slogen = (TextView) findViewById(R.id.tv_hello1);
-            slogen.setTextColor(getResources().getColor(R.color.white));
+            TextView slogan = (TextView) findViewById(R.id.tv_hello1);
+            slogan.setTextColor(getResources().getColor(R.color.white));
         }
     }
 

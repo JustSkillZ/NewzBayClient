@@ -13,28 +13,26 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="בחירת העדפות"
+            android:text="@string/PrioritySelection"
             android:textStyle="bold"
             android:textColor="@color/nb"
-            android:textSize="30dp"
+            android:textSize="30sp"
             android:layout_centerHorizontal="true"
             android:id="@+id/tv_priority_mainHeadLine"
-            android:layout_weight="1"
             android:paddingBottom="15dp"/>
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginRight="5dp"
-            android:text="יש ללחוץ על כל נושא ולתעדף את האתרים אותם תרצו לראות ובסדר אותם תרצו לראות"
+            android:text="@string/SubjectSelectionHelp1"
             android:textStyle="bold"
             android:id="@+id/tv_explanation"
             android:textColor="@color/grey"
-            android:textSize="20dp"
+            android:textSize="20sp"
             android:layout_below="@id/tv_priority_mainHeadLine"
             android:layout_centerHorizontal="true"
-            android:paddingBottom="15dp"
-            android:layout_weight="1"/>
+            android:paddingBottom="15dp" />
     </RelativeLayout>
 
     <LinearLayout
@@ -46,13 +44,13 @@
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="חדשות בארץ"
+            android:text="@string/news"
             android:textColor="@color/black"
             android:gravity="center"
             android:textStyle="bold"
-            android:textSize="18dp"
+            android:textSize="18sp"
             android:layout_weight="1"
-            android:contentDescription="israelNewz"
+            android:contentDescription="@string/newsServer"
             android:drawableTop="@drawable/news_category"
             android:background="@color/transparent"
             android:onClick="choosePriorityBySubject"/>
@@ -64,9 +62,9 @@
             android:textColor="@color/black"
             android:textStyle="bold"
             android:gravity="center"
-            android:text="חדשות בעולם"
-            android:textSize="18dp"
-            android:contentDescription="worldNewz"
+            android:text="@string/globalNews"
+            android:textSize="18sp"
+            android:contentDescription="@string/globalNewsServer"
             android:drawableTop="@drawable/global_news_category"
             android:background="@color/transparent"
             android:onClick="choosePriorityBySubject"/>
@@ -75,13 +73,13 @@
             android:layout_height="wrap_content"
             android:textColor="@color/black"
             android:layout_weight="1"
-            android:text="פוליטיקה"
+            android:text="@string/politics"
             android:gravity="center"
-            android:textSize="18dp"
+            android:textSize="18sp"
             android:textStyle="bold"
             android:drawableTop="@drawable/politics_category"
             android:background="@color/transparent"
-            android:contentDescription="politics"
+            android:contentDescription="@string/politicsServer"
             android:onClick="choosePriorityBySubject"/>
     </LinearLayout>
 
@@ -94,15 +92,15 @@
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="כלכלה"
+            android:text="@string/economy"
             android:textColor="@color/black"
             android:textStyle="bold"
-            android:textSize="18dp"
+            android:textSize="18sp"
             android:layout_weight="1"
             android:gravity="center"
             android:drawableTop="@drawable/economy_category"
             android:background="@color/transparent"
-            android:contentDescription="economy"
+            android:contentDescription="@string/economyServer"
             android:onClick="choosePriorityBySubject"/>
 
         <Button
@@ -111,25 +109,25 @@
             android:layout_weight="1"
             android:textColor="@color/black"
             android:textStyle="bold"
-            android:text="ספורט"
+            android:text="@string/sport"
             android:gravity="center"
-            android:textSize="18dp"
+            android:textSize="18sp"
             android:drawableTop="@drawable/sport_category"
             android:background="@color/transparent"
-            android:contentDescription="sport"
+            android:contentDescription="@string/sportServer"
             android:onClick="choosePriorityBySubject"/>
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/black"
             android:layout_weight="1"
-            android:text="תרבות"
+            android:text="@string/culture"
             android:gravity="center"
-            android:textSize="18dp"
+            android:textSize="18sp"
             android:textStyle="bold"
             android:drawableTop="@drawable/culture_category"
             android:background="@color/transparent"
-            android:contentDescription="culture"
+            android:contentDescription="@string/cultureServer"
             android:onClick="choosePriorityBySubject"/>
     </LinearLayout>
 
@@ -143,15 +141,15 @@
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="סלבס"
+            android:text="@string/celebrities"
             android:textColor="@color/black"
             android:textStyle="bold"
-            android:textSize="18dp"
+            android:textSize="18sp"
             android:layout_weight="1"
             android:gravity="center"
             android:drawableTop="@drawable/celebrities_category"
             android:background="@color/transparent"
-            android:contentDescription="celebs"
+            android:contentDescription="@string/celebsServer"
             android:onClick="choosePriorityBySubject"/>
 
         <Button
@@ -160,25 +158,25 @@
             android:layout_weight="1"
             android:textColor="@color/black"
             android:textStyle="bold"
-            android:text="טכנולוגיה"
+            android:text="@string/technology"
             android:gravity="center"
-            android:textSize="18dp"
+            android:textSize="18sp"
             android:drawableTop="@drawable/technology_category"
             android:background="@color/transparent"
-            android:contentDescription="technology"
+            android:contentDescription="@string/technologyServer"
             android:onClick="choosePriorityBySubject"/>
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/black"
             android:layout_weight="1"
-            android:text="מדע"
+            android:text="@string/science"
             android:gravity="center"
-            android:textSize="18dp"
+            android:textSize="18sp"
             android:textStyle="bold"
             android:drawableTop="@drawable/science_category"
             android:background="@color/transparent"
-            android:contentDescription="science"
+            android:contentDescription="@string/scienceServer"
             android:onClick="choosePriorityBySubject"/>
     </LinearLayout>
 
@@ -190,9 +188,9 @@
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="סיים"
+            android:text="@string/Done"
             android:gravity="center"
-            android:textSize="20dp"
+            android:textSize="20sp"
             android:id="@+id/btn_endPriority"
             android:textStyle="bold"
             android:background="@drawable/button_rounded_corners_facebook"

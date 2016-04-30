@@ -1,7 +1,6 @@
 package magshimim.newzbay;
 
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 
 import java.util.Date;
 
@@ -10,7 +9,6 @@ public class Article{
     private String mainHeadline;
     private String secondHeadline;
     private Bitmap picture;
-    private boolean pictureIsDawnloaded;
     private String picURL;
     private Date date;
     private String siteName;
@@ -21,7 +19,6 @@ public class Article{
 
     public Article(String subject, String mainHeadline, String secondHeadline, String picURL, Date date, String siteName, String url, int numberOfLikes, int numberOfComments, boolean liked, GlobalClass globalClass)
     {
-        this.pictureIsDawnloaded = false;
         this.subject = subject;
         this.mainHeadline = mainHeadline;
         this.secondHeadline = secondHeadline;
@@ -33,15 +30,6 @@ public class Article{
         this.numberOfLikes = numberOfLikes;
         this.numberOfComments = numberOfComments;
         this.liked = liked;
-//        if(globalClass.getCategoriesHandler().getDownloadedPics().containsKey(picURL))
-//        {
-//            picture = globalClass.getCategoriesHandler().getDownloadedPics().get(picURL);
-//        }
-    }
-
-    public String getSubject()
-    {
-        return this.subject;
     }
 
     public String getMainHeadline()
@@ -114,57 +102,7 @@ public class Article{
         numberOfComments--;
     }
 
-    public void setSubject(String subject) {
-        this.subject = subject;
-    }
-
-    public void setMainHeadline(String mainHeadline) {
-        this.mainHeadline = mainHeadline;
-    }
-
-    public void setSecondHeadline(String secondHeadline) {
-        this.secondHeadline = secondHeadline;
-    }
-
-    public void setPicture(Bitmap picture) { this.picture = picture; }
-
     public String getPicURL() {
         return picURL;
-    }
-
-    public void setPicURL(String picURL) {
-        this.picURL = picURL;
-    }
-
-    public void setDate(Date date) {
-        this.date = date;
-    }
-
-    public void setSiteName(String siteName) {
-        this.siteName = siteName;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
-    }
-
-    public void setNumberOfLikes(int numberOfLikes) {
-        this.numberOfLikes = numberOfLikes;
-    }
-
-    public void setNumberOfComments(int numberOfComments) {
-        this.numberOfComments = numberOfComments;
-    }
-
-    public boolean isLiked() {
-        return liked;
-    }
-
-    public boolean isPictureIsDawnloaded() {
-        return pictureIsDawnloaded;
-    }
-
-    public void setPictureIsDawnloaded(boolean pictureIsDawnloaded) {
-        this.pictureIsDawnloaded = pictureIsDawnloaded;
     }
 }

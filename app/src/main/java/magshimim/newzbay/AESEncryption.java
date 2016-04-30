@@ -1,14 +1,13 @@
 package magshimim.newzbay;
 
 import android.util.Base64;
+
 import java.security.NoSuchAlgorithmException;
 
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
-
-//import javax.xml.bind.DatatypeConverter;
 
 public class AESEncryption
 {
@@ -20,7 +19,7 @@ public class AESEncryption
         KeyGenerator keyGen = null;
         try {
             keyGen = KeyGenerator.getInstance("AES");
-            keyGen.init(128); // for example
+            keyGen.init(128);
             SecretKey secretKey = keyGen.generateKey();
             this.encryptionKey = secretKeyToString(secretKey);
             this.encryptionKey = this.encryptionKey.substring(0,encryptionKey.length() - 1);
@@ -29,7 +28,11 @@ public class AESEncryption
         }
     }
 
-
+    /**
+     * This function encrypt the text that it get according to the key of the user.
+     * @param plainText encrypted text.
+     * @return decrypted text.
+     */
     public String encrypt(String plainText) throws Exception
     {
         Cipher cipher = getCipher(Cipher.ENCRYPT_MODE);
@@ -38,6 +41,11 @@ public class AESEncryption
         return Base64.encodeToString(encryptedBytes, Base64.DEFAULT);
     }
 
+    /**
+     * This function decrypt the text that it get according to the key of the user.
+     * @param encrypted encrypted text.
+     * @return decrypted text.
+     */
     public String decrypt(String encrypted) throws Exception
     {
         Cipher cipher = getCipher(Cipher.DECRYPT_MODE);
@@ -58,26 +66,19 @@ public class AESEncryption
         return cipher;
     }
 
-
+    /**
+     * This function convert the secret key to string.
+     * @param secretKey encrypted text.
+     * @return the AES Key as String.
+     */
     private String secretKeyToString(SecretKey secretKey)
     {
-        // create new key
-        // SecretKey secretKey = KeyGenerator.getInstance("AES").generateKey();
-        // get base64 encoded version of the key
         String encodedKey = Base64.encodeToString(secretKey.getEncoded(), Base64.DEFAULT);
         return encodedKey;
     }
 
-    private SecretKey stringToSecretKey(String secretKeyStr)
-    {
-        byte[] decodedKey = Base64.decode(secretKeyStr, Base64.DEFAULT);
-        SecretKey secretKey = new SecretKeySpec(decodedKey, 0, decodedKey.length, "AES");
-        return secretKey;
-    }
     public String getAesKey()
     {
         return encryptionKey;
     }
-
-
 }

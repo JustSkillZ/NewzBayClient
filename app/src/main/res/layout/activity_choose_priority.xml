@@ -13,10 +13,9 @@
         android:text="נושא"
         android:textStyle="bold"
         android:textColor="@color/nb"
-        android:textSize="30dp"
+        android:textSize="30sp"
         android:layout_centerHorizontal="true"
         android:id="@+id/tv_subject"
-        android:layout_weight="1"
         android:layout_marginTop="5dp"
         android:paddingBottom="10dp"/>
 
@@ -68,10 +67,10 @@
         android:layout_centerHorizontal="true"
         android:layout_alignParentBottom="true"
         android:id="@+id/btn_sendPriority"
-        android:textSize="20dp"
+        android:textSize="20sp"
         android:textStyle="bold"
         android:background="@drawable/button_rounded_corners_facebook"
-        android:text="שלח"
+        android:text="@string/send"
         android:onClick="sendPriority"/>
 
 </RelativeLayout>

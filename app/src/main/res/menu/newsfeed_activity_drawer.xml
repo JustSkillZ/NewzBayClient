@@ -2,48 +2,48 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
 
-    <item android:title="קטגוריות">
+    <item android:title="@string/categories">
         <menu>
             <item
                 android:id="@+id/nav_hot_news"
                 android:icon="@drawable/hot_news"
-                android:title="חדשות חמות"/>
+                android:title="@string/hotNews"/>
             <item
                 android:id="@+id/nav_news"
                 android:icon="@drawable/news_category"
-                android:title="חדשות בארץ" />
+                android:title="@string/news"/>
             <item
                 android:id="@+id/nav_global_news"
                 android:icon="@drawable/global_news_category"
-                android:title="חדשות בעולם" />
+                android:title="@string/globalNews"/>
             <item
                 android:id="@+id/nav_politics"
                 android:icon="@drawable/politics_category"
-                android:title="פוליטיקה" />
+                android:title="@string/politics" />
             <item
                 android:id="@+id/nav_economy"
                 android:icon="@drawable/economy_category"
-                android:title="כלכלה" />
+                android:title="@string/economy" />
             <item
                 android:id="@+id/nav_sport"
                 android:icon="@drawable/sport_category"
-                android:title="ספורט" />
+                android:title="@string/sport" />
             <item
                 android:id="@+id/nav_culture"
                 android:icon="@drawable/culture_category"
-                android:title="תרבות" />
+                android:title="@string/culture" />
             <item
                 android:id="@+id/nav_celebrities"
                 android:icon="@drawable/celebrities_category"
-                android:title="סלבס" />
+                android:title="@string/celebrities" />
             <item
                 android:id="@+id/nav_technology"
                 android:icon="@drawable/technology_category"
-                android:title="טכנולוגיה" />
+                android:title="@string/technology" />
             <item
                 android:id="@+id/nav_science"
                 android:icon="@drawable/science_category"
-                android:title="מדע" />
+                android:title="@string/science" />
         </menu>
     </item>
     <!--<item-->
@@ -53,14 +53,14 @@
     <item
         android:id="@+id/nav_priority"
         android:icon="@drawable/priority_icon"
-        android:title="בחירת אתרים" />
+        android:title="@string/SiteSelection" />
     <item
         android:id="@+id/nav_helpNB"
         android:icon="@drawable/info_icon"
-        android:title= "צור קשר"/>
+        android:title= "@string/contact"/>
     <item
         android:id="@+id/nav_discconect"
         android:icon="@drawable/disconnect_logo"
-        android:title="התנתק" />
+        android:title="@string/disconnect" />
 
 </menu>

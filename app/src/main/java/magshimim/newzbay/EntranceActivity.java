@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.SharedPreferences;
-import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -43,21 +42,21 @@ import org.json.JSONObject;
 
 import java.util.Arrays;
 
-public class entrance extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, View.OnClickListener {
+public class EntranceActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, View.OnClickListener {
 
-    private LoginButton facebook_loginButton;
-    private SignInButton google_signInButton;
+    private LoginButton facebookLoginButton;
+    private SignInButton googleSignInButton;
     private CallbackManager callbackManager;
     private GoogleApiClient mGoogleApiClient;
     private GoogleApiAvailability mGoogleApiAvailability;
     private ConnectionResult mConnectionResult;
-    private int request_code;
+    private int requestCode;
     private ProgressDialog mProgressDialog;
     private static final String TAG = "check";
     private Communication communication;
     private static final int SIGN_IN_CODE = 0;
-    private boolean is_intent_inprogress;
-    private boolean is_signInBtn_clicked;
+    private boolean isIntentInprogress;
+    private boolean isSignInBtnClicked;
     private GlobalClass globalClass;
     private User user;
 
@@ -70,10 +69,10 @@ public class entrance extends AppCompatActivity implements GoogleApiClient.Conne
 
         ((GlobalClass) getApplicationContext()).initiateClass(getResources());
         globalClass = ((GlobalClass) getApplicationContext());
-        globalClass.setCurrentActivity(entrance.this);
+        globalClass.setCurrentActivity(EntranceActivity.this);
         globalClass.setCurrentLayout(R.id.entrance_layout);
         LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        globalClass.getErrorHandler().setPopupWindowView_noConnectionWithServer(inflater.inflate(R.layout.popup_no_connection, null, false));
+        globalClass.getErrorHandler().setPopupWindowViewNoConnectionWithServer(inflater.inflate(R.layout.popup_no_connection, null, false));
         globalClass.getErrorHandler().handleNoConnectionToTheServer();
         FacebookSdk.sdkInitialize(getApplicationContext());
         callbackManager = CallbackManager.Factory.create();
@@ -136,7 +135,7 @@ public class entrance extends AppCompatActivity implements GoogleApiClient.Conne
 
     public void signInAsGuest(View v) {
         Log.d(TAG, "guest login");
-        user = new User("Guest", "", BitmapFactory.decodeResource(getResources(), R.drawable.user_icon), "Guest", globalClass);
+        user = new User("Guest", "", "Guest");
         globalClass.setUser(user);
         String send = "102○guest@guest.com○guest○#";
         globalClass.getErrorHandler().setConnectingClientMsg(send);
@@ -152,15 +151,15 @@ public class entrance extends AppCompatActivity implements GoogleApiClient.Conne
             globalClass.getCommunication().clientSend(send);
             Log.d("Server", "102○" + Plus.AccountApi.getAccountName(mGoogleApiClient) + "○" + ((GoogleUser) user).getGoogleProfile().getName().getGivenName() + "○" + user.getPicURL() + "#");
         }
-        Intent nfScreen = new Intent(this, newsfeed_activity.class);
+        Intent nfScreen = new Intent(this, NewsFeedActivity.class);
         startActivity(nfScreen);
         finish();
     }
 
-    public void facebook_login() {
-        facebook_loginButton = (LoginButton) findViewById(R.id.btn_Facebook);
-        facebook_loginButton.setReadPermissions(Arrays.asList("email", "user_friends"));
-        facebook_loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+    public void facebookLogin() {
+        facebookLoginButton = (LoginButton) findViewById(R.id.btn_Facebook);
+        facebookLoginButton.setReadPermissions(Arrays.asList("email", "user_friends"));
+        facebookLoginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
 
             private ProfileTracker mProfileTracker;
 
@@ -192,7 +191,7 @@ public class entrance extends AppCompatActivity implements GoogleApiClient.Conne
                     mProfileTracker = new ProfileTracker() {
                         @Override
                         protected void onCurrentProfileChanged(Profile profile, Profile profile2) {
-                            user = new FacebookUser(Profile.getCurrentProfile().getName(), Profile.getCurrentProfile().getProfilePictureUri(500, 500).toString(), null, Profile.getCurrentProfile(), "", globalClass);
+                            user = new FacebookUser(Profile.getCurrentProfile().getName(), Profile.getCurrentProfile().getProfilePictureUri(500, 500).toString(), Profile.getCurrentProfile(), "");
                             globalClass.setUser(user);
                             Bundle parameters = new Bundle();
                             parameters.putString("fields", "id,name,email,gender, birthday");
@@ -206,7 +205,7 @@ public class entrance extends AppCompatActivity implements GoogleApiClient.Conne
                 }
                 else
                 {
-                    user = new FacebookUser(Profile.getCurrentProfile().getName(), Profile.getCurrentProfile().getProfilePictureUri(500, 500).toString(), null, Profile.getCurrentProfile(), "", globalClass);
+                    user = new FacebookUser(Profile.getCurrentProfile().getName(), Profile.getCurrentProfile().getProfilePictureUri(500, 500).toString(), Profile.getCurrentProfile(), "");
                     globalClass.setUser(user);
                     Bundle parameters = new Bundle();
                     parameters.putString("fields", "id,name,email,gender, birthday");
@@ -254,11 +253,11 @@ public class entrance extends AppCompatActivity implements GoogleApiClient.Conne
 
     private void customizeSignBtn(){
 
-        google_signInButton = (SignInButton) findViewById(R.id.btn_Google);
-        google_signInButton.setSize(SignInButton.SIZE_STANDARD);
-        google_signInButton.setColorScheme(SignInButton.COLOR_DARK);
-        google_signInButton.setScopes(new Scope[]{Plus.SCOPE_PLUS_LOGIN});
-        setGooglePlusButtonText(google_signInButton);
+        googleSignInButton = (SignInButton) findViewById(R.id.btn_Google);
+        googleSignInButton.setSize(SignInButton.SIZE_STANDARD);
+        googleSignInButton.setColorScheme(SignInButton.COLOR_DARK);
+        googleSignInButton.setScopes(new Scope[]{Plus.SCOPE_PLUS_LOGIN});
+        setGooglePlusButtonText(googleSignInButton);
 
     }
 
@@ -268,7 +267,7 @@ public class entrance extends AppCompatActivity implements GoogleApiClient.Conne
 
     private void setBtnClickListeners(){
         // Button listeners
-        google_signInButton.setOnClickListener(this);
+        googleSignInButton.setOnClickListener(this);
     }
 
     protected void onStart() {
@@ -279,15 +278,15 @@ public class entrance extends AppCompatActivity implements GoogleApiClient.Conne
     @Override
     public void onConnectionFailed(ConnectionResult result) {
         if (!result.hasResolution()) {
-            mGoogleApiAvailability.getErrorDialog(this, result.getErrorCode(),request_code).show();
+            mGoogleApiAvailability.getErrorDialog(this, result.getErrorCode(), requestCode).show();
             return;
         }
 
-        if (!is_intent_inprogress) {
+        if (!isIntentInprogress) {
 
             mConnectionResult = result;
 
-            if (is_signInBtn_clicked) {
+            if (isSignInBtnClicked) {
 
                 resolveSignInError();
             }
@@ -309,13 +308,13 @@ public class entrance extends AppCompatActivity implements GoogleApiClient.Conne
         // Check which request we're responding to
 
         if (requestCode == SIGN_IN_CODE) {
-            request_code = requestCode;
+            this.requestCode = requestCode;
             if (responseCode != RESULT_OK) {
-                is_signInBtn_clicked = false;
+                isSignInBtnClicked = false;
                 mProgressDialog.dismiss();
 
             }
-            is_intent_inprogress = false;
+            isIntentInprogress = false;
 
             if (!mGoogleApiClient.isConnecting()) {
                 mGoogleApiClient.connect();
@@ -325,9 +324,9 @@ public class entrance extends AppCompatActivity implements GoogleApiClient.Conne
 
     @Override
     public void onConnected(Bundle arg0) {
-        is_signInBtn_clicked = false;
+        isSignInBtnClicked = false;
         // Get user's information and set it into the layout
-        user = new GoogleUser(Plus.PeopleApi.getCurrentPerson(mGoogleApiClient).getDisplayName(), Plus.PeopleApi.getCurrentPerson(mGoogleApiClient).getImage().getUrl(), null, Plus.PeopleApi.getCurrentPerson(mGoogleApiClient), mGoogleApiClient, globalClass);
+        user = new GoogleUser(Plus.PeopleApi.getCurrentPerson(mGoogleApiClient).getDisplayName(), Plus.PeopleApi.getCurrentPerson(mGoogleApiClient).getImage().getUrl(), Plus.PeopleApi.getCurrentPerson(mGoogleApiClient), mGoogleApiClient);
         globalClass.setUser(user);
         // Update the UI after signin
         moveToNewsFeed();
@@ -337,7 +336,7 @@ public class entrance extends AppCompatActivity implements GoogleApiClient.Conne
     @Override
     public void onConnectionSuspended(int arg0) {
         mGoogleApiClient.connect();
-        user = new GoogleUser(Plus.PeopleApi.getCurrentPerson(mGoogleApiClient).getDisplayName(), Plus.PeopleApi.getCurrentPerson(mGoogleApiClient).getImage().getUrl(), null, Plus.PeopleApi.getCurrentPerson(mGoogleApiClient), mGoogleApiClient, globalClass);
+        user = new GoogleUser(Plus.PeopleApi.getCurrentPerson(mGoogleApiClient).getDisplayName(), Plus.PeopleApi.getCurrentPerson(mGoogleApiClient).getImage().getUrl(), Plus.PeopleApi.getCurrentPerson(mGoogleApiClient), mGoogleApiClient);
         globalClass.setUser(user);
         moveToNewsFeed();
     }
@@ -358,7 +357,7 @@ public class entrance extends AppCompatActivity implements GoogleApiClient.Conne
     private void gPlusSignIn() {
         if (!mGoogleApiClient.isConnecting()) {
             Log.d("user connected","connected");
-            is_signInBtn_clicked = true;
+            isSignInBtnClicked = true;
 //            mProgressDialog.show();
             resolveSignInError();
 
@@ -372,11 +371,11 @@ public class entrance extends AppCompatActivity implements GoogleApiClient.Conne
     private void resolveSignInError() {
         if (mConnectionResult.hasResolution()) {
             try {
-                is_intent_inprogress = true;
+                isIntentInprogress = true;
                 mConnectionResult.startResolutionForResult(this, SIGN_IN_CODE);
                 Log.d("resolve error", "sign in error resolved");
             } catch (IntentSender.SendIntentException e) {
-                is_intent_inprogress = false;
+                isIntentInprogress = false;
                 mGoogleApiClient.connect();
             }
         }
@@ -416,11 +415,11 @@ public class entrance extends AppCompatActivity implements GoogleApiClient.Conne
 
     public void connectToSocialNets()
     {
-        facebook_login();
+        facebookLogin();
         if (Profile.getCurrentProfile() != null) {
             Log.d(TAG, "facebook login");
             SharedPreferences sharedpreferences = getSharedPreferences(prefsConnection, Context.MODE_PRIVATE);
-            user = new FacebookUser(Profile.getCurrentProfile().getName(), Profile.getCurrentProfile().getProfilePictureUri(500, 500).toString(), null, Profile.getCurrentProfile(), sharedpreferences.getString(facebookEmail, ""), globalClass);
+            user = new FacebookUser(Profile.getCurrentProfile().getName(), Profile.getCurrentProfile().getProfilePictureUri(500, 500).toString(), Profile.getCurrentProfile(), sharedpreferences.getString(facebookEmail, ""));
             globalClass.setUser(user);
             String send = "102○" + ((FacebookUser) user).getFacebookUserEmail() + "○" + ((FacebookUser) user).getFacebookProfile().getFirstName() + "○" + user.getPicURL() + "#";
             globalClass.getErrorHandler().setConnectingClientMsg(send);

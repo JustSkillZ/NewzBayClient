@@ -1,17 +1,14 @@
 package magshimim.newzbay;
 
 import android.app.Activity;
-import android.content.Context;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.PopupWindow;
 
-import com.squareup.picasso.Picasso;
-
 public class ErrorHandler {
     private PopupWindow noConnectionWithServer;
-    private View popupWindowView_noConnectionWithServer;
+    private View popupWindowViewNoConnectionWithServer;
     private String ConnectingClientMsg;
     private String lastMsgToServer;
     private GlobalClass globalClass;
@@ -29,17 +26,17 @@ public class ErrorHandler {
         this.noConnectionWithServer = noConnectionWithServer;
     }
 
-    public View getPopupWindowView_noConnectionWithServer() {
-        return popupWindowView_noConnectionWithServer;
+    public View getPopupWindowViewNoConnectionWithServer() {
+        return popupWindowViewNoConnectionWithServer;
     }
 
-    public void setPopupWindowView_noConnectionWithServer(View popupWindowView_noConnectionWithServer) {
-        this.popupWindowView_noConnectionWithServer = popupWindowView_noConnectionWithServer;
+    public void setPopupWindowViewNoConnectionWithServer(View popupWindowViewNoConnectionWithServer) {
+        this.popupWindowViewNoConnectionWithServer = popupWindowViewNoConnectionWithServer;
     }
 
     public void handleNoConnectionToTheServer()
     {
-        Button refreshConnection = (Button) globalClass.getErrorHandler().getPopupWindowView_noConnectionWithServer().findViewById(R.id.btn_reconnect);
+        Button refreshConnection = (Button) globalClass.getErrorHandler().getPopupWindowViewNoConnectionWithServer().findViewById(R.id.btn_reconnect);
         refreshConnection.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 if (globalClass.getErrorHandler().getNoConnectionWithServer() != null) {
@@ -75,7 +72,7 @@ public class ErrorHandler {
             @Override
             public void run() {
                 final PopupWindow noConnection = new PopupWindow(
-                        globalClass.getErrorHandler().getPopupWindowView_noConnectionWithServer(),
+                        globalClass.getErrorHandler().getPopupWindowViewNoConnectionWithServer(),
                         800,
                         800,
                         true);

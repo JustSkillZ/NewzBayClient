@@ -18,10 +18,6 @@ public class CommentsHandler {
         return commentsofCurrentArticle;
     }
 
-    public void setCommentsofCurrentArticle(Vector<Comment> commentsofCurrentArticle) {
-        this.commentsofCurrentArticle = commentsofCurrentArticle;
-    }
-
     public RecyclerView.Adapter getRecyclerAdapter() {
         return recyclerAdapter;
     }

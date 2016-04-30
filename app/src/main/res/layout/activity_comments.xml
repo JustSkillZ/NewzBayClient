@@ -47,9 +47,9 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="mainHeadline"
+                            android:text="mainheadline"
                             android:textStyle="bold"
-                            android:textSize="20dp"
+                            android:textSize="20sp"
                             android:textColor="@color/black"
                             android:id="@+id/tv_mainHeadline"
                             android:layout_gravity="center"
@@ -58,7 +58,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="secondHeadline"
+                            android:text="secondheadline"
                             android:layout_marginTop="3dp"
                             android:textSize="18sp"
                             android:textColor="@color/grey"
@@ -75,7 +75,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="SITE"
+                                android:text="site"
                                 android:layout_marginTop="3dp"
                                 android:textSize="16sp"
                                 android:textColor="@color/grey"
@@ -86,7 +86,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="DATE"
+                                android:text="date"
                                 android:textSize="16sp"
                                 android:textColor="@color/grey"
                                 android:id="@+id/tv_date"
@@ -199,10 +199,8 @@
             android:layout_width="match_parent"
             android:layout_height="2dp"
             android:id="@+id/line2"
-            android:layout_alignParentStart="true"
             android:layout_marginLeft="3dip"
             android:layout_marginRight="3dip"
-            android:layout_above="@+id/commentText"
             android:background="@color/disabledButton"/>
 
         <LinearLayout
@@ -221,7 +219,7 @@
                 android:layout_marginTop="5dp" />
 
             <com.rockerhieu.emojicon.EmojiconEditText
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:id="@+id/commentText"
                 android:hint="@string/WriteComment"

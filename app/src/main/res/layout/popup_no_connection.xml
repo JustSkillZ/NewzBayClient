@@ -22,5 +22,14 @@
         android:layout_below="@+id/imageView6"
         android:layout_centerHorizontal="true" />
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="ביטול"
+        android:id="@+id/btn_CancelReconnect"
+        android:textStyle="bold"
+        android:layout_below="@+id/btn_reconnect"
+        android:layout_centerHorizontal="true" />
+
 
 </RelativeLayout>

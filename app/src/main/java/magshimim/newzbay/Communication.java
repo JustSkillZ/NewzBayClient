@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.facebook.login.widget.LoginButton;
@@ -38,7 +39,7 @@ public class Communication implements Runnable
     @Override
     public void run()
     {
-        serverIP = "109.67.60.124"; //Nir PC's IP
+        serverIP = globalClass.getErrorHandler().getServerIP(); //Nir PC's IP
         dstport = 4444; //Communication port
         userConnected = false;
         serverSocket = new Socket();
@@ -50,6 +51,12 @@ public class Communication implements Runnable
                 @Override
                 public void run() //Set GUI buttons clickable in order to choose social net or guest
                 {
+                    Button connectToServer = (Button) ((Activity) globalClass.getCurrentActivity()).findViewById(R.id.btn_connectToServer);
+                    connectToServer.setVisibility(View.GONE);
+
+                    EditText serverIPText = (EditText) ((Activity) globalClass.getCurrentActivity()).findViewById(R.id.editText_serverIP);
+                    serverIPText.setVisibility(View.GONE);
+
                     Button guestLoginBtn = (Button) ((Activity) globalClass.getCurrentActivity()).findViewById(R.id.btn_NB);
                     if (guestLoginBtn != null)
                     {

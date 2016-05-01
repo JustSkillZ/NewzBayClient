@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -114,12 +115,10 @@ public class ActivityEntrance extends AppCompatActivity implements GoogleApiClie
             newzBay.setTextColor(getResources().getColor(R.color.white));
             TextView slogen = (TextView) findViewById(R.id.tv_slogen);
             slogen.setTextColor(getResources().getColor(R.color.white));
+            EditText serverIP = (EditText) findViewById(R.id.editText_serverIP);
+            serverIP.setTextColor(getResources().getColor(R.color.white));
+            serverIP.setHintTextColor(getResources().getColor(R.color.white));
         }
-
-        communication = new Communication((GlobalClass) getApplicationContext()); //Connect to NB server
-        globalClass.setCommunication(communication);
-        Thread t = new Thread(communication); //This is write to server thread
-        t.start();
     }
 
     @Override
@@ -445,5 +444,15 @@ public class ActivityEntrance extends AppCompatActivity implements GoogleApiClie
             mProgressDialog.setMessage("Loading...");
             mGoogleApiClient.connect();
         }
+    }
+
+    public void connectToServer(View v)
+    {
+        EditText serverIP = (EditText) findViewById(R.id.editText_serverIP);
+        globalClass.getErrorHandler().setServerIP(serverIP.getText().toString());
+        communication = new Communication((GlobalClass) getApplicationContext()); //Connect to NB server
+        globalClass.setCommunication(communication);
+        Thread t = new Thread(communication); //This is write to server thread
+        t.start();
     }
 }

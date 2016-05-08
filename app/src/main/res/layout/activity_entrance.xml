@@ -32,7 +32,7 @@
         android:text="@string/slogan"
         android:layout_centerHorizontal="true"
         android:textColor="@color/nb"
-        android:id="@+id/tv_slogen"
+        android:id="@+id/tv_slogan"
         android:textStyle="bold"
         android:background="@color/transparent"/>
 
@@ -41,7 +41,7 @@
         android:layout_height="60dp"
         android:id="@+id/btn_Google"
         android:layout_marginTop="43dp"
-        android:layout_below="@+id/tv_slogen"
+        android:layout_below="@+id/tv_slogan"
         android:layout_alignParentEnd="true"
         android:layout_alignParentStart="true"
         android:background="@color/transparent"/>
@@ -88,27 +88,41 @@
         android:layout_centerHorizontal="true"
         android:visibility="gone"/>
 
+    <View
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/editText_serverIP"
+        android:layout_alignParentEnd="true"
+        android:alpha="0.5"
+        android:id="@+id/view_shadow"
+        android:background="@color/black"
+        android:layout_alignTop="@+id/btn_connectToServer"/>
+
     <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/editText_serverIP"
         android:visibility="visible"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="50dp"
-        android:textColor="@color/black"
+        android:textColor="@color/white"
         android:textStyle="bold"
-        android:textColorHint="@color/grey"
+        android:textColorHint="@color/white"
+        android:inputType="number|numberDecimal"
+        android:digits="0123456789."
         android:hint="הכנס את האייפי של השרת"
+        android:imeOptions="actionDone"
+        android:singleLine="true"
         android:layout_alignParentEnd="true"
-        android:layout_alignStart="@+id/btn_NB"/>
+        android:layout_toEndOf="@+id/btn_connectToServer"/>
 
     <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="התחבר לשרת"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:id="@+id/btn_connectToServer"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:onClick="connectToServer"/>
+        android:textStyle="bold"
+        android:onClick="connectToServer"
+        android:background="@drawable/enter"
+        android:backgroundTint="@color/white"
+        android:layout_alignParentBottom="true"/>
 
 </RelativeLayout>

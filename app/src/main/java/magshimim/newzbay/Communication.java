@@ -26,7 +26,7 @@ public class Communication implements Runnable
 {
     private ClientRead clientRead;
     private GlobalClass globalClass;
-    private Socket serverSocket;
+    private Socket socket;
     private String serverIP;
     private int dstport;
     private boolean userConnected;
@@ -42,10 +42,10 @@ public class Communication implements Runnable
         serverIP = globalClass.getErrorHandler().getServerIP(); //Nir PC's IP
         dstport = 4444; //Communication port
         userConnected = false;
-        serverSocket = new Socket();
+        socket = new Socket();
         try
         {
-            serverSocket.connect(new InetSocketAddress(serverIP, dstport), 5000);
+            socket.connect(new InetSocketAddress(serverIP, dstport), 5000);
             ((Activity) globalClass.getCurrentActivity()).runOnUiThread(new Runnable() //Connected to NB server
             {
                 @Override
@@ -56,6 +56,9 @@ public class Communication implements Runnable
 
                     EditText serverIPText = (EditText) ((Activity) globalClass.getCurrentActivity()).findViewById(R.id.editText_serverIP);
                     serverIPText.setVisibility(View.GONE);
+
+                    View editTextShadow = (View) ((Activity) globalClass.getCurrentActivity()).findViewById(R.id.view_shadow);
+                    editTextShadow.setVisibility(View.GONE);
 
                     Button guestLoginBtn = (Button) ((Activity) globalClass.getCurrentActivity()).findViewById(R.id.btn_NB);
                     if (guestLoginBtn != null)
@@ -89,7 +92,7 @@ public class Communication implements Runnable
                     {
                         ((ActivityEntrance) globalClass.getCurrentActivity()).connectToSocialNets();
                     }
-                    clientRead = new ClientRead(serverSocket, globalClass, userConnected); //Open read from server thread
+                    clientRead = new ClientRead(socket, globalClass, userConnected); //Open read from server thread
                     Thread t = new Thread(clientRead);
                     t.start();
                 }
@@ -112,7 +115,7 @@ public class Communication implements Runnable
 
 class ClientRead extends Thread
 {
-    private Socket serverSocket;
+    private Socket socket;
     private PrintWriter out;
     private BufferedWriter bufferedWriter;
     private BufferedReader in;
@@ -123,9 +126,9 @@ class ClientRead extends Thread
     private AESEncryption aesEncryption;
     private boolean userConnected;
 
-    public ClientRead(Socket serverSocket, GlobalClass globalClass, boolean userConnected)
+    public ClientRead(Socket socket, GlobalClass globalClass, boolean userConnected)
     {
-        this.serverSocket = serverSocket;
+        this.socket = socket;
         this.globalClass = globalClass;
         categoriesHandler = globalClass.getCategoriesHandler();
         priorityHandler = globalClass.getPriorityHandler();
@@ -139,9 +142,9 @@ class ClientRead extends Thread
     {
         try
         {
-            out = new PrintWriter(serverSocket.getOutputStream());
+            out = new PrintWriter(socket.getOutputStream());
             bufferedWriter = new BufferedWriter(out);
-            in = new BufferedReader(new InputStreamReader(serverSocket.getInputStream()));
+            in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         }
         catch (IOException e)
         {

@@ -11,8 +11,11 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.format.Time;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
@@ -113,12 +116,28 @@ public class ActivityEntrance extends AppCompatActivity implements GoogleApiClie
             layout.setBackground(getResources().getDrawable(R.drawable.main_background_night));
             TextView newzBay = (TextView) findViewById(R.id.tv_newzbay);
             newzBay.setTextColor(getResources().getColor(R.color.white));
-            TextView slogen = (TextView) findViewById(R.id.tv_slogen);
-            slogen.setTextColor(getResources().getColor(R.color.white));
-            EditText serverIP = (EditText) findViewById(R.id.editText_serverIP);
-            serverIP.setTextColor(getResources().getColor(R.color.white));
-            serverIP.setHintTextColor(getResources().getColor(R.color.white));
+            TextView slogan = (TextView) findViewById(R.id.tv_slogan);
+            slogan.setTextColor(getResources().getColor(R.color.white));
+            Button sendIP = (Button) findViewById(R.id.btn_connectToServer);
         }
+ //79.180.99.253
+        EditText serverIP = (EditText) findViewById(R.id.editText_serverIP);
+        serverIP.setOnEditorActionListener(
+                new EditText.OnEditorActionListener()
+                {
+                    @Override
+                    public boolean onEditorAction(TextView v, int actionId, KeyEvent event)
+                    {
+                        if (actionId == EditorInfo.IME_ACTION_DONE)
+                        {
+                            if(v != null)
+                            {
+                                connectToServer(v);
+                            }
+                        }
+                        return true;
+                    }
+                });
     }
 
     @Override
@@ -448,6 +467,8 @@ public class ActivityEntrance extends AppCompatActivity implements GoogleApiClie
 
     public void connectToServer(View v)
     {
+        InputMethodManager in = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        in.hideSoftInputFromWindow(v.getApplicationWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
         EditText serverIP = (EditText) findViewById(R.id.editText_serverIP);
         globalClass.getErrorHandler().setServerIP(serverIP.getText().toString());
         communication = new Communication((GlobalClass) getApplicationContext()); //Connect to NB server

@@ -118,9 +118,7 @@ public class ActivityEntrance extends AppCompatActivity implements GoogleApiClie
             newzBay.setTextColor(getResources().getColor(R.color.white));
             TextView slogan = (TextView) findViewById(R.id.tv_slogan);
             slogan.setTextColor(getResources().getColor(R.color.white));
-            Button sendIP = (Button) findViewById(R.id.btn_connectToServer);
         }
- //79.180.99.253
         EditText serverIP = (EditText) findViewById(R.id.editText_serverIP);
         serverIP.setOnEditorActionListener(
                 new EditText.OnEditorActionListener()

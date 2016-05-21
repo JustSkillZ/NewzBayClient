@@ -442,14 +442,20 @@ class ClientRead extends Thread
                             while (line.contains("◘"))
                             {
                                 String username, picURL, commentText;
+                                Boolean clientComment = false;
                                 String temp = line.substring(0, line.indexOf("◘"));
                                 username = temp.substring(0, temp.indexOf("○"));
                                 temp = temp.substring((temp.indexOf("○") + 1));
                                 picURL = temp.substring(0, temp.indexOf("○"));
                                 temp = temp.substring(temp.indexOf("○") + 1);
+                                if(temp.indexOf("►") != -1)
+                                {
+                                    temp = temp.substring(0, temp.indexOf("►"));
+                                    clientComment = true;
+                                }
                                 commentText = temp;
                                 line = line.substring(line.indexOf("◘") + 1);
-                                Comment comment = new Comment(username, picURL, commentText);
+                                Comment comment = new Comment(username, picURL, commentText, clientComment);
                                 commentsHandler.getCommentsOfCurrentArticle().addElement(comment);
                             }
                             ((Activity) globalClass.getCurrentActivity()).runOnUiThread(new Runnable()

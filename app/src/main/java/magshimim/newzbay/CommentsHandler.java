@@ -6,7 +6,6 @@ import java.util.Vector;
 
 public class CommentsHandler
 {
-
     private Vector<Comment> commentsOfCurrentArticle;
     private RecyclerView.Adapter commentsRecyclerAdapter;
     private Article article;

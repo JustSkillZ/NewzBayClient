@@ -173,7 +173,7 @@ public class ActivityComments extends AppCompatActivity implements EmojiconGridF
         if (!commentText.getText().toString().equals(""))
         {
             globalClass.getCommunication().clientSend("122◘" + commentsHandler.getArticle().getUrl() + "○" + commentText.getText().toString() + "#");
-            commentsHandler.getCommentsOfCurrentArticle().addElement(new Comment(user.getFullName(), user.getPicURL(), commentText.getText().toString()));
+            commentsHandler.getCommentsOfCurrentArticle().addElement(new Comment(user.getFullName(), user.getPicURL(), commentText.getText().toString(), true));
             commentsRecyclerAdapter.notifyDataSetChanged();
             commentText.setText("");
             commentsHandler.getArticle().incNumberOfComments();

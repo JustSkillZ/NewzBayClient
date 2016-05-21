@@ -18,10 +18,10 @@ import java.util.Vector;
 public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.ViewHolder>
 {
 
-    GlobalClass globalClass;
-    CommentsHandler commentsHandler;
-    Vector<Comment> comments;
-    Context context;
+    private GlobalClass globalClass;
+    private CommentsHandler commentsHandler;
+    private Vector<Comment> comments;
+    private Context context;
 
     public CommentsAdapter(GlobalClass globalClass, Context context)
     {
@@ -46,7 +46,7 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.ViewHo
         Picasso.with(globalClass.getCurrentActivity()).load(comments.get(position).getProfilePicURL()).into(holder.profilePic);
         holder.username.setText(comments.get(position).getUsername());
         holder.commentText.setText(comments.get(position).getCommentText());
-        if (globalClass.getUser().getPicURL().equals(comments.get(position).getProfilePicURL())) //If the person that wrote the comment is the user
+        if (comments.get(position).getClientComment()) //If the person that wrote the comment is the user
         {
             holder.username.setTextColor(globalClass.getResources().getColor(R.color.nb));
             holder.deleteComment.setOnClickListener(new View.OnClickListener() //Delete user's comment

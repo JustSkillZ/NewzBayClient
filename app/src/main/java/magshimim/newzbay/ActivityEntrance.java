@@ -1,5 +1,6 @@
 package magshimim.newzbay;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -465,6 +466,12 @@ public class ActivityEntrance extends AppCompatActivity implements GoogleApiClie
 
     public void connectToServer(View v)
     {
+        Button connectToServer = (Button) findViewById(R.id.btn_connectToServer);
+        connectToServer.setVisibility(View.GONE);
+        EditText serverIPText = (EditText) findViewById(R.id.editText_serverIP);
+        serverIPText.setVisibility(View.GONE);
+        View editTextShadow = findViewById(R.id.view_shadow);
+        editTextShadow.setVisibility(View.GONE);
         InputMethodManager in = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         in.hideSoftInputFromWindow(v.getApplicationWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
         EditText serverIP = (EditText) findViewById(R.id.editText_serverIP);

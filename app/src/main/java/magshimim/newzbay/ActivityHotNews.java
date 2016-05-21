@@ -54,10 +54,10 @@ public class ActivityHotNews extends AppCompatActivity
     @Override
     public void onBackPressed()
     {
-        super.onBackPressed();
-        ((GlobalClass) getApplicationContext()).getCategoriesHandler().setHotNewsPageAdapter(null);
         ((GlobalClass) getApplicationContext()).getCategoriesHandler().getCurrentlyInUse().clear();
-        ((GlobalClass) getApplicationContext()).getCategoriesHandler().getArticlesRecyclerAdapter().notifyDataSetChanged();
+        ((GlobalClass) getApplicationContext()).getCategoriesHandler().getHotNewsPageAdapter().notifyDataSetChanged();
+        ((GlobalClass) getApplicationContext()).getCategoriesHandler().setHotNewsPageAdapter(null);
+        super.onBackPressed();
     }
 
     /**

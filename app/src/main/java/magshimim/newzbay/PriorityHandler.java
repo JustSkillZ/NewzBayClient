@@ -1,5 +1,7 @@
 package magshimim.newzbay;
 
+import android.support.v7.widget.RecyclerView;
+
 import java.util.HashMap;
 import java.util.Vector;
 
@@ -10,6 +12,7 @@ public class PriorityHandler
     private Vector<String> sitesOfCurrentSubject;
     private Vector<String> clientPriority;
     private Vector<String> removedSitesOfCurrentSubject;
+    private RecyclerView.Adapter recyclerAdapter;
     private HashMap<String, String> Subjects = new HashMap<String, String>() // Key - subjectToServer, Value - subjectToShow
     {{
         put("israelNewz", "חדשות בארץ");
@@ -67,5 +70,39 @@ public class PriorityHandler
     public Vector<String> getRemovedSitesOfCurrentSubject()
     {
         return removedSitesOfCurrentSubject;
+    }
+
+    public RecyclerView.Adapter getRecyclerAdapter()
+    {
+        return recyclerAdapter;
+    }
+
+    public void setRecyclerAdapter(RecyclerView.Adapter recyclerAdapter)
+    {
+        this.recyclerAdapter = recyclerAdapter;
+    }
+
+    public void createRemovedSitesList()
+    {
+        for(int i = 0; i < categorySites.size(); i++) //Put all sites from current category
+        {
+            if (categorySites.get(i).getSubject().equals(currentPrioritySubject))
+            {
+                removedSitesOfCurrentSubject.add(categorySites.get(i).getSite());
+            }
+        }
+        for (int i = 0; i < categorySites.size(); i++) //Delete from removedSites the sites that exist in client's priority
+        {
+            if (categorySites.get(i).getSubject().equals(currentPrioritySubject))
+            {
+                for(int j = 0; j < clientPriority.size(); j++)
+                {
+                    if (categorySites.get(i).getSite().equals(clientPriority.get(j)))
+                    {
+                        removedSitesOfCurrentSubject.remove(clientPriority.get(j));
+                    }
+                }
+            }
+        }
     }
 }

@@ -363,7 +363,6 @@ public class ActivityNewsFeed extends AppCompatActivity
                 LoginManager.getInstance().logOut();
             }
             globalClass.getCommunication().clientSend("500#"); //Disconnect from the server
-            Log.d("Server", "500#");
             globalClass.endClass();
             Intent intent = new Intent(this, ActivityEntrance.class);
             startActivity(intent);

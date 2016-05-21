@@ -36,6 +36,8 @@ public class ActivityChoosePriority extends AppCompatActivity implements PopupMe
         globalClass = (GlobalClass) getApplicationContext();
         priorityHandler = globalClass.getPriorityHandler();
         priorityHandler.getRemovedSitesOfCurrentSubject().clear();
+        priorityHandler.getClientPriority().clear();
+        globalClass.getCommunication().clientSend("128◘" + priorityHandler.getCurrentPrioritySubject() + "#");
         TextView subject = (TextView) findViewById(R.id.tv_subject);
         subject.setText(priorityHandler.getSubjects().get(priorityHandler.getCurrentPrioritySubject()));
         Time now = new Time();
@@ -59,6 +61,7 @@ public class ActivityChoosePriority extends AppCompatActivity implements PopupMe
         recyclerLayoutManager = new LinearLayoutManager(this);
         recyclerViewSites.setLayoutManager(recyclerLayoutManager);
         recyclerAdapter = new SitesAdapter((GlobalClass) getApplicationContext());
+        priorityHandler.setRecyclerAdapter(recyclerAdapter);
         recyclerViewSites.setAdapter(recyclerAdapter);
         ItemTouchHelper.Callback callback = new DragNSwipeHelper((SitesAdapter) recyclerAdapter);
         ItemTouchHelper touchHelper = new ItemTouchHelper(callback);

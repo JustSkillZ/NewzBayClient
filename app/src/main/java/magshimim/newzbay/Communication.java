@@ -52,13 +52,23 @@ public class Communication implements Runnable
                 public void run() //Set GUI buttons clickable in order to choose social net or guest
                 {
                     Button connectToServer = (Button) ((Activity) globalClass.getCurrentActivity()).findViewById(R.id.btn_connectToServer);
-                    connectToServer.setVisibility(View.GONE);
+                    if (connectToServer != null)
+                    {
+                        connectToServer.setVisibility(View.GONE);
+                    }
 
                     EditText serverIPText = (EditText) ((Activity) globalClass.getCurrentActivity()).findViewById(R.id.editText_serverIP);
-                    serverIPText.setVisibility(View.GONE);
+                    if (serverIPText != null)
+                    {
+                        serverIPText.setVisibility(View.GONE);
+                    }
+
 
                     View editTextShadow = (View) ((Activity) globalClass.getCurrentActivity()).findViewById(R.id.view_shadow);
-                    editTextShadow.setVisibility(View.GONE);
+                    if (editTextShadow != null)
+                    {
+                        editTextShadow.setVisibility(View.GONE);
+                    }
 
                     Button guestLoginBtn = (Button) ((Activity) globalClass.getCurrentActivity()).findViewById(R.id.btn_NB);
                     if (guestLoginBtn != null)
@@ -101,6 +111,31 @@ public class Communication implements Runnable
         catch (IOException e) //No connection to server
         {
             globalClass.getErrorHandler().reConnect(); //Reconnect
+            ((Activity) globalClass.getCurrentActivity()).runOnUiThread(new Runnable() //Connected to NB server
+            {
+                @Override
+                public void run() //Set GUI buttons clickable in order to choose social net or guest
+                {
+                    Button connectToServer = (Button) ((Activity) globalClass.getCurrentActivity()).findViewById(R.id.btn_connectToServer);
+                    if (connectToServer != null)
+                    {
+                        connectToServer.setVisibility(View.VISIBLE);
+                    }
+
+                    EditText serverIPText = (EditText) ((Activity) globalClass.getCurrentActivity()).findViewById(R.id.editText_serverIP);
+                    if (serverIPText != null)
+                    {
+                        serverIPText.setVisibility(View.VISIBLE);
+                        serverIPText.setText("");
+                    }
+
+                    View editTextShadow = (View) ((Activity) globalClass.getCurrentActivity()).findViewById(R.id.view_shadow);
+                    if (editTextShadow != null)
+                    {
+                        editTextShadow.setVisibility(View.VISIBLE);
+                    }
+                }
+            });
         }
     }
 
@@ -290,20 +325,20 @@ class ClientRead extends Thread
                                 }
                                 Article article = new Article(categoriesHandler.getCurrentlyInUseCategory(globalClass.getUser()), mainHeadLine, secondHeadLine, imgURL, dates, siteName, url, Integer.parseInt(likes), Integer.parseInt(comments), liked, globalClass);
                                 categoriesHandler.getCurrentlyInUse().add(article);
-                                ((Activity) globalClass.getCurrentActivity()).runOnUiThread(new Runnable()
-                                {
-                                    @Override
-                                    public void run()
-                                    {
-                                        if (categoriesHandler.getHotNewsPageAdapter() != null)
-                                        {
-                                            categoriesHandler.getHotNewsPageAdapter().notifyDataSetChanged();
-                                        }
-                                        categoriesHandler.getArticlesRecyclerAdapter().notifyDataSetChanged();
-                                        ((Activity) globalClass.getCurrentActivity()).findViewById(R.id.pb_loadingArticles).setVisibility(View.INVISIBLE);
-                                    }
-                                });
                             }
+                            ((Activity) globalClass.getCurrentActivity()).runOnUiThread(new Runnable()
+                            {
+                                @Override
+                                public void run()
+                                {
+                                    if (categoriesHandler.getHotNewsPageAdapter() != null)
+                                    {
+                                        categoriesHandler.getHotNewsPageAdapter().notifyDataSetChanged();
+                                    }
+                                    categoriesHandler.getArticlesRecyclerAdapter().notifyDataSetChanged();
+                                    ((Activity) globalClass.getCurrentActivity()).findViewById(R.id.pb_loadingArticles).setVisibility(View.INVISIBLE);
+                                }
+                            });
                         }
                         else
                         {
@@ -426,6 +461,26 @@ class ClientRead extends Thread
                                 }
                             });
                         }
+                    }
+                    else if (line.contains("129◘")) //Client get his priority of current subject
+                    {
+                        String temp;
+                        line = line.substring(line.indexOf("◘") + 1);
+                        while (line.contains("◘"))
+                        {
+                            temp = line.substring(0, line.indexOf("◘"));
+                            line = line.substring(line.indexOf("◘") + 1);
+                            priorityHandler.getClientPriority().add(temp);
+                            ((Activity) globalClass.getCurrentActivity()).runOnUiThread(new Runnable()
+                            {
+                                @Override
+                                public void run()
+                                {
+                                    priorityHandler.getRecyclerAdapter().notifyDataSetChanged();
+                                }
+                            });
+                        }
+                        priorityHandler.createRemovedSitesList();
                     }
                     line = "";
                 }

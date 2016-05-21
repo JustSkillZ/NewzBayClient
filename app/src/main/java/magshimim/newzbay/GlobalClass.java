@@ -31,6 +31,9 @@ public class GlobalClass extends Application
         categoriesHandler = null;
         errorHandler = null;
         user = null;
+        priorityHandler = null;
+        communication = null;
+        commentsHandler = null;
     }
 
     public CategoriesHandler getCategoriesHandler()

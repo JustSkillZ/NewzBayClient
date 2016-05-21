@@ -2,6 +2,7 @@ package magshimim.newzbay;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.BitmapDrawable;
 import android.support.v7.widget.RecyclerView;
 import android.text.format.DateUtils;
 import android.view.LayoutInflater;
@@ -176,7 +177,7 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
             }
             if (!categoriesHandler.getCurrentlyInUse().get(position).getPicURL().equals("null")) //If there is a URL, load the pic.
             {
-                Picasso.with(context).load(categoriesHandler.getCurrentlyInUse().get(position).getPicURL()).into(holder.picture);
+                Picasso.with(context).load(categoriesHandler.getCurrentlyInUse().get(position).getPicURL()).placeholder(R.drawable.loading_article).into(holder.picture);
             }
             else //If there is no URL, set default image.
             {

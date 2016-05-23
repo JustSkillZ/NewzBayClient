@@ -184,4 +184,14 @@ public class CategoriesHandler
     {
         this.hotNewsPageAdapter = hotNewsPageAdapter;
     }
+
+    public void setCurrentlyInUseCategoryServer(String currentlyInUseCategoryServer)
+    {
+        this.currentlyInUseCategoryServer = currentlyInUseCategoryServer;
+    }
+
+    public void setCurrentlyInUseCategory(String currentlyInUseCategory)
+    {
+        this.currentlyInUseCategory = currentlyInUseCategory;
+    }
 }

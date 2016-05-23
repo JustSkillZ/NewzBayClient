@@ -441,7 +441,7 @@ class ClientRead extends Thread
                             line = line.substring(line.indexOf("◘") + 1);
                             while (line.contains("◘"))
                             {
-                                String username, picURL, commentText;
+                                String username, picURL, commentText, id = "-1";
                                 Boolean clientComment = false;
                                 String temp = line.substring(0, line.indexOf("◘"));
                                 username = temp.substring(0, temp.indexOf("○"));
@@ -450,25 +450,26 @@ class ClientRead extends Thread
                                 temp = temp.substring(temp.indexOf("○") + 1);
                                 if(temp.indexOf("►") != -1)
                                 {
+                                    id = temp.substring(temp.indexOf("►") + 1);
                                     temp = temp.substring(0, temp.indexOf("►"));
                                     clientComment = true;
                                 }
                                 commentText = temp;
                                 line = line.substring(line.indexOf("◘") + 1);
-                                Comment comment = new Comment(username, picURL, commentText, clientComment);
+                                Comment comment = new Comment(username, picURL, commentText, clientComment, id);
                                 commentsHandler.getCommentsOfCurrentArticle().addElement(comment);
-                            }
-                            ((Activity) globalClass.getCurrentActivity()).runOnUiThread(new Runnable()
-                            {
-                                @Override
-                                public void run()
+                                ((Activity) globalClass.getCurrentActivity()).runOnUiThread(new Runnable()
                                 {
-                                    commentsHandler.getCommentsRecyclerAdapter().notifyDataSetChanged();
-                                }
-                            });
+                                    @Override
+                                    public void run()
+                                    {
+                                        commentsHandler.getCommentsRecyclerAdapter().notifyDataSetChanged();
+                                    }
+                                });
+                            }
                         }
                     }
-                    else if (line.contains("129◘")) //Client get his priority of current subject
+                    else if (line.contains("129◘")) //Client gets his priority of current subject
                     {
                         String temp;
                         line = line.substring(line.indexOf("◘") + 1);
@@ -487,6 +488,33 @@ class ClientRead extends Thread
                             });
                         }
                         priorityHandler.createRemovedSitesList();
+                    }
+                    else if(line.contains("123◘")) //Client gets the id of comment he wrote
+                    {
+                        line = line.substring(0,line.length() - 1);
+                        boolean done = false;
+                        for(int i = 0; i < commentsHandler.getCommentsOfCurrentArticle().size(); i++)
+                        {
+                            if(!done)
+                            {
+                                if(commentsHandler.getCommentsOfCurrentArticle().get(i).getClientComment() && commentsHandler.getCommentsOfCurrentArticle().get(i).getId().equals("-1"))
+                                {
+                                    commentsHandler.getCommentsOfCurrentArticle().get(i).setId(line.substring(line.indexOf("◘") + 1));
+                                    if(commentsHandler.getCommentActivity() != null)
+                                    {
+                                        ((Activity) commentsHandler.getCommentActivity()).runOnUiThread(new Runnable()
+                                        {
+                                            @Override
+                                            public void run()
+                                            {
+                                                commentsHandler.getCommentsRecyclerAdapter().notifyDataSetChanged();
+                                            }
+                                        });
+                                    }
+                                    done = true;
+                                }
+                            }
+                        }
                     }
                     line = "";
                 }

@@ -39,6 +39,7 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.ViewHo
         return vh;
     }
 
+
     @Override
     public void onBindViewHolder(ViewHolder holder, int position)
     {
@@ -46,9 +47,10 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.ViewHo
         Picasso.with(globalClass.getCurrentActivity()).load(comments.get(position).getProfilePicURL()).into(holder.profilePic);
         holder.username.setText(comments.get(position).getUsername());
         holder.commentText.setText(comments.get(position).getCommentText());
-        if (comments.get(position).getClientComment()) //If the person that wrote the comment is the user
+        if (comments.get(position).getClientComment() && !comments.get(position).getId().equals("-1")) //If the person that wrote the comment is the user
         {
             holder.username.setTextColor(globalClass.getResources().getColor(R.color.nb));
+            holder.deleteComment.setVisibility(View.VISIBLE);
             holder.deleteComment.setOnClickListener(new View.OnClickListener() //Delete user's comment
             {
                 @Override
@@ -62,7 +64,7 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.ViewHo
                             switch (which)
                             {
                                 case DialogInterface.BUTTON_POSITIVE:
-                                    globalClass.getCommunication().clientSend("124◘" + commentsHandler.getArticle().getUrl() + "○" + commentsHandler.getCommentsOfCurrentArticle().get(tempPosition).getCommentText() + "#");
+                                    globalClass.getCommunication().clientSend("124◘" + commentsHandler.getArticle().getUrl() + "○" + commentsHandler.getCommentsOfCurrentArticle().get(tempPosition).getId() + "#");
                                     commentsHandler.getCommentsOfCurrentArticle().remove(tempPosition);
                                     commentsHandler.getArticle().decNumberOfComments();
                                     commentsHandler.getCommentsRecyclerAdapter().notifyDataSetChanged();

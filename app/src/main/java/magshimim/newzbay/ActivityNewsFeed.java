@@ -256,6 +256,28 @@ public class ActivityNewsFeed extends AppCompatActivity
         }
         else //Double click on back in order to close application
         {
+            categoriesHandler.setCurrentlyInUseCategoryServer("");
+            categoriesHandler.setCurrentlyInUseCategory("");
+            categoriesHandler.getCurrentlyInUse().clear();
+            categoriesHandler.getArticlesRecyclerAdapter().notifyDataSetChanged();
+            for (int i = 0; i <= toolbarMain.getChildCount(); i++)
+            {
+                View v = toolbarMain.getChildAt(i);
+                if (v != null)
+                {
+                    if (v instanceof TextView)
+                    {
+                        try
+                        {
+                            ((TextView) v).setText(categoriesHandler.getCurrentlyInUseCategory(user));
+                        }
+                        catch (NullPointerException e)
+                        {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            }
             if (doubleBackToExitPressedOnce)
             {
                 super.onBackPressed();
@@ -467,5 +489,23 @@ public class ActivityNewsFeed extends AppCompatActivity
     {
         super.onResume();
         changeTheme();
+        for (int i = 0; i <= toolbarMain.getChildCount(); i++)
+        {
+            View v = toolbarMain.getChildAt(i);
+            if (v != null)
+            {
+                if (v instanceof TextView)
+                {
+                    try
+                    {
+                        ((TextView) v).setText(categoriesHandler.getCurrentlyInUseCategory(user));
+                    }
+                    catch (NullPointerException e)
+                    {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
     }
 }

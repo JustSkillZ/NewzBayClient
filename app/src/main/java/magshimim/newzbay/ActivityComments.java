@@ -143,6 +143,8 @@ public class ActivityComments extends AppCompatActivity implements EmojiconGridF
         globalClass.getCommunication().clientSend("120◘" + commentsHandler.getArticle().getUrl() + "#");
         //*****************************************************************************************************************
 
+        commentsHandler.setCommentActivity(this);
+
         if(!globalClass.getUser().getConnectedVia().equals("Guest"))
         {
             ((Button) findViewById(R.id.btn_sendComment)).setOnClickListener(new View.OnClickListener()
@@ -173,7 +175,7 @@ public class ActivityComments extends AppCompatActivity implements EmojiconGridF
         if (!commentText.getText().toString().equals(""))
         {
             globalClass.getCommunication().clientSend("122◘" + commentsHandler.getArticle().getUrl() + "○" + commentText.getText().toString() + "#");
-            commentsHandler.getCommentsOfCurrentArticle().addElement(new Comment(user.getFullName(), user.getPicURL(), commentText.getText().toString(), true));
+            commentsHandler.getCommentsOfCurrentArticle().addElement(new Comment(user.getFullName(), user.getPicURL(), commentText.getText().toString(), true, "-1"));
             commentsRecyclerAdapter.notifyDataSetChanged();
             commentText.setText("");
             commentsHandler.getArticle().incNumberOfComments();
@@ -199,6 +201,7 @@ public class ActivityComments extends AppCompatActivity implements EmojiconGridF
     protected void onStop()
     {
         commentsHandler.getCommentsOfCurrentArticle().clear();
+        commentsHandler.setCommentActivity(null);
         super.onStop();
     }
 

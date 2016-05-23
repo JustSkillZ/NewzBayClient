@@ -2,17 +2,19 @@ package magshimim.newzbay;
 
 public class Comment
 {
+    private String id;
     private String username;
     private String profilePicURL;
     private String commentText;
     private Boolean clientComment;
 
-    public Comment(String username, String profilePicURL, String commentText, Boolean clientComment)
+    public Comment(String username, String profilePicURL, String commentText, Boolean clientComment, String id)
     {
         this.username = username;
         this.profilePicURL = profilePicURL;
         this.commentText = commentText;
         this.clientComment = clientComment;
+        this.id = id;
     }
 
     public String getUsername()
@@ -33,5 +35,15 @@ public class Comment
     public Boolean getClientComment()
     {
         return clientComment;
+    }
+
+    public String getId()
+    {
+        return id;
+    }
+
+    public void setId(String id)
+    {
+        this.id = id;
     }
 }

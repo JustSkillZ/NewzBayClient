@@ -52,6 +52,10 @@ public class ActivityPriority extends AppCompatActivity
             public void onClick(View v)
             {
                 finish();
+                ((GlobalClass) getApplicationContext()).getCategoriesHandler().setCurrentlyInUseCategoryServer("");
+                ((GlobalClass) getApplicationContext()).getCategoriesHandler().setCurrentlyInUseCategory("");
+                ((GlobalClass) getApplicationContext()).getCategoriesHandler().getCurrentlyInUse().clear();
+                ((GlobalClass) getApplicationContext()).getCategoriesHandler().getArticlesRecyclerAdapter().notifyDataSetChanged();
             }
         });
     }
@@ -61,5 +65,15 @@ public class ActivityPriority extends AppCompatActivity
         ((GlobalClass) getApplicationContext()).getPriorityHandler().setCurrentPrioritySubject(v.getContentDescription().toString());
         Intent priority = new Intent(this, ActivityChoosePriority.class);
         startActivity(priority);
+    }
+
+    @Override
+    public void onBackPressed()
+    {
+        ((GlobalClass) getApplicationContext()).getCategoriesHandler().setCurrentlyInUseCategoryServer("");
+        ((GlobalClass) getApplicationContext()).getCategoriesHandler().setCurrentlyInUseCategory("");
+        ((GlobalClass) getApplicationContext()).getCategoriesHandler().getCurrentlyInUse().clear();
+        ((GlobalClass) getApplicationContext()).getCategoriesHandler().getArticlesRecyclerAdapter().notifyDataSetChanged();
+        super.onBackPressed();
     }
 }

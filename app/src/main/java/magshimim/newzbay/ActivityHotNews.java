@@ -57,6 +57,10 @@ public class ActivityHotNews extends AppCompatActivity
         ((GlobalClass) getApplicationContext()).getCategoriesHandler().getCurrentlyInUse().clear();
         ((GlobalClass) getApplicationContext()).getCategoriesHandler().getHotNewsPageAdapter().notifyDataSetChanged();
         ((GlobalClass) getApplicationContext()).getCategoriesHandler().setHotNewsPageAdapter(null);
+        ((GlobalClass) getApplicationContext()).getCategoriesHandler().setCurrentlyInUseCategoryServer("");
+        ((GlobalClass) getApplicationContext()).getCategoriesHandler().setCurrentlyInUseCategory("");
+        ((GlobalClass) getApplicationContext()).getCategoriesHandler().getCurrentlyInUse().clear();
+        ((GlobalClass) getApplicationContext()).getCategoriesHandler().getArticlesRecyclerAdapter().notifyDataSetChanged();
         super.onBackPressed();
     }
 

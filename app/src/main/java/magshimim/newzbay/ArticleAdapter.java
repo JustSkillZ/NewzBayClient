@@ -98,14 +98,14 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
                             like.setTextColor(globalClass.getResources().getColor(R.color.grey));
                             categoriesHandler.getCurrentlyInUse().get(tempPosition).setLiked(false);
                             categoriesHandler.getCurrentlyInUse().get(tempPosition).decNumberOfLikes();
-                            communication.clientSend("110○" + categoriesHandler.getCurrentlyInUse().get(tempPosition).getUrl() + "#");
+                            communication.send("110○" + categoriesHandler.getCurrentlyInUse().get(tempPosition).getUrl() + "#");
                         }
                         else //Like
                         {
                             like.setTextColor(globalClass.getResources().getColor(R.color.nb));
                             categoriesHandler.getCurrentlyInUse().get(tempPosition).setLiked(true);
                             categoriesHandler.getCurrentlyInUse().get(tempPosition).incNumberOfLikes();
-                            communication.clientSend("110○" + categoriesHandler.getCurrentlyInUse().get(tempPosition).getUrl() + "#");
+                            communication.send("110○" + categoriesHandler.getCurrentlyInUse().get(tempPosition).getUrl() + "#");
                         }
                         float numOfLikes = Integer.parseInt(String.valueOf(categoriesHandler.getCurrentlyInUse().get(tempPosition).getNumberOfLikes()));
                         if (numOfLikes >= 1000) //Nice format, if there is more than 1000 likes. Example: (1.5k)

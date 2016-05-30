@@ -1,12 +1,12 @@
 package magshimim.newzbay;
 
-public class CategorySite
+public class RSS
 {
     private String id;
     private String subject;
     private String site;
 
-    public CategorySite(String id, String subject, String site)
+    public RSS(String id, String subject, String site)
     {
         this.id = id;
         this.subject = subject;

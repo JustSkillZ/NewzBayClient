@@ -37,7 +37,7 @@ public class ActivityChoosePriority extends AppCompatActivity implements PopupMe
         priorityHandler = globalClass.getPriorityHandler();
         priorityHandler.getRemovedSitesOfCurrentSubject().clear();
         priorityHandler.getClientPriority().clear();
-        globalClass.getCommunication().clientSend("128◘" + priorityHandler.getCurrentPrioritySubject() + "#");
+        globalClass.getCommunication().send("128◘" + priorityHandler.getCurrentPrioritySubject() + "#");
         TextView subject = (TextView) findViewById(R.id.tv_subject);
         subject.setText(priorityHandler.getSubjects().get(priorityHandler.getCurrentPrioritySubject()));
         Time now = new Time();
@@ -71,17 +71,17 @@ public class ActivityChoosePriority extends AppCompatActivity implements PopupMe
 
     public void sendPriority(View v)
     {
-        globalClass.getCommunication().clientSend("194◘" + priorityHandler.getCurrentPrioritySubject() + "#"); //Delete previous priority in current subject
+        globalClass.getCommunication().send("194◘" + priorityHandler.getCurrentPrioritySubject() + "#"); //Delete previous priority in current subject
         String priority = "104◘";
         for (int i = 0; i < priorityHandler.getClientPriority().size(); i++) //Make the priority string
         {
-            for (int j = 0; j < priorityHandler.getCategorySites().size(); j++)
+            for (int j = 0; j < priorityHandler.getRssSites().size(); j++)
             {
-                if (priorityHandler.getCategorySites().get(j).getSubject().equals(priorityHandler.getCurrentPrioritySubject())) //Get the id of each site that in user's priority
+                if (priorityHandler.getRssSites().get(j).getSubject().equals(priorityHandler.getCurrentPrioritySubject())) //Get the id of each site that in user's priority
                 {
-                    if (priorityHandler.getCategorySites().get(j).getSite().equals(priorityHandler.getClientPriority().get(i)))
+                    if (priorityHandler.getRssSites().get(j).getSite().equals(priorityHandler.getClientPriority().get(i)))
                     {
-                        priority = priority + priorityHandler.getCategorySites().get(j).getId() + "○" + (i + 1) + "◘";
+                        priority = priority + priorityHandler.getRssSites().get(j).getId() + "○" + (i + 1) + "◘";
                     }
                 }
             }
@@ -90,7 +90,7 @@ public class ActivityChoosePriority extends AppCompatActivity implements PopupMe
         priority = priority + "#";
         if (priorityHandler.getClientPriority().size() != 0) //If the priority has sites
         {
-            globalClass.getCommunication().clientSend(priority);
+            globalClass.getCommunication().send(priority);
         }
         finish();
     }

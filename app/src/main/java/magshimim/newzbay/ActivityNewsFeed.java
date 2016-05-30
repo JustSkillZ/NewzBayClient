@@ -88,25 +88,7 @@ public class ActivityNewsFeed extends AppCompatActivity
         toolbarMain = (android.support.v7.widget.Toolbar) findViewById(R.id.toolbar_main);
         setSupportActionBar(toolbarMain);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
-
-        for (int i = 0; i <= toolbarMain.getChildCount(); i++)
-        {
-            View v = toolbarMain.getChildAt(i);
-            if (v != null)
-            {
-                if (v instanceof TextView)
-                {
-                    try
-                    {
-                        ((TextView) v).setText(categoriesHandler.getCurrentlyInUseCategory(user));
-                    }
-                    catch (NullPointerException e)
-                    {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        }
+        updateToolbarTitle();
         //******************************************************************************************
 
         //**************************Init RecyclerView of Articles***********************************
@@ -133,7 +115,7 @@ public class ActivityNewsFeed extends AppCompatActivity
                         if (!categoriesHandler.isLoading()) //If not asking, ask for more articles from current subject
                         {
                             categoriesHandler.setLoading(true);
-                            globalClass.getCommunication().clientSend("118○" + categoriesHandler.getCurrentlyInUseCategoryServer() + "○" + categoriesHandler.getCurrentlyInUse().lastElement().getUrl() + "#");
+                            globalClass.getCommunication().send("118○" + categoriesHandler.getCurrentlyInUseCategoryServer() + "○" + categoriesHandler.getCurrentlyInUse().lastElement().getUrl() + "#");
                             findViewById(R.id.pb_loadingArticles).setVisibility(View.VISIBLE);
                         }
                     }
@@ -304,7 +286,7 @@ public class ActivityNewsFeed extends AppCompatActivity
         if (id == R.id.nav_hot_news)
         {
             categoriesHandler.getCurrentlyInUse().clear();
-            globalClass.getCommunication().clientSend("126#");
+            globalClass.getCommunication().send("126#");
             Intent intent = new Intent(this, ActivityHotNews.class);
             startActivity(intent);
         }
@@ -384,20 +366,13 @@ public class ActivityNewsFeed extends AppCompatActivity
             {
                 LoginManager.getInstance().logOut();
             }
-            globalClass.getCommunication().clientSend("500#"); //Disconnect from the server
+            globalClass.getCommunication().send("500#"); //Disconnect from the server
             globalClass.endClass();
             Intent intent = new Intent(this, ActivityEntrance.class);
             startActivity(intent);
             finish();
         }
-        for (int i = 0; i <= toolbarMain.getChildCount(); i++)
-        {
-            View v = toolbarMain.getChildAt(i);
-            if (v instanceof TextView)
-            {
-                ((TextView) v).setText(categoriesHandler.getCurrentlyInUseCategory(user));
-            }
-        }
+        updateToolbarTitle();
         categoriesHandler.setLoading(false);
         drawer.closeDrawer(GravityCompat.START);
         return true;
@@ -457,7 +432,7 @@ public class ActivityNewsFeed extends AppCompatActivity
 
     private void updateArticles()
     {
-        globalClass.getCommunication().clientSend("114○" + categoriesHandler.getCurrentlyInUseCategoryServer() + "#");
+        globalClass.getCommunication().send("114○" + categoriesHandler.getCurrentlyInUseCategoryServer() + "#");
         findViewById(R.id.pb_loadingArticles).setVisibility(View.VISIBLE);
         categoriesHandler.setCurrentlyInUseCategory(categoriesHandler.getCurrentCategoryID(), this);
         recyclerLayoutManager.scrollToPositionWithOffset(0, 0);
@@ -465,7 +440,7 @@ public class ActivityNewsFeed extends AppCompatActivity
 
     private void changeCategory(int categoryID)
     {
-        globalClass.getCommunication().clientSend("114○" + categoriesHandler.getCategoriesForServer().get(categoryID) + "#");
+        globalClass.getCommunication().send("114○" + categoriesHandler.getCategoriesForServer().get(categoryID) + "#");
         findViewById(R.id.pb_loadingArticles).setVisibility(View.VISIBLE);
         categoriesHandler.setCurrentlyInUseCategory(categoryID, this);
         recyclerLayoutManager.scrollToPositionWithOffset(0, 0);
@@ -484,11 +459,8 @@ public class ActivityNewsFeed extends AppCompatActivity
         }
     }
 
-    @Override
-    protected void onResume()
+    public void updateToolbarTitle()
     {
-        super.onResume();
-        changeTheme();
         for (int i = 0; i <= toolbarMain.getChildCount(); i++)
         {
             View v = toolbarMain.getChildAt(i);
@@ -507,5 +479,13 @@ public class ActivityNewsFeed extends AppCompatActivity
                 }
             }
         }
+    }
+
+    @Override
+    protected void onResume()
+    {
+        super.onResume();
+        changeTheme();
+        updateToolbarTitle();
     }
 }

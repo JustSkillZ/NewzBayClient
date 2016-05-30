@@ -180,14 +180,14 @@ public class ActivityHotNews extends AppCompatActivity
                                 Picasso.with(getContext()).load(R.drawable.like_hot_article).into(like);
                                 hotNews.get(getArguments().getInt("NB")).setLiked(false);
                                 hotNews.get(getArguments().getInt("NB")).decNumberOfLikes();
-                                globalClass.getCommunication().clientSend("110○" + globalClass.getCategoriesHandler().getCurrentlyInUse().get(getArguments().getInt("NB")).getUrl() + "#");
+                                globalClass.getCommunication().send("110○" + globalClass.getCategoriesHandler().getCurrentlyInUse().get(getArguments().getInt("NB")).getUrl() + "#");
                             }
                             else //Like
                             {
                                 Picasso.with(getContext()).load(R.drawable.hot_article_liked).into(like);
                                 hotNews.get(getArguments().getInt("NB")).setLiked(true);
                                 hotNews.get(getArguments().getInt("NB")).incNumberOfLikes();
-                                globalClass.getCommunication().clientSend("110○" + globalClass.getCategoriesHandler().getCurrentlyInUse().get(getArguments().getInt("NB")).getUrl() + "#");
+                                globalClass.getCommunication().send("110○" + globalClass.getCategoriesHandler().getCurrentlyInUse().get(getArguments().getInt("NB")).getUrl() + "#");
                             }
                             float numOfLikes = Integer.parseInt(String.valueOf(hotNews.get(getArguments().getInt("NB")).getNumberOfLikes()));
                             if (numOfLikes >= 1000) //Nice format, if there is more than 1000 likes. Example: (1.5k)

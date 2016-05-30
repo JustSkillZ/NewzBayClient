@@ -23,16 +23,25 @@ import java.util.Date;
 
 public class Communication implements Runnable
 {
-    private ClientRead clientRead;
     private GlobalClass globalClass;
     private Socket socket;
     private String serverIP;
     private int dstport;
     private boolean userConnected;
+    private PrintWriter out;
+    private BufferedReader in;
+    private CategoriesHandler categoriesHandler;
+    private CommentsHandler commentsHandler;
+    private PriorityHandler priorityHandler;
+    private AESEncryption aesEncryption;
 
     public Communication(GlobalClass globalClass)
     {
         this.globalClass = globalClass;
+        categoriesHandler = globalClass.getCategoriesHandler();
+        priorityHandler = globalClass.getPriorityHandler();
+        commentsHandler = globalClass.getCommentsHandler();
+        aesEncryption = new AESEncryption();
     }
 
     @Override
@@ -101,11 +110,35 @@ public class Communication implements Runnable
                     {
                         ((ActivityEntrance) globalClass.getCurrentActivity()).connectToSocialNets();
                     }
-                    clientRead = new ClientRead(socket, globalClass, userConnected); //Open read from server thread
-                    Thread t = new Thread(clientRead);
-                    t.start();
                 }
             });
+            try
+            {
+                out = new PrintWriter(socket.getOutputStream());
+                in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            }
+            catch (IOException e)
+            {
+                Log.d("check", "IO Error/ Client terminated abruptly");
+            }
+            catch (NullPointerException e)
+            {
+                Log.d("check", "Client Closed");
+            }
+            out.println("404◘" + aesEncryption.getAesKey() + "##"); //Get AES Encryption key, and send it to NB server
+            out.flush();
+            try
+            {
+                if (in.readLine().equals("405#")) //When server returns 405, connect officially to the server
+                {
+                    send("100#"); //First message with encryption. Its like an ID that the user uses NB legal application
+                    read(); //Loop of reading messages
+                }
+            }
+            catch (IOException e)
+            {
+                e.printStackTrace();
+            }
         }
         catch (IOException e) //No connection to server
         {
@@ -138,76 +171,10 @@ public class Communication implements Runnable
         }
     }
 
-    public void clientSend(String str)
-    {
-        if (clientRead != null)
-        {
-            clientRead.send(str);
-        }
-    }
-}
-
-class ClientRead extends Thread
-{
-    private Socket socket;
-    private PrintWriter out;
-    private BufferedReader in;
-    private GlobalClass globalClass;
-    private CategoriesHandler categoriesHandler;
-    private CommentsHandler commentsHandler;
-    private PriorityHandler priorityHandler;
-    private AESEncryption aesEncryption;
-    private boolean userConnected;
-
-    public ClientRead(Socket socket, GlobalClass globalClass, boolean userConnected)
-    {
-        this.socket = socket;
-        this.globalClass = globalClass;
-        categoriesHandler = globalClass.getCategoriesHandler();
-        priorityHandler = globalClass.getPriorityHandler();
-        commentsHandler = globalClass.getCommentsHandler();
-        aesEncryption = new AESEncryption();
-        this.userConnected = userConnected;
-    }
-
-    @Override
-    public void run()
-    {
-        try
-        {
-            out = new PrintWriter(socket.getOutputStream());
-            in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-        }
-        catch (IOException e)
-        {
-            Log.d("check", "IO Error/ Client terminated abruptly");
-        }
-        catch (NullPointerException e)
-        {
-            Log.d("check", "Client Closed");
-        }
-        out.println("404◘" + aesEncryption.getAesKey() + "##"); //Get AES Encryption key, and send it to NB server
-        out.flush();
-        try
-        {
-            if (in.readLine().equals("405#")) //When server returns 405, connect officially to the server
-            {
-                send("100#"); //First message with encryption. Its like an ID that the user uses NB legal application
-                read(); //Loop of reading messages
-            }
-        }
-        catch (IOException e)
-        {
-            e.printStackTrace();
-        }
-        read();
-    }
-
     public void read()
     {
         try
         {
-
             String line = "";
             do
             {
@@ -263,7 +230,7 @@ class ClientRead extends Thread
                             temp = temp.substring(temp.indexOf("○") + 1);
                             site = temp;
                             line = line.substring(line.indexOf("◘") + 1);
-                            priorityHandler.getCategorySites().add(new CategorySite(id, subject, site));
+                            priorityHandler.getRssSites().add(new RSS(id, subject, site));
                         }
                     }
                     else if (line.contains("115◘") || line.contains("127◘")) //Client got articles from a category. 127 is hot news.
@@ -313,11 +280,11 @@ class ClientRead extends Thread
                                 {
                                     e.printStackTrace();
                                 }
-                                for (int i = 0; i < priorityHandler.getCategorySites().size(); i++)
+                                for (int i = 0; i < priorityHandler.getRssSites().size(); i++)
                                 {
-                                    if (priorityHandler.getCategorySites().get(i).getId().equals(id))
+                                    if (priorityHandler.getRssSites().get(i).getId().equals(id))
                                     {
-                                        siteName = priorityHandler.getCategorySites().get(i).getSite();
+                                        siteName = priorityHandler.getRssSites().get(i).getSite();
                                     }
                                 }
                                 Article article = new Article(categoriesHandler.getCurrentlyInUseCategory(globalClass.getUser()), mainHeadLine, secondHeadLine, imgURL, dates, siteName, url, Integer.parseInt(likes), Integer.parseInt(comments), liked, globalClass);
@@ -378,14 +345,7 @@ class ClientRead extends Thread
                                 temp = temp.substring(temp.indexOf("○") + 1);
                                 comments = temp.substring(0, temp.indexOf("○"));
                                 temp = temp.substring(temp.indexOf("○") + 1);
-                                if ((Integer.parseInt(temp)) == 1)
-                                {
-                                    liked = true;
-                                }
-                                else
-                                {
-                                    liked = false;
-                                }
+                                liked = (Integer.parseInt(temp)) == 1;
                                 line = line.substring(line.indexOf("◘") + 1);
                                 SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                                 Date dates = null;
@@ -401,11 +361,11 @@ class ClientRead extends Thread
                                 {
                                     e.printStackTrace();
                                 }
-                                for (int i = 0; i < priorityHandler.getCategorySites().size(); i++)
+                                for (int i = 0; i < priorityHandler.getRssSites().size(); i++)
                                 {
-                                    if (priorityHandler.getCategorySites().get(i).getId().equals(id))
+                                    if (priorityHandler.getRssSites().get(i).getId().equals(id))
                                     {
-                                        siteName = priorityHandler.getCategorySites().get(i).getSite();
+                                        siteName = priorityHandler.getRssSites().get(i).getSite();
                                     }
                                 }
                                 Article article = new Article(categoriesHandler.getCurrentlyInUseCategory(globalClass.getUser()), mainHeadLine, secondHeadLine, imgURL, dates, siteName, url, Integer.parseInt(likes), Integer.parseInt(comments), liked, globalClass);
@@ -445,7 +405,7 @@ class ClientRead extends Thread
                                 temp = temp.substring((temp.indexOf("○") + 1));
                                 picURL = temp.substring(0, temp.indexOf("○"));
                                 temp = temp.substring(temp.indexOf("○") + 1);
-                                if(temp.indexOf("►") != -1)
+                                if(temp.contains("►"))
                                 {
                                     id = temp.substring(temp.indexOf("►") + 1);
                                     temp = temp.substring(0, temp.indexOf("►"));

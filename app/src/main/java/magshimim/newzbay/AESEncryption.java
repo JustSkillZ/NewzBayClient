@@ -13,6 +13,8 @@ public class AESEncryption
 {
 
     private String encryptionKey;
+    private Cipher cipherDecrypt;
+    private Cipher cipherEncrypt;
 
     public AESEncryption()
     {
@@ -24,8 +26,10 @@ public class AESEncryption
             SecretKey secretKey = keyGen.generateKey();
             this.encryptionKey = secretKeyToString(secretKey);
             this.encryptionKey = this.encryptionKey.substring(0, encryptionKey.length() - 1);
+            cipherDecrypt  = getCipher(Cipher.DECRYPT_MODE);
+            cipherEncrypt = getCipher(Cipher.ENCRYPT_MODE);
         }
-        catch (NoSuchAlgorithmException e)
+        catch (Exception e)
         {
             e.printStackTrace();
         }
@@ -39,8 +43,7 @@ public class AESEncryption
      */
     public String encrypt(String plainText) throws Exception
     {
-        Cipher cipher = getCipher(Cipher.ENCRYPT_MODE);
-        byte[] encryptedBytes = cipher.doFinal(plainText.getBytes("UTF-8"));
+        byte[] encryptedBytes = cipherEncrypt.doFinal(plainText.getBytes("UTF-8"));
         return Base64.encodeToString(encryptedBytes, Base64.DEFAULT);
     }
 
@@ -52,8 +55,7 @@ public class AESEncryption
      */
     public String decrypt(String encrypted) throws Exception
     {
-        Cipher cipher = getCipher(Cipher.DECRYPT_MODE);
-        byte[] plainBytes = cipher.doFinal(Base64.decode(encrypted, Base64.DEFAULT));
+        byte[] plainBytes = cipherDecrypt.doFinal(Base64.decode(encrypted, Base64.DEFAULT));
         return new String(plainBytes);
     }
 

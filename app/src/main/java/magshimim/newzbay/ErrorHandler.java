@@ -8,8 +8,8 @@ import android.widget.PopupWindow;
 
 public class ErrorHandler
 {
-    private PopupWindow noConnectionWithServer;
-    private View popupWindowViewNoConnectionWithServer;
+    private PopupWindow noConnectionWithServer; //PopupWindow
+    private View popupWindowViewNoConnectionWithServer; //View to present
     private String ConnectingClientMsg;
     private String lastMsgToServer;
     private GlobalClass globalClass;
@@ -18,6 +18,7 @@ public class ErrorHandler
     public ErrorHandler(GlobalClass globalClass)
     {
         noConnectionWithServer = null;
+        ConnectingClientMsg = "";
         this.globalClass = globalClass;
     }
 

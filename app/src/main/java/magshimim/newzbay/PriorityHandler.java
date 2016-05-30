@@ -7,7 +7,7 @@ import java.util.Vector;
 
 public class PriorityHandler
 {
-    private Vector<CategorySite> categorySites;
+    private Vector<RSS> rssSites;
     private String currentPrioritySubject;
     private Vector<String> sitesOfCurrentSubject;
     private Vector<String> clientPriority;
@@ -28,7 +28,7 @@ public class PriorityHandler
 
     public PriorityHandler()
     {
-        categorySites = new Vector<>();
+        rssSites = new Vector<>();
         sitesOfCurrentSubject = new Vector<>();
         removedSitesOfCurrentSubject = new Vector<>();
     }
@@ -38,9 +38,9 @@ public class PriorityHandler
         return Subjects;
     }
 
-    public Vector<CategorySite> getCategorySites()
+    public Vector<RSS> getRssSites()
     {
-        return categorySites;
+        return rssSites;
     }
 
     public String getCurrentPrioritySubject()
@@ -52,11 +52,11 @@ public class PriorityHandler
     {
         this.currentPrioritySubject = currentPrioritySubject;
         sitesOfCurrentSubject.clear();
-        for (int i = 0; i < categorySites.size(); i++)
+        for (int i = 0; i < rssSites.size(); i++)
         {
-            if (categorySites.get(i).getSubject().equals(currentPrioritySubject))
+            if (rssSites.get(i).getSubject().equals(currentPrioritySubject))
             {
-                sitesOfCurrentSubject.add(categorySites.get(i).getSite());
+                sitesOfCurrentSubject.add(rssSites.get(i).getSite());
             }
         }
         clientPriority = new Vector<>(sitesOfCurrentSubject);
@@ -84,20 +84,20 @@ public class PriorityHandler
 
     public void createRemovedSitesList()
     {
-        for(int i = 0; i < categorySites.size(); i++) //Put all sites from current category
+        for(int i = 0; i < rssSites.size(); i++) //Put all sites from current category
         {
-            if (categorySites.get(i).getSubject().equals(currentPrioritySubject))
+            if (rssSites.get(i).getSubject().equals(currentPrioritySubject))
             {
-                removedSitesOfCurrentSubject.add(categorySites.get(i).getSite());
+                removedSitesOfCurrentSubject.add(rssSites.get(i).getSite());
             }
         }
-        for (int i = 0; i < categorySites.size(); i++) //Delete from removedSites the sites that exist in client's priority
+        for (int i = 0; i < rssSites.size(); i++) //Delete from removedSites the sites that exist in client's priority
         {
-            if (categorySites.get(i).getSubject().equals(currentPrioritySubject))
+            if (rssSites.get(i).getSubject().equals(currentPrioritySubject))
             {
                 for(int j = 0; j < clientPriority.size(); j++)
                 {
-                    if (categorySites.get(i).getSite().equals(clientPriority.get(j)))
+                    if (rssSites.get(i).getSite().equals(clientPriority.get(j)))
                     {
                         removedSitesOfCurrentSubject.remove(clientPriority.get(j));
                     }

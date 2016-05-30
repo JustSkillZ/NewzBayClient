@@ -140,7 +140,7 @@ public class ActivityComments extends AppCompatActivity implements EmojiconGridF
         commentsRecyclerAdapter = new CommentsAdapter(globalClass, ActivityComments.this);
         commentsHandler.setCommentsRecyclerAdapter(commentsRecyclerAdapter);
         recyclerViewComments.setAdapter(commentsRecyclerAdapter);
-        globalClass.getCommunication().clientSend("120◘" + commentsHandler.getArticle().getUrl() + "#");
+        globalClass.getCommunication().send("120◘" + commentsHandler.getArticle().getUrl() + "#");
         //*****************************************************************************************************************
 
         commentsHandler.setCommentActivity(this);
@@ -174,7 +174,7 @@ public class ActivityComments extends AppCompatActivity implements EmojiconGridF
     {
         if (!commentText.getText().toString().equals(""))
         {
-            globalClass.getCommunication().clientSend("122◘" + commentsHandler.getArticle().getUrl() + "○" + commentText.getText().toString() + "#");
+            globalClass.getCommunication().send("122◘" + commentsHandler.getArticle().getUrl() + "○" + commentText.getText().toString() + "#");
             commentsHandler.getCommentsOfCurrentArticle().addElement(new Comment(user.getFullName(), user.getPicURL(), commentText.getText().toString(), true, "-1"));
             commentsRecyclerAdapter.notifyDataSetChanged();
             commentText.setText("");

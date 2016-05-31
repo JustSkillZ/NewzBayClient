@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.facebook.login.widget.LoginButton;
@@ -235,7 +236,10 @@ public class Communication implements Runnable
                     }
                     else if (line.contains("115◘") || line.contains("127◘")) //Client got articles from a category. 127 is hot news.
                     {
-                        if (!line.equals("115◘#")) //If empty don't parse line
+                        boolean hotNews = line.contains("127◘");
+                        categoriesHandler.getCurrentlyInUse().clear();
+                        categoriesHandler.getHotNewsArticles().clear();
+                        if (!line.equals("115◘#") && !line.equals("127◘#")) //If empty don't parse line
                         {
                             line = line.substring(line.indexOf("◘") + 1);
                             categoriesHandler.getCurrentlyInUse().clear();
@@ -288,21 +292,42 @@ public class Communication implements Runnable
                                     }
                                 }
                                 Article article = new Article(categoriesHandler.getCurrentlyInUseCategory(globalClass.getUser()), mainHeadLine, secondHeadLine, imgURL, dates, siteName, url, Integer.parseInt(likes), Integer.parseInt(comments), liked, globalClass);
-                                categoriesHandler.getCurrentlyInUse().add(article);
-                            }
-                            ((Activity) globalClass.getCurrentActivity()).runOnUiThread(new Runnable()
-                            {
-                                @Override
-                                public void run()
+                                if(hotNews)
                                 {
-                                    if (categoriesHandler.getHotNewsPageAdapter() != null)
-                                    {
-                                        categoriesHandler.getHotNewsPageAdapter().notifyDataSetChanged();
-                                    }
-                                    categoriesHandler.getArticlesRecyclerAdapter().notifyDataSetChanged();
-                                    ((Activity) globalClass.getCurrentActivity()).findViewById(R.id.pb_loadingArticles).setVisibility(View.INVISIBLE);
+                                    categoriesHandler.getHotNewsArticles().add(article);
                                 }
-                            });
+                                else
+                                {
+                                    categoriesHandler.getCurrentlyInUse().add(article);
+                                }
+                                if(hotNews && categoriesHandler.getHotNewsPageAdapter() != null)
+                                {
+                                    ((Activity) globalClass.getCurrentActivity()).runOnUiThread(new Runnable()
+                                    {
+                                        @Override
+                                        public void run()
+                                        {
+                                            categoriesHandler.getHotNewsPageAdapter().notifyDataSetChanged();
+                                        }
+                                    });
+                                }
+                                else
+                                {
+                                    ((Activity) globalClass.getCurrentActivity()).runOnUiThread(new Runnable()
+                                    {
+                                        @Override
+                                        public void run()
+                                        {
+                                            categoriesHandler.getArticlesRecyclerAdapter().notifyDataSetChanged();
+                                            ProgressBar pb = (ProgressBar) ((Activity) globalClass.getCurrentActivity()).findViewById(R.id.pb_loadingArticles);
+                                            if(pb != null)
+                                            {
+                                                pb.setVisibility(View.INVISIBLE);
+                                            }
+                                        }
+                                    });
+                                }
+                            }
                         }
                         else
                         {
@@ -314,7 +339,11 @@ public class Communication implements Runnable
                                     categoriesHandler.getCurrentlyInUse().clear();
                                     categoriesHandler.getArticlesRecyclerAdapter().notifyDataSetChanged();
                                     Toast.makeText(globalClass.getCurrentActivity(), "לא ביצעת העדפה בנושא זה", Toast.LENGTH_LONG).show();
-                                    ((Activity) globalClass.getCurrentActivity()).findViewById(R.id.pb_loadingArticles).setVisibility(View.INVISIBLE);
+                                    ProgressBar pb = (ProgressBar) ((Activity) globalClass.getCurrentActivity()).findViewById(R.id.pb_loadingArticles);
+                                    if(pb != null)
+                                    {
+                                        pb.setVisibility(View.INVISIBLE);
+                                    }
                                 }
                             });
                         }
@@ -386,7 +415,11 @@ public class Communication implements Runnable
                             @Override
                             public void run()
                             {
-                                ((Activity) globalClass.getCurrentActivity()).findViewById(R.id.pb_loadingArticles).setVisibility(View.INVISIBLE);
+                                ProgressBar pb = (ProgressBar) ((Activity) globalClass.getCurrentActivity()).findViewById(R.id.pb_loadingArticles);
+                                if(pb != null)
+                                {
+                                    pb.setVisibility(View.INVISIBLE);
+                                }
                             }
                         });
                     }

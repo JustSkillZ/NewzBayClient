@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.text.format.DateUtils;
@@ -48,13 +49,14 @@ public class ActivityHotNews extends AppCompatActivity
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
+        ((GlobalClass) getApplicationContext()).setCurrentActivity(ActivityHotNews.this);
         ((GlobalClass) getApplicationContext()).getCategoriesHandler().setHotNewsPageAdapter(mSectionsPagerAdapter); //Save adapter in order to notify on change in another thread
     }
 
     @Override
     public void onBackPressed()
     {
-        ((GlobalClass) getApplicationContext()).getCategoriesHandler().getCurrentlyInUse().clear();
+        ((GlobalClass) getApplicationContext()).getCategoriesHandler().getHotNewsArticles().clear();
         ((GlobalClass) getApplicationContext()).getCategoriesHandler().getHotNewsPageAdapter().notifyDataSetChanged();
         ((GlobalClass) getApplicationContext()).getCategoriesHandler().setHotNewsPageAdapter(null);
         ((GlobalClass) getApplicationContext()).getCategoriesHandler().setCurrentlyInUseCategoryServer("");
@@ -101,7 +103,7 @@ public class ActivityHotNews extends AppCompatActivity
         {
             //Using Bundle in order to get the position of the item in articles vector. Key - NB | Value: position in the vector
             globalClass = (GlobalClass) getActivity().getApplicationContext();
-            hotNews = globalClass.getCategoriesHandler().getCurrentlyInUse();
+            hotNews = globalClass.getCategoriesHandler().getHotNewsArticles();
             View rootView = inflater.inflate(R.layout.fragment_explore_articles, container, false);
             TextView headline = (TextView) rootView.findViewById(R.id.tv_article_title);
             headline.setText(hotNews.get(getArguments().getInt("NB")).getMainHeadline());
@@ -180,14 +182,14 @@ public class ActivityHotNews extends AppCompatActivity
                                 Picasso.with(getContext()).load(R.drawable.like_hot_article).into(like);
                                 hotNews.get(getArguments().getInt("NB")).setLiked(false);
                                 hotNews.get(getArguments().getInt("NB")).decNumberOfLikes();
-                                globalClass.getCommunication().send("110○" + globalClass.getCategoriesHandler().getCurrentlyInUse().get(getArguments().getInt("NB")).getUrl() + "#");
+                                globalClass.getCommunication().send("110○" + globalClass.getCategoriesHandler().getHotNewsArticles().get(getArguments().getInt("NB")).getUrl() + "#");
                             }
                             else //Like
                             {
                                 Picasso.with(getContext()).load(R.drawable.hot_article_liked).into(like);
                                 hotNews.get(getArguments().getInt("NB")).setLiked(true);
                                 hotNews.get(getArguments().getInt("NB")).incNumberOfLikes();
-                                globalClass.getCommunication().send("110○" + globalClass.getCategoriesHandler().getCurrentlyInUse().get(getArguments().getInt("NB")).getUrl() + "#");
+                                globalClass.getCommunication().send("110○" + globalClass.getCategoriesHandler().getHotNewsArticles().get(getArguments().getInt("NB")).getUrl() + "#");
                             }
                             float numOfLikes = Integer.parseInt(String.valueOf(hotNews.get(getArguments().getInt("NB")).getNumberOfLikes()));
                             if (numOfLikes >= 1000) //Nice format, if there is more than 1000 likes. Example: (1.5k)
@@ -206,11 +208,12 @@ public class ActivityHotNews extends AppCompatActivity
         }
     }
 
+
     /**
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
      * one of the sections/tabs/pages.
      */
-    public class SectionsPagerAdapter extends FragmentPagerAdapter
+    public class SectionsPagerAdapter extends FragmentStatePagerAdapter
     {
 
         private GlobalClass globalClass;
@@ -232,13 +235,18 @@ public class ActivityHotNews extends AppCompatActivity
         @Override
         public int getCount()
         {
-            return globalClass.getCategoriesHandler().getCurrentlyInUse().size();
+            return globalClass.getCategoriesHandler().getHotNewsArticles().size();
         }
 
         @Override
         public CharSequence getPageTitle(int position)
         {
             return null;
+        }
+
+        @Override
+        public int getItemPosition(Object item) {
+            return POSITION_UNCHANGED;
         }
     }
 }

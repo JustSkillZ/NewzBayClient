@@ -485,6 +485,7 @@ public class ActivityNewsFeed extends AppCompatActivity
     protected void onResume()
     {
         super.onResume();
+        globalClass.setCurrentActivity(ActivityNewsFeed.this);
         changeTheme();
         updateToolbarTitle();
     }

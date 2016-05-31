@@ -14,6 +14,7 @@ import java.util.Vector;
 public class CategoriesHandler
 {
     private Vector<Article> currentlyInUse; //Articles of current subject
+    private Vector<Article> hotNewsArticles;
     private String currentlyInUseCategory; //Category to show
     private String currentlyInUseCategoryServer; //Category to server
     private int currentCategoryID;
@@ -30,6 +31,10 @@ public class CategoriesHandler
         if (currentlyInUse == null)
         {
             this.currentlyInUse = new Vector<>();
+        }
+        if (hotNewsArticles == null)
+        {
+            this.hotNewsArticles = new Vector<>();
         }
         else
         {
@@ -193,5 +198,10 @@ public class CategoriesHandler
     public void setCurrentlyInUseCategory(String currentlyInUseCategory)
     {
         this.currentlyInUseCategory = currentlyInUseCategory;
+    }
+
+    public Vector<Article> getHotNewsArticles()
+    {
+        return hotNewsArticles;
     }
 }

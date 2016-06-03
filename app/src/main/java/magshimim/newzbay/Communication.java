@@ -237,95 +237,96 @@ public class Communication implements Runnable
                     else if (line.contains("115◘") || line.contains("127◘")) //Client got articles from a category. 127 is hot news.
                     {
                         boolean hotNews = line.contains("127◘");
-                        categoriesHandler.getCurrentlyInUse().clear();
-                        categoriesHandler.getHotNewsArticles().clear();
                         if (!line.equals("115◘#") && !line.equals("127◘#")) //If empty don't parse line
                         {
                             line = line.substring(line.indexOf("◘") + 1);
                             categoriesHandler.getCurrentlyInUse().clear();
-                            while (line.contains("◘"))
+                            if(!hotNews || categoriesHandler.getHotNewsArticles().size() == 0)
                             {
-                                String id, mainHeadLine, secondHeadLine, date, siteName = "", url, likes, comments, imgURL;
-                                Boolean liked;
-                                String temp = line.substring(0, line.indexOf("◘"));
-                                id = temp.substring(0, temp.indexOf("○"));
-                                temp = temp.substring((temp.indexOf("○") + 1));
-                                mainHeadLine = temp.substring(0, temp.indexOf("○"));
-                                temp = temp.substring((temp.indexOf("○") + 1));
-                                secondHeadLine = temp.substring(0, temp.indexOf("○"));
-                                temp = temp.substring(temp.indexOf("○") + 1);
-                                date = temp.substring(0, temp.indexOf("○"));
-                                temp = temp.substring(temp.indexOf("○") + 1);
-                                url = temp.substring(0, temp.indexOf("○"));
-                                temp = temp.substring(temp.indexOf("○") + 1);
-                                imgURL = temp.substring(0, temp.indexOf("○"));
-                                temp = temp.substring(temp.indexOf("○") + 1);
-                                likes = temp.substring(0, temp.indexOf("○"));
-                                temp = temp.substring(temp.indexOf("○") + 1);
-                                comments = temp.substring(0, temp.indexOf("○"));
-                                temp = temp.substring(temp.indexOf("○") + 1);
-                                if ((Integer.parseInt(temp)) == 1)
+                                while (line.contains("◘"))
                                 {
-                                    liked = true;
-                                }
-                                else
-                                {
-                                    liked = false;
-                                }
-                                line = line.substring(line.indexOf("◘") + 1);
-                                SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                                Date dates = null;
-                                try
-                                {
-                                    dates = formatter.parse(date);
-
-                                }
-                                catch (ParseException e)
-                                {
-                                    e.printStackTrace();
-                                }
-                                for (int i = 0; i < priorityHandler.getRssSites().size(); i++)
-                                {
-                                    if (priorityHandler.getRssSites().get(i).getId().equals(id))
+                                    String id, mainHeadLine, secondHeadLine, date, siteName = "", url, likes, comments, imgURL;
+                                    Boolean liked;
+                                    String temp = line.substring(0, line.indexOf("◘"));
+                                    id = temp.substring(0, temp.indexOf("○"));
+                                    temp = temp.substring((temp.indexOf("○") + 1));
+                                    mainHeadLine = temp.substring(0, temp.indexOf("○"));
+                                    temp = temp.substring((temp.indexOf("○") + 1));
+                                    secondHeadLine = temp.substring(0, temp.indexOf("○"));
+                                    temp = temp.substring(temp.indexOf("○") + 1);
+                                    date = temp.substring(0, temp.indexOf("○"));
+                                    temp = temp.substring(temp.indexOf("○") + 1);
+                                    url = temp.substring(0, temp.indexOf("○"));
+                                    temp = temp.substring(temp.indexOf("○") + 1);
+                                    imgURL = temp.substring(0, temp.indexOf("○"));
+                                    temp = temp.substring(temp.indexOf("○") + 1);
+                                    likes = temp.substring(0, temp.indexOf("○"));
+                                    temp = temp.substring(temp.indexOf("○") + 1);
+                                    comments = temp.substring(0, temp.indexOf("○"));
+                                    temp = temp.substring(temp.indexOf("○") + 1);
+                                    if ((Integer.parseInt(temp)) == 1)
                                     {
-                                        siteName = priorityHandler.getRssSites().get(i).getSite();
+                                        liked = true;
                                     }
-                                }
-                                Article article = new Article(categoriesHandler.getCurrentlyInUseCategory(globalClass.getUser()), mainHeadLine, secondHeadLine, imgURL, dates, siteName, url, Integer.parseInt(likes), Integer.parseInt(comments), liked, globalClass);
-                                if(hotNews)
-                                {
-                                    categoriesHandler.getHotNewsArticles().add(article);
-                                }
-                                else
-                                {
-                                    categoriesHandler.getCurrentlyInUse().add(article);
-                                }
-                                if(hotNews && categoriesHandler.getHotNewsPageAdapter() != null)
-                                {
-                                    ((Activity) globalClass.getCurrentActivity()).runOnUiThread(new Runnable()
+                                    else
                                     {
-                                        @Override
-                                        public void run()
+                                        liked = false;
+                                    }
+                                    line = line.substring(line.indexOf("◘") + 1);
+                                    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                                    Date dates = null;
+                                    try
+                                    {
+                                        dates = formatter.parse(date);
+
+                                    }
+                                    catch (ParseException e)
+                                    {
+                                        e.printStackTrace();
+                                    }
+                                    for (int i = 0; i < priorityHandler.getRssSites().size(); i++)
+                                    {
+                                        if (priorityHandler.getRssSites().get(i).getId().equals(id))
                                         {
-                                            categoriesHandler.getHotNewsPageAdapter().notifyDataSetChanged();
+                                            siteName = priorityHandler.getRssSites().get(i).getSite();
                                         }
-                                    });
-                                }
-                                else
-                                {
-                                    ((Activity) globalClass.getCurrentActivity()).runOnUiThread(new Runnable()
+                                    }
+                                    Article article = new Article(categoriesHandler.getCurrentlyInUseCategory(globalClass.getUser()), mainHeadLine, secondHeadLine, imgURL, dates, siteName, url, Integer.parseInt(likes), Integer.parseInt(comments), liked, globalClass);
+                                    if(hotNews)
                                     {
-                                        @Override
-                                        public void run()
+                                        categoriesHandler.getHotNewsArticles().add(article);
+                                    }
+                                    else
+                                    {
+                                        categoriesHandler.getCurrentlyInUse().add(article);
+                                    }
+                                    if(hotNews && categoriesHandler.getHotNewsPageAdapter() != null)
+                                    {
+                                        ((Activity) globalClass.getCurrentActivity()).runOnUiThread(new Runnable()
                                         {
-                                            categoriesHandler.getArticlesRecyclerAdapter().notifyDataSetChanged();
-                                            ProgressBar pb = (ProgressBar) ((Activity) globalClass.getCurrentActivity()).findViewById(R.id.pb_loadingArticles);
-                                            if(pb != null)
+                                            @Override
+                                            public void run()
                                             {
-                                                pb.setVisibility(View.INVISIBLE);
+                                                categoriesHandler.getHotNewsPageAdapter().notifyDataSetChanged();
                                             }
-                                        }
-                                    });
+                                        });
+                                    }
+                                    else
+                                    {
+                                        ((Activity) globalClass.getCurrentActivity()).runOnUiThread(new Runnable()
+                                        {
+                                            @Override
+                                            public void run()
+                                            {
+                                                categoriesHandler.getArticlesRecyclerAdapter().notifyDataSetChanged();
+                                                ProgressBar pb = (ProgressBar) ((Activity) globalClass.getCurrentActivity()).findViewById(R.id.pb_loadingArticles);
+                                                if(pb != null)
+                                                {
+                                                    pb.setVisibility(View.INVISIBLE);
+                                                }
+                                            }
+                                        });
+                                    }
                                 }
                             }
                         }

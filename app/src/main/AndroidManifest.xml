@@ -54,7 +54,8 @@
             android:theme="@style/Transparent" />
         <activity
             android:name=".ActivityHotNews"
-            android:theme="@style/AppTheme_NoActionBar" />
+            android:theme="@style/AppTheme_NoActionBar"
+            android:configChanges="orientation"/>
         <activity
             android:name=".ActivityInnerWeb"
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"

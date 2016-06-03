@@ -43,7 +43,7 @@ public class ActivityHotNews extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_explore_articles);
+        setContentView(R.layout.activity_hotnews);
         // Create the adapter that will return a fragment for each of the primary sections of the activity.
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
         // Set up the ViewPager with the sections adapter.
@@ -51,6 +51,7 @@ public class ActivityHotNews extends AppCompatActivity
         mViewPager.setAdapter(mSectionsPagerAdapter);
         ((GlobalClass) getApplicationContext()).setCurrentActivity(ActivityHotNews.this);
         ((GlobalClass) getApplicationContext()).getCategoriesHandler().setHotNewsPageAdapter(mSectionsPagerAdapter); //Save adapter in order to notify on change in another thread
+        ((GlobalClass) getApplicationContext()).getCommunication().send("126#");
     }
 
     @Override
@@ -118,7 +119,7 @@ public class ActivityHotNews extends AppCompatActivity
             ImageButton articlePic = (ImageButton) rootView.findViewById(R.id.ib_article_pic);
             if (!hotNews.get(getArguments().getInt("NB")).getPicURL().equals("null")) //If there is a URL, load the pic.
             {
-                Picasso.with(getContext()).load(hotNews.get(getArguments().getInt("NB")).getPicURL()).fit().centerCrop().into(articlePic);
+                Picasso.with(getContext()).load(hotNews.get(getArguments().getInt("NB")).getPicURL()).fit().centerCrop().placeholder(R.drawable.loading_hotnews).into(articlePic);
             }
             else //If there is no URL, set default image.
             {

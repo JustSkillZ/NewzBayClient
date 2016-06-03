@@ -286,7 +286,6 @@ public class ActivityNewsFeed extends AppCompatActivity
         if (id == R.id.nav_hot_news)
         {
             categoriesHandler.getCurrentlyInUse().clear();
-            globalClass.getCommunication().send("126#");
             Intent intent = new Intent(this, ActivityHotNews.class);
             startActivity(intent);
         }

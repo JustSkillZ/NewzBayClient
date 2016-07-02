@@ -245,10 +245,11 @@ public class Communication implements Runnable
                             {
                                 while (line.contains("◘"))
                                 {
-                                    String id, mainHeadLine, secondHeadLine, date, siteName = "", url, likes, comments, imgURL;
+                                    String id, subject = "", mainHeadLine, secondHeadLine, date, siteName = "", url, likes, comments, imgURL;
                                     Boolean liked;
                                     String temp = line.substring(0, line.indexOf("◘"));
                                     id = temp.substring(0, temp.indexOf("○"));
+
                                     temp = temp.substring((temp.indexOf("○") + 1));
                                     mainHeadLine = temp.substring(0, temp.indexOf("○"));
                                     temp = temp.substring((temp.indexOf("○") + 1));
@@ -289,9 +290,10 @@ public class Communication implements Runnable
                                         if (priorityHandler.getRssSites().get(i).getId().equals(id))
                                         {
                                             siteName = priorityHandler.getRssSites().get(i).getSite();
+                                            subject = priorityHandler.getRssSites().get(i).getSubject();
                                         }
                                     }
-                                    Article article = new Article(categoriesHandler.getCurrentlyInUseCategory(globalClass.getUser()), mainHeadLine, secondHeadLine, imgURL, dates, siteName, url, Integer.parseInt(likes), Integer.parseInt(comments), liked, globalClass);
+                                    Article article = new Article(subject, mainHeadLine, secondHeadLine, imgURL, dates, siteName, url, Integer.parseInt(likes), Integer.parseInt(comments), liked, globalClass);
                                     if(hotNews)
                                     {
                                         categoriesHandler.getHotNewsArticles().add(article);
@@ -356,7 +358,7 @@ public class Communication implements Runnable
                             line = line.substring(line.indexOf("◘") + 1);
                             while (line.contains("◘"))
                             {
-                                String id, mainHeadLine, secondHeadLine, date, siteName = "", url, likes, comments, imgURL;
+                                String id, subject = "", mainHeadLine, secondHeadLine, date, siteName = "", url, likes, comments, imgURL;
                                 Boolean liked;
                                 String temp = line.substring(0, line.indexOf("◘"));
                                 id = temp.substring(0, temp.indexOf("○"));
@@ -396,9 +398,10 @@ public class Communication implements Runnable
                                     if (priorityHandler.getRssSites().get(i).getId().equals(id))
                                     {
                                         siteName = priorityHandler.getRssSites().get(i).getSite();
+                                        subject = priorityHandler.getRssSites().get(i).getSubject();
                                     }
                                 }
-                                Article article = new Article(categoriesHandler.getCurrentlyInUseCategory(globalClass.getUser()), mainHeadLine, secondHeadLine, imgURL, dates, siteName, url, Integer.parseInt(likes), Integer.parseInt(comments), liked, globalClass);
+                                Article article = new Article(subject, mainHeadLine, secondHeadLine, imgURL, dates, siteName, url, Integer.parseInt(likes), Integer.parseInt(comments), liked, globalClass);
                                 categoriesHandler.getCurrentlyInUse().addElement(article);
                                 ((Activity) globalClass.getCurrentActivity()).runOnUiThread(new Runnable()
                                 {

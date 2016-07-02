@@ -21,6 +21,10 @@
 -dontwarn com.parse.**
 -keep class android.support.v4.** { *; }
 -dontwarn com.squareup.picasso.**
+-dontwarn retrofit2.**
+-keep class retrofit2.** { *; }
+-keepattributes Signature
+-keepattributes Exceptions
 -keepclasseswithmembernames class * {
     native <methods>;
     }

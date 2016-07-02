@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:background="@color/white"
     android:orientation="vertical"
     android:layout_gravity="left"
@@ -159,6 +159,7 @@
         android:layout_width="match_parent"
         android:layout_height="28dp"
         android:background="@color/nb"
-        android:elevation="10dp" />
+        android:elevation="10dp"
+        android:id="@+id/iv_line"/>
 
 </LinearLayout>

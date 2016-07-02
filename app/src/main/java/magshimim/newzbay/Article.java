@@ -107,4 +107,9 @@ public class Article
     {
         return picURL;
     }
+
+    public String getSubject()
+    {
+        return subject;
+    }
 }

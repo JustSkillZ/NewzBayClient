@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.PorterDuff;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.NavigationView;
@@ -18,7 +19,6 @@ import android.support.v7.widget.RecyclerView;
 import android.text.SpannableString;
 import android.text.format.Time;
 import android.text.style.ForegroundColorSpan;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.RelativeLayout;
@@ -195,8 +195,7 @@ public class ActivityNewsFeed extends AppCompatActivity
                 drawerHandler(drawer);
             }
         };
-        toggle.setDrawerIndicatorEnabled(false);
-        toolbarMain.setNavigationIcon(R.drawable.anchor);
+        toggle.setDrawerIndicatorEnabled(true);
         toolbarMain.setNavigationOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -242,6 +241,7 @@ public class ActivityNewsFeed extends AppCompatActivity
             categoriesHandler.setCurrentlyInUseCategory("");
             categoriesHandler.getCurrentlyInUse().clear();
             categoriesHandler.getArticlesRecyclerAdapter().notifyDataSetChanged();
+            toolbarMain.setBackgroundColor(getResources().getColor(R.color.nb));
             for (int i = 0; i <= toolbarMain.getChildCount(); i++)
             {
                 View v = toolbarMain.getChildAt(i);
@@ -348,10 +348,15 @@ public class ActivityNewsFeed extends AppCompatActivity
         }
         else if (id == R.id.nav_helpNB) //Contact with NB developers
         {
-            Intent intent = new Intent(Intent.ACTION_SEND);
+            Intent intent = new Intent(Intent.ACTION_SENDTO);
             intent.setType("plain/text");
+            intent.setData(Uri.parse("mailto:"));
             intent.putExtra(Intent.EXTRA_EMAIL, new String[]{"nnewzbay@gmail.com"});
-            startActivity(Intent.createChooser(intent, ""));
+            startActivity(Intent.createChooser(intent, "צור קשר"));
+        }
+        else if(id == R.id.nav_donateNB)
+        {
+
         }
         else if (id == R.id.nav_discconect)
         {
@@ -401,12 +406,12 @@ public class ActivityNewsFeed extends AppCompatActivity
             }
             else if (user.getConnectedVia().equals("Facebook"))
             {
-                Picasso.with(globalClass.getCurrentActivity()).load(((FacebookUser) user).getFacebookProfile().getProfilePictureUri(500, 500)).into(userPic);
+                Picasso.with(globalClass.getCurrentActivity()).load(((FacebookUser) user).getFacebookProfile().getProfilePictureUri(500, 500)).placeholder(R.drawable.user_icon).into(userPic);
                 user.setFullName(((FacebookUser) user).getFacebookProfile().getName());
             }
             else if (user.getConnectedVia().equals("Google"))
             {
-                Picasso.with(globalClass.getCurrentActivity()).load(((GoogleUser) user).getGoogleProfile().getImage().getUrl().replace("sz=50", "sz=500")).into(userPic);
+                Picasso.with(globalClass.getCurrentActivity()).load(((GoogleUser) user).getGoogleProfile().getImage().getUrl().replace("sz=50", "sz=500")).placeholder(R.drawable.user_icon).into(userPic);
                 user.setFullName(((GoogleUser) user).getGoogleProfile().getDisplayName());
             }
         }
@@ -442,6 +447,7 @@ public class ActivityNewsFeed extends AppCompatActivity
         globalClass.getCommunication().send("114○" + categoriesHandler.getCategoriesForServer().get(categoryID) + "#");
         findViewById(R.id.pb_loadingArticles).setVisibility(View.VISIBLE);
         categoriesHandler.setCurrentlyInUseCategory(categoryID, this);
+        toolbarMain.setBackgroundColor(categoriesHandler.getCategoryColor().get(categoriesHandler.getCurrentCategoryID()));
         recyclerLayoutManager.scrollToPositionWithOffset(0, 0);
     }
 
@@ -487,5 +493,9 @@ public class ActivityNewsFeed extends AppCompatActivity
         globalClass.setCurrentActivity(ActivityNewsFeed.this);
         changeTheme();
         updateToolbarTitle();
+        if(categoriesHandler.getCurrentlyInUse().size() == 0)
+        {
+            toolbarMain.setBackgroundColor(getResources().getColor(R.color.nb));
+        }
     }
 }

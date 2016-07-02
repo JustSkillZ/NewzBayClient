@@ -1,6 +1,7 @@
 package magshimim.newzbay;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
@@ -168,6 +169,17 @@ public class ActivityComments extends AppCompatActivity implements EmojiconGridF
                 }
             });
         }
+
+        ((ImageButton) findViewById(R.id.ib_picture)).setOnClickListener(new View.OnClickListener() //Go to web activity
+        {
+            @Override
+            public void onClick(View v)
+            {
+                globalClass.getCategoriesHandler().setCurrentlyOpenURL(commentsHandler.getArticle().getUrl());
+                Intent web = new Intent(ActivityComments.this, ActivityInnerWeb.class);
+                ActivityComments.this.startActivity(web);
+            }
+        });
     }
 
     public void sendComment(View v) //Send Comment and update the recyclerView
@@ -181,8 +193,21 @@ public class ActivityComments extends AppCompatActivity implements EmojiconGridF
             commentsHandler.getArticle().incNumberOfComments();
             ViewGroup parent = (ViewGroup) v.getParent().getParent().getParent();
             ((TextView) parent.findViewById(R.id.tv_comments)).setText(commentsHandler.getArticle().getNumberOfComments() + "");
+            if(emojiconsOpen)
+            {
+                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                ft.hide(emojicons);
+                emojiconsOpen = false;
+                ft.commit();
+            }
+            else if(keyboardVisible)
+            {
+                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(commentText.getWindowToken(),
+                        InputMethodManager.RESULT_UNCHANGED_SHOWN);
+                keyboardVisible = false;
+            }
             appBarLayout.setExpanded(false);
-            recyclerViewComments.scrollToPosition(commentsHandler.getCommentsOfCurrentArticle().size() - 1);
         }
     }
 

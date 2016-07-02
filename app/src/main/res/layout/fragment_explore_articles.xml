@@ -82,6 +82,16 @@
         android:layout_alignParentBottom="true"
         android:layout_toEndOf="@+id/tv_article_site" />
 
+    <ImageView
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:id="@+id/iv_categoryIcon"
+        android:src="@drawable/hot_news"
+        android:layout_alignParentBottom="true"
+        android:layout_toEndOf="@id/tv_article_time"
+        android:layout_marginLeft="20dp"
+        android:layout_marginBottom="10dp"/>
+
     <ImageButton
         android:layout_width="50dp"
         android:layout_height="50dp"

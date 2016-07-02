@@ -1,6 +1,7 @@
 package magshimim.newzbay;
 
 import android.content.Intent;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -9,10 +10,12 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.text.format.DateUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -110,6 +113,9 @@ public class ActivityHotNews extends AppCompatActivity
             headline.setText(hotNews.get(getArguments().getInt("NB")).getMainHeadline());
             TextView source = (TextView) rootView.findViewById(R.id.tv_article_site);
             source.setText(hotNews.get(getArguments().getInt("NB")).getSiteName() + "  /");
+            ImageView categoryIcon = (ImageView) rootView.findViewById(R.id.iv_categoryIcon);
+            categoryIcon.setImageBitmap(globalClass.getCategoriesHandler().getCategoryIcon().get(globalClass.getCategoriesHandler().getCategoriesForServer().indexOf(hotNews.get(getArguments().getInt("NB")).getSubject())));
+            categoryIcon.setColorFilter(globalClass.getCategoriesHandler().getCategoryColor().get(globalClass.getCategoriesHandler().getCategoriesForServer().indexOf(hotNews.get(getArguments().getInt("NB")).getSubject())), PorterDuff.Mode.SRC_ATOP);
             if (hotNews.get(getArguments().getInt("NB")).getDate() != null)
             {
                 Date d = new Date();

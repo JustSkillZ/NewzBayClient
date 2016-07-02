@@ -5,7 +5,6 @@ import com.google.android.gms.plus.model.people.Person;
 
 public class GoogleUser extends User
 {
-
     private Person googleProfile;
     private GoogleApiClient googleApiClient;
 

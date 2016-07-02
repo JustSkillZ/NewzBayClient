@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -49,6 +50,7 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
         final int tempPosition = position; //Current position
         if (categoriesHandler.getCurrentlyInUse().size() != 0)
         {
+            holder.line.setBackgroundColor(categoriesHandler.getCategoryColor().get(categoriesHandler.getCurrentCategoryID()));
             if (user.getConnectedVia().equals("Guest")) //Guest cant like or comment
             {
                 holder.like.setBackgroundResource(R.drawable.buttonborder_disabled);
@@ -213,6 +215,7 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
         public TextView countComments;
         public Button like;
         public Button comment;
+        public ImageView line;
 
         public ViewHolder(View itemView)
         {
@@ -226,6 +229,7 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
             this.countComments = (TextView) itemView.findViewById(R.id.tv_comments);
             this.like = (Button) itemView.findViewById(R.id.btn_like);
             this.comment = (Button) itemView.findViewById(R.id.btn_comment);
+            this.line = (ImageView) itemView.findViewById(R.id.iv_line);
         }
     }
 }

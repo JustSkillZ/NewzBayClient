@@ -15,5 +15,14 @@
     <color name="purple">#6c08d3</color>
     <color name="ExplanationBlue">#34cffc</color>
     <color name="orange">#FBC723</color>
+    <color name="pink">#E91E63</color>
+    <color name="red">#F44336</color>
+    <color name="blueCategory">#2196F3</color>
+    <color name="purpleCategory">#9C27B0</color>
+    <color name="indigo">#3F51B5</color>
+    <color name="brown">#795548</color>
+    <color name="green">#4CAF50</color>
+    <color name="deepOrange">#FF5722</color>
+    <color name="lightGreen">#8BC34A</color>
     <color name="GoogleDisabledButtonText">#8d8d8d</color>
 </resources>

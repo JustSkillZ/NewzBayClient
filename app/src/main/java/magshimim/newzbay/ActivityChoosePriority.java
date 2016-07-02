@@ -40,6 +40,10 @@ public class ActivityChoosePriority extends AppCompatActivity implements PopupMe
         globalClass.getCommunication().send("128◘" + priorityHandler.getCurrentPrioritySubject() + "#");
         TextView subject = (TextView) findViewById(R.id.tv_subject);
         subject.setText(priorityHandler.getSubjects().get(priorityHandler.getCurrentPrioritySubject()));
+        ImageButton addSite = (ImageButton) findViewById(R.id.btn_add);
+        addSite.getBackground().setColorFilter(getResources().getColor(R.color.nb), PorterDuff.Mode.SRC_ATOP);
+        ImageButton help = (ImageButton) findViewById(R.id.btn_help);
+        help.getBackground().setColorFilter(getResources().getColor(R.color.nb), PorterDuff.Mode.SRC_ATOP);
         Time now = new Time();
         now.setToNow();
         if (now.hour >= 19 || now.hour >= 0 && now.hour <= 5) //Change Theme if the time is after 7 PM or before 6 AM
@@ -47,9 +51,7 @@ public class ActivityChoosePriority extends AppCompatActivity implements PopupMe
             RelativeLayout layout = (RelativeLayout) findViewById(R.id.activity_choosePriority);
             layout.setBackground(getResources().getDrawable(R.drawable.main_background_night));
             subject.setTextColor(getResources().getColor(R.color.orange));
-            ImageButton addSite = (ImageButton) findViewById(R.id.btn_add);
             addSite.getBackground().setColorFilter(getResources().getColor(R.color.orange), PorterDuff.Mode.SRC_ATOP);
-            ImageButton help = (ImageButton) findViewById(R.id.btn_help);
             help.getBackground().setColorFilter(getResources().getColor(R.color.orange), PorterDuff.Mode.SRC_ATOP);
             Button sendPriority = (Button) findViewById(R.id.btn_sendPriority);
             sendPriority.setBackground(getResources().getDrawable(R.drawable.button_rounded_corners));

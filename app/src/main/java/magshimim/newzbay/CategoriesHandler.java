@@ -3,6 +3,7 @@ package magshimim.newzbay;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.support.v4.view.PagerAdapter;
 import android.support.v7.widget.RecyclerView;
 
@@ -22,7 +23,10 @@ public class CategoriesHandler
 
     private HashMap<String, Bitmap> siteLogo; //Map: Key - Site name | Value - Site default pic
     private boolean loadingArticles;
-    private List<String> categoriesForServer = Arrays.asList("", "israelNewz", "worldNewz", "politics", "economy", "sport", "culture", "celebs", "technology", "science"); //Sites for server
+    private List<String> categoriesForServer = Arrays.asList("hotNewz", "israelNewz", "worldNewz", "politics", "economy", "sport", "culture", "celebs", "technology", "science"); //Sites for server
+    private Vector<Bitmap> categoryIcon;
+    private Vector<Integer> categoryColor;
+
     private RecyclerView.Adapter articlesRecyclerAdapter; //Article Adapter - notifyDataSetChanged in ClientRead Thread
     private PagerAdapter hotNewsPageAdapter; //Hot News Adapter - notifyDataSetChanged in ClientRead Thread
 
@@ -52,6 +56,30 @@ public class CategoriesHandler
         siteLogo.put("nana10", BitmapFactory.decodeResource(globalClass.getResources(), R.drawable.site_nana10));
         siteLogo.put("9tv", BitmapFactory.decodeResource(globalClass.getResources(), R.drawable.site_9tv));
         siteLogo.put("calcalist", BitmapFactory.decodeResource(globalClass.getResources(), R.drawable.site_calcalist));
+
+        categoryIcon = new Vector<>();
+        categoryIcon.add(BitmapFactory.decodeResource(globalClass.getResources(), R.drawable.hot_news));
+        categoryIcon.add(BitmapFactory.decodeResource(globalClass.getResources(), R.drawable.news_category));
+        categoryIcon.add(BitmapFactory.decodeResource(globalClass.getResources(), R.drawable.global_news_category));
+        categoryIcon.add(BitmapFactory.decodeResource(globalClass.getResources(), R.drawable.politics_category));
+        categoryIcon.add(BitmapFactory.decodeResource(globalClass.getResources(), R.drawable.economy_category));
+        categoryIcon.add(BitmapFactory.decodeResource(globalClass.getResources(), R.drawable.sport_category));
+        categoryIcon.add(BitmapFactory.decodeResource(globalClass.getResources(), R.drawable.culture_category));
+        categoryIcon.add(BitmapFactory.decodeResource(globalClass.getResources(), R.drawable.celebrities_category));
+        categoryIcon.add(BitmapFactory.decodeResource(globalClass.getResources(), R.drawable.technology_category));
+        categoryIcon.add(BitmapFactory.decodeResource(globalClass.getResources(), R.drawable.science_category));
+
+        categoryColor = new Vector<>();
+        categoryColor.add(globalClass.getResources().getColor(R.color.orange));
+        categoryColor.add(globalClass.getResources().getColor(R.color.blueCategory));
+        categoryColor.add(globalClass.getResources().getColor(R.color.lightGreen));
+        categoryColor.add(globalClass.getResources().getColor(R.color.deepOrange));
+        categoryColor.add(globalClass.getResources().getColor(R.color.brown));
+        categoryColor.add(globalClass.getResources().getColor(R.color.red));
+        categoryColor.add(globalClass.getResources().getColor(R.color.purpleCategory));
+        categoryColor.add(globalClass.getResources().getColor(R.color.pink));
+        categoryColor.add(globalClass.getResources().getColor(R.color.indigo));
+        categoryColor.add(globalClass.getResources().getColor(R.color.green));
     }
 
     public String getCurrentlyOpenURL()
@@ -203,5 +231,15 @@ public class CategoriesHandler
     public Vector<Article> getHotNewsArticles()
     {
         return hotNewsArticles;
+    }
+
+    public Vector<Bitmap> getCategoryIcon()
+    {
+        return categoryIcon;
+    }
+
+    public Vector<Integer> getCategoryColor()
+    {
+        return categoryColor;
     }
 }

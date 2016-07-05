@@ -177,7 +177,7 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
             {
                 holder.countComments.setText(categoriesHandler.getCurrentlyInUse().get(position).getNumberOfComments() + "");
             }
-            if (!categoriesHandler.getCurrentlyInUse().get(position).getPicURL().equals("null")) //If there is a URL, load the pic.
+            if (categoriesHandler.getCurrentlyInUse().get(position).getPicURL() != null) //If there is a URL, load the pic.
             {
                 Picasso.with(context).load(categoriesHandler.getCurrentlyInUse().get(position).getPicURL()).placeholder(R.drawable.loading_article).into(holder.picture);
             }

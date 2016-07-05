@@ -64,7 +64,7 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.ViewHo
                             switch (which)
                             {
                                 case DialogInterface.BUTTON_POSITIVE:
-                                    globalClass.getCommunication().send("124◘" + commentsHandler.getArticle().getUrl() + "○" + commentsHandler.getCommentsOfCurrentArticle().get(tempPosition).getId() + "#");
+                                    //globalClass.getCommunication().send("124◘" + commentsHandler.getArticle().getUrl() + "○" + commentsHandler.getCommentsOfCurrentArticle().get(tempPosition).getID() + "#");
                                     commentsHandler.getCommentsOfCurrentArticle().remove(tempPosition);
                                     commentsHandler.getArticle().decNumberOfComments();
                                     commentsHandler.getCommentsRecyclerAdapter().notifyDataSetChanged();

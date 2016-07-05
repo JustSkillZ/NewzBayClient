@@ -18,6 +18,8 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+
 public class ActivityChoosePriority extends AppCompatActivity implements PopupMenu.OnMenuItemClickListener
 {
 
@@ -37,7 +39,7 @@ public class ActivityChoosePriority extends AppCompatActivity implements PopupMe
         priorityHandler = globalClass.getPriorityHandler();
         priorityHandler.getRemovedSitesOfCurrentSubject().clear();
         priorityHandler.getClientPriority().clear();
-        globalClass.getCommunication().send("128◘" + priorityHandler.getCurrentPrioritySubject() + "#");
+        globalClass.getNewCommunication().getUserPriority(priorityHandler.getCurrentPrioritySubject(), globalClass);
         TextView subject = (TextView) findViewById(R.id.tv_subject);
         subject.setText(priorityHandler.getSubjects().get(priorityHandler.getCurrentPrioritySubject()));
         ImageButton addSite = (ImageButton) findViewById(R.id.btn_add);
@@ -73,26 +75,27 @@ public class ActivityChoosePriority extends AppCompatActivity implements PopupMe
 
     public void sendPriority(View v)
     {
-        globalClass.getCommunication().send("194◘" + priorityHandler.getCurrentPrioritySubject() + "#"); //Delete previous priority in current subject
-        String priority = "104◘";
+        ArrayList<Priority> priorityList = new ArrayList<>();
         for (int i = 0; i < priorityHandler.getClientPriority().size(); i++) //Make the priority string
         {
             for (int j = 0; j < priorityHandler.getRssSites().size(); j++)
             {
                 if (priorityHandler.getRssSites().get(j).getSubject().equals(priorityHandler.getCurrentPrioritySubject())) //Get the id of each site that in user's priority
                 {
-                    if (priorityHandler.getRssSites().get(j).getSite().equals(priorityHandler.getClientPriority().get(i)))
+                    if (priorityHandler.getRssSites().get(j).getWebsite().equals(priorityHandler.getClientPriority().get(i)))
                     {
-                        priority = priority + priorityHandler.getRssSites().get(j).getId() + "○" + (i + 1) + "◘";
+                        priorityList.add(new Priority(priorityHandler.getRssSites().get(j).getID(), i + 1));
                     }
                 }
             }
         }
-        priority = priority.substring(0, priority.length() - 1);
-        priority = priority + "#";
-        if (priorityHandler.getClientPriority().size() != 0) //If the priority has sites
+        if(priorityList.size() == 0)
         {
-            globalClass.getCommunication().send(priority);
+            globalClass.getNewCommunication().deletePrioritySubject(priorityHandler.getCurrentPrioritySubject());
+        }
+        else
+        {
+            globalClass.getNewCommunication().setPriority(priorityList, ActivityChoosePriority.this);
         }
         finish();
     }

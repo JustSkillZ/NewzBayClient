@@ -8,7 +8,7 @@ public class GlobalClass extends Application
 {
     private CategoriesHandler categoriesHandler;
     private CommentsHandler commentsHandler;
-    private Communication communication;
+    private NewCommunication newCommunication;
     private ErrorHandler errorHandler;
     private PriorityHandler priorityHandler;
     private User user;
@@ -19,6 +19,7 @@ public class GlobalClass extends Application
     public void initiateClass(Resources resources) //Init the fields of the class
     {
         this.resources = resources;
+        newCommunication = new NewCommunication();
         categoriesHandler = new CategoriesHandler(null, "", "", false, this);
         commentsHandler = new CommentsHandler();
         errorHandler = new ErrorHandler(this);
@@ -32,7 +33,7 @@ public class GlobalClass extends Application
         errorHandler = null;
         user = null;
         priorityHandler = null;
-        communication = null;
+        newCommunication = null;
         commentsHandler = null;
     }
 
@@ -52,14 +53,14 @@ public class GlobalClass extends Application
         this.user = user;
     }
 
-    public Communication getCommunication()
+    public NewCommunication getNewCommunication()
     {
-        return communication;
+        return newCommunication;
     }
 
-    public void setCommunication(Communication communication)
+    public void setNewCommunication(NewCommunication newCommunication)
     {
-        this.communication = communication;
+        this.newCommunication = newCommunication;
     }
 
     public ErrorHandler getErrorHandler()

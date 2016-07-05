@@ -51,10 +51,10 @@ public class ErrorHandler
             {
                 if (globalClass.getErrorHandler().getNoConnectionWithServer() != null)
                 {
-                    Communication communication = new Communication(globalClass);
-                    globalClass.setCommunication(communication);
-                    Thread t = new Thread(communication);
-                    t.start();
+//                    Communication communication = new Communication(globalClass);
+                    //globalClass.setCommunication(communication);
+//                    Thread t = new Thread(communication);
+//                    t.start();
                     globalClass.getErrorHandler().getNoConnectionWithServer().dismiss();
                 }
             }

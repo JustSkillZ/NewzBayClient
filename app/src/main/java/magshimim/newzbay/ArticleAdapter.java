@@ -23,7 +23,7 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
 
     private Context context;
     private CategoriesHandler categoriesHandler;
-    private Communication communication;
+//    private Communication communication;
     private User user;
     private GlobalClass globalClass;
 
@@ -32,7 +32,7 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
         this.context = context;
         categoriesHandler = globalClass.getCategoriesHandler();
         user = globalClass.getUser();
-        this.communication = globalClass.getCommunication();
+        //this.communication = globalClass.getCommunication();
         this.globalClass = globalClass;
     }
 
@@ -81,7 +81,7 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
             {
                 if (categoriesHandler.getCurrentlyInUse().get(position).isLiked())
                 {
-                    holder.like.setTextColor(globalClass.getResources().getColor(R.color.nb));
+                    holder.like.setTextColor(categoriesHandler.getCategoryColor().get(categoriesHandler.getCurrentCategoryID()));
                 }
                 else
                 {
@@ -100,14 +100,14 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
                             like.setTextColor(globalClass.getResources().getColor(R.color.grey));
                             categoriesHandler.getCurrentlyInUse().get(tempPosition).setLiked(false);
                             categoriesHandler.getCurrentlyInUse().get(tempPosition).decNumberOfLikes();
-                            communication.send("110○" + categoriesHandler.getCurrentlyInUse().get(tempPosition).getUrl() + "#");
+                            globalClass.getNewCommunication().like(categoriesHandler.getCurrentlyInUse().get(tempPosition).getUrl());
                         }
                         else //Like
                         {
-                            like.setTextColor(globalClass.getResources().getColor(R.color.nb));
+                            like.setTextColor(categoriesHandler.getCategoryColor().get(categoriesHandler.getCurrentCategoryID()));
                             categoriesHandler.getCurrentlyInUse().get(tempPosition).setLiked(true);
                             categoriesHandler.getCurrentlyInUse().get(tempPosition).incNumberOfLikes();
-                            communication.send("110○" + categoriesHandler.getCurrentlyInUse().get(tempPosition).getUrl() + "#");
+                            globalClass.getNewCommunication().like(categoriesHandler.getCurrentlyInUse().get(tempPosition).getUrl());
                         }
                         float numOfLikes = Integer.parseInt(String.valueOf(categoriesHandler.getCurrentlyInUse().get(tempPosition).getNumberOfLikes()));
                         if (numOfLikes >= 1000) //Nice format, if there is more than 1000 likes. Example: (1.5k)
@@ -153,7 +153,7 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
                     context.startActivity(comments);
                 }
             });
-            holder.site.setText(categoriesHandler.getCurrentlyInUse().elementAt(position).getSiteName());
+            holder.site.setText(categoriesHandler.getCurrentlyInUse().elementAt(position).getWebSite());
             if (categoriesHandler.getCurrentlyInUse().elementAt(position).getDate() != null)
             {
                 Date d = new Date();

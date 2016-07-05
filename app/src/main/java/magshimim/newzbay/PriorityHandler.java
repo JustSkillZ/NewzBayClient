@@ -2,7 +2,12 @@ package magshimim.newzbay;
 
 import android.support.v7.widget.RecyclerView;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Vector;
 
 public class PriorityHandler
@@ -56,7 +61,7 @@ public class PriorityHandler
         {
             if (rssSites.get(i).getSubject().equals(currentPrioritySubject))
             {
-                sitesOfCurrentSubject.add(rssSites.get(i).getSite());
+                sitesOfCurrentSubject.add(rssSites.get(i).getWebsite());
             }
         }
         clientPriority = new Vector<>(sitesOfCurrentSubject);
@@ -84,20 +89,20 @@ public class PriorityHandler
 
     public void createRemovedSitesList()
     {
-        for(int i = 0; i < rssSites.size(); i++) //Put all sites from current category
+        for (int i = 0; i < rssSites.size(); i++) //Put all sites from current category
         {
             if (rssSites.get(i).getSubject().equals(currentPrioritySubject))
             {
-                removedSitesOfCurrentSubject.add(rssSites.get(i).getSite());
+                removedSitesOfCurrentSubject.add(rssSites.get(i).getWebsite());
             }
         }
         for (int i = 0; i < rssSites.size(); i++) //Delete from removedSites the sites that exist in client's priority
         {
             if (rssSites.get(i).getSubject().equals(currentPrioritySubject))
             {
-                for(int j = 0; j < clientPriority.size(); j++)
+                for (int j = 0; j < clientPriority.size(); j++)
                 {
-                    if (rssSites.get(i).getSite().equals(clientPriority.get(j)))
+                    if (rssSites.get(i).getWebsite().equals(clientPriority.get(j)))
                     {
                         removedSitesOfCurrentSubject.remove(clientPriority.get(j));
                     }
@@ -105,4 +110,125 @@ public class PriorityHandler
             }
         }
     }
+
+    public String getWebsiteByID(String id)
+    {
+        for(int i = 0; i < rssSites.size(); i++)
+        {
+            if(rssSites.get(i).getID().equals(id))
+            {
+                return rssSites.get(i).getWebsite();
+            }
+        }
+        return "";
+    }
+
+    public String getSubjectByID(String id)
+    {
+        for(int i = 0; i < rssSites.size(); i++)
+        {
+            if(rssSites.get(i).getID().equals(id))
+            {
+                return rssSites.get(i).getSubject();
+            }
+        }
+        return "";
+    }
+}
+
+class Priority
+{
+    @SerializedName("ID")
+    @Expose
+    private String ID;
+    @SerializedName("priority")
+    @Expose
+    private Integer priority;
+
+    public Priority(String ID, Integer priority)
+    {
+        this.ID = ID;
+        this.priority = priority;
+    }
+
+    public String getID()
+    {
+        return ID;
+    }
+
+    public void setID(String ID)
+    {
+        this.ID = ID;
+    }
+
+    public Integer getPriority()
+    {
+        return priority;
+    }
+
+    public void setPriority(Integer priority)
+    {
+        this.priority = priority;
+    }
+}
+
+class UserPriority
+{
+    @SerializedName("status")
+    @Expose
+    private Integer status;
+    @SerializedName("priority")
+    @Expose
+    private List<RSS> priority = new ArrayList<RSS>();
+
+    public Integer getStatus()
+    {
+        return status;
+    }
+
+    public void setStatus(Integer status)
+    {
+        this.status = status;
+    }
+
+    public List<RSS> getPriority()
+    {
+        return priority;
+    }
+
+    public void setPriority(List<RSS> message)
+    {
+        this.priority = message;
+    }
+}
+
+class SubWeb
+{
+    @SerializedName("status")
+    @Expose
+    private Integer status;
+    @SerializedName("subWeb")
+    @Expose
+    private List<RSS> subWeb = new ArrayList<RSS>();
+
+    public Integer getStatus()
+    {
+        return status;
+    }
+
+    public void setStatus(Integer status)
+    {
+        this.status = status;
+    }
+
+    public List<RSS> getSubWeb()
+    {
+        return subWeb;
+    }
+
+    public void setSubWeb(List<RSS> subWeb)
+    {
+        this.subWeb = subWeb;
+    }
+
 }

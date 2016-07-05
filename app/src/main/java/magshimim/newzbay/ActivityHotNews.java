@@ -54,7 +54,7 @@ public class ActivityHotNews extends AppCompatActivity
         mViewPager.setAdapter(mSectionsPagerAdapter);
         ((GlobalClass) getApplicationContext()).setCurrentActivity(ActivityHotNews.this);
         ((GlobalClass) getApplicationContext()).getCategoriesHandler().setHotNewsPageAdapter(mSectionsPagerAdapter); //Save adapter in order to notify on change in another thread
-        ((GlobalClass) getApplicationContext()).getCommunication().send("126#");
+        //((GlobalClass) getApplicationContext()).getCommunication().send("126#");
     }
 
     @Override
@@ -112,7 +112,7 @@ public class ActivityHotNews extends AppCompatActivity
             TextView headline = (TextView) rootView.findViewById(R.id.tv_article_title);
             headline.setText(hotNews.get(getArguments().getInt("NB")).getMainHeadline());
             TextView source = (TextView) rootView.findViewById(R.id.tv_article_site);
-            source.setText(hotNews.get(getArguments().getInt("NB")).getSiteName() + "  /");
+            source.setText(hotNews.get(getArguments().getInt("NB")).getWebSite() + "  /");
             ImageView categoryIcon = (ImageView) rootView.findViewById(R.id.iv_categoryIcon);
             categoryIcon.setImageBitmap(globalClass.getCategoriesHandler().getCategoryIcon().get(globalClass.getCategoriesHandler().getCategoriesForServer().indexOf(hotNews.get(getArguments().getInt("NB")).getSubject())));
             categoryIcon.setColorFilter(globalClass.getCategoriesHandler().getCategoryColor().get(globalClass.getCategoriesHandler().getCategoriesForServer().indexOf(hotNews.get(getArguments().getInt("NB")).getSubject())), PorterDuff.Mode.SRC_ATOP);
@@ -189,14 +189,14 @@ public class ActivityHotNews extends AppCompatActivity
                                 Picasso.with(getContext()).load(R.drawable.like_hot_article).into(like);
                                 hotNews.get(getArguments().getInt("NB")).setLiked(false);
                                 hotNews.get(getArguments().getInt("NB")).decNumberOfLikes();
-                                globalClass.getCommunication().send("110○" + globalClass.getCategoriesHandler().getHotNewsArticles().get(getArguments().getInt("NB")).getUrl() + "#");
+                                //globalClass.getCommunication().send("110○" + globalClass.getCategoriesHandler().getHotNewsArticles().get(getArguments().getInt("NB")).getUrl() + "#");
                             }
                             else //Like
                             {
                                 Picasso.with(getContext()).load(R.drawable.hot_article_liked).into(like);
                                 hotNews.get(getArguments().getInt("NB")).setLiked(true);
                                 hotNews.get(getArguments().getInt("NB")).incNumberOfLikes();
-                                globalClass.getCommunication().send("110○" + globalClass.getCategoriesHandler().getHotNewsArticles().get(getArguments().getInt("NB")).getUrl() + "#");
+                                //globalClass.getCommunication().send("110○" + globalClass.getCategoriesHandler().getHotNewsArticles().get(getArguments().getInt("NB")).getUrl() + "#");
                             }
                             float numOfLikes = Integer.parseInt(String.valueOf(hotNews.get(getArguments().getInt("NB")).getNumberOfLikes()));
                             if (numOfLikes >= 1000) //Nice format, if there is more than 1000 likes. Example: (1.5k)

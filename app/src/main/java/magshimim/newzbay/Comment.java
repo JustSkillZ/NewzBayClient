@@ -1,5 +1,8 @@
 package magshimim.newzbay;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 public class Comment
 {
     private String id;

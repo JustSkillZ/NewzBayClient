@@ -11,13 +11,9 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.format.Time;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -61,7 +57,7 @@ public class ActivityEntrance extends AppCompatActivity implements GoogleApiClie
     private ConnectionResult mConnectionResult;
     private int requestCode;
     private ProgressDialog mProgressDialog;
-    private Communication communication;
+    private NewCommunication newCommunication;
     private boolean isIntentInprogress;
     private boolean isSignInBtnClicked;
     private GlobalClass globalClass;
@@ -119,23 +115,8 @@ public class ActivityEntrance extends AppCompatActivity implements GoogleApiClie
             TextView slogan = (TextView) findViewById(R.id.tv_slogan);
             slogan.setTextColor(getResources().getColor(R.color.white));
         }
-        EditText serverIP = (EditText) findViewById(R.id.editText_serverIP);
-        serverIP.setOnEditorActionListener(
-                new EditText.OnEditorActionListener()
-                {
-                    @Override
-                    public boolean onEditorAction(TextView v, int actionId, KeyEvent event)
-                    {
-                        if (actionId == EditorInfo.IME_ACTION_DONE)
-                        {
-                            if(v != null)
-                            {
-                                connectToServer(v);
-                            }
-                        }
-                        return true;
-                    }
-                });
+
+        globalClass.getNewCommunication().getIPFromBaseURL(globalClass);
     }
 
     @Override
@@ -158,24 +139,14 @@ public class ActivityEntrance extends AppCompatActivity implements GoogleApiClie
 
     public void signInAsGuest(View v)
     {
-        Log.d(TAG, "guest login");
         user = new User("Guest", "", "Guest");
         globalClass.setUser(user);
-        String send = "102○guest@guest.com○guest○#";
-        globalClass.getErrorHandler().setConnectingClientMsg(send);
-        globalClass.getCommunication().send(send); //Connect as guest
-        moveToNewsFeed();
+        //globalClass.getErrorHandler().setConnectingClientMsg(send);
+        globalClass.getNewCommunication().authenticate("guest@guest.com", "Guest", "Guest", ActivityEntrance.this, globalClass); //Connect as guest
     }
 
     public void moveToNewsFeed() //Connect and open NewsFeed activity
     {
-        if (user.getConnectedVia().equals("Google"))
-        {
-            String send = "102○" + Plus.AccountApi.getAccountName(mGoogleApiClient) + "○" + ((GoogleUser) user).getGoogleProfile().getName().getGivenName() + "○" + user.getPicURL() + "#";
-            globalClass.getErrorHandler().setConnectingClientMsg(send);
-            globalClass.getCommunication().send(send); //Connect via Google
-            Log.d("Server", "102○" + Plus.AccountApi.getAccountName(mGoogleApiClient) + "○" + ((GoogleUser) user).getGoogleProfile().getName().getGivenName() + "○" + user.getPicURL() + "#");
-        }
         Intent nfScreen = new Intent(this, ActivityNewsFeed.class);
         startActivity(nfScreen);
         finish();
@@ -206,9 +177,8 @@ public class ActivityEntrance extends AppCompatActivity implements GoogleApiClie
                                 {
                                     String email = object.getString("email");
                                     ((FacebookUser) user).setFacebookUserEmail(email);
-                                    String send = "102○" + ((FacebookUser) user).getFacebookUserEmail() + "○" + ((FacebookUser) user).getFacebookProfile().getFirstName() + "○" + user.getPicURL() + "#";
-                                    globalClass.getErrorHandler().setConnectingClientMsg(send);
-                                    globalClass.getCommunication().send(send); //Connect via Facebook
+                                    //globalClass.getErrorHandler().setConnectingClientMsg(send);
+                                    globalClass.getNewCommunication().authenticate(((FacebookUser) user).getFacebookUserEmail(),user.getPicURL(), ((FacebookUser) user).getFacebookProfile().getFirstName(), ActivityEntrance.this, globalClass); //Connect via Facebook
                                     SharedPreferences sharedpreferences = getSharedPreferences(prefsConnection, Context.MODE_PRIVATE);
                                     SharedPreferences.Editor editor = sharedpreferences.edit();
                                     editor.putString(facebookEmail, email);
@@ -233,7 +203,6 @@ public class ActivityEntrance extends AppCompatActivity implements GoogleApiClie
                             parameters.putString("fields", "id,name,email,gender, birthday"); //Request extra information about the user
                             request.setParameters(parameters);
                             request.executeAsync();
-                            moveToNewsFeed();
                             mProfileTracker.stopTracking();
                         }
                     };
@@ -247,7 +216,6 @@ public class ActivityEntrance extends AppCompatActivity implements GoogleApiClie
                     parameters.putString("fields", "id,name,email,gender, birthday"); //Request extra information about the user
                     request.setParameters(parameters);
                     request.executeAsync();
-                    moveToNewsFeed();
                 }
             }
 
@@ -350,7 +318,8 @@ public class ActivityEntrance extends AppCompatActivity implements GoogleApiClie
         isSignInBtnClicked = false;
         user = new GoogleUser(Plus.PeopleApi.getCurrentPerson(mGoogleApiClient).getDisplayName(), Plus.PeopleApi.getCurrentPerson(mGoogleApiClient).getImage().getUrl(), Plus.PeopleApi.getCurrentPerson(mGoogleApiClient), mGoogleApiClient);
         globalClass.setUser(user);
-        moveToNewsFeed(); // Update the UI after sign-in
+        //globalClass.getErrorHandler().setConnectingClientMsg(send);
+        globalClass.getNewCommunication().authenticate(Plus.AccountApi.getAccountName(mGoogleApiClient), user.getPicURL(), ((GoogleUser) user).getGoogleProfile().getName().getGivenName(), ActivityEntrance.this, globalClass); //Connect via Google
 
     }
 
@@ -360,7 +329,8 @@ public class ActivityEntrance extends AppCompatActivity implements GoogleApiClie
         mGoogleApiClient.connect();
         user = new GoogleUser(Plus.PeopleApi.getCurrentPerson(mGoogleApiClient).getDisplayName(), Plus.PeopleApi.getCurrentPerson(mGoogleApiClient).getImage().getUrl(), Plus.PeopleApi.getCurrentPerson(mGoogleApiClient), mGoogleApiClient);
         globalClass.setUser(user);
-        moveToNewsFeed();
+        //globalClass.getErrorHandler().setConnectingClientMsg(send);
+        globalClass.getNewCommunication().authenticate(Plus.AccountApi.getAccountName(mGoogleApiClient), user.getPicURL(), ((GoogleUser) user).getGoogleProfile().getName().getGivenName(), ActivityEntrance.this, globalClass); //Connect via Google
     }
 
     @Override
@@ -440,6 +410,23 @@ public class ActivityEntrance extends AppCompatActivity implements GoogleApiClie
 
     public void connectToSocialNets() //If connected successfully to NB server, now connect to social nets.
     {
+        //Enable Buttons
+        Button guestLoginBtn = (Button) findViewById(R.id.btn_NB);
+        guestLoginBtn.setBackground(globalClass.getCurrentActivity().getResources().getDrawable(R.drawable.button_rounded_corners));
+        guestLoginBtn.setTextColor(globalClass.getCurrentActivity().getResources().getColor(R.color.white));
+        guestLoginBtn.setAlpha((float) 1);
+        guestLoginBtn.setEnabled(true);
+
+        LoginButton facebookLoginBtn = (LoginButton) findViewById(R.id.btn_Facebook);
+        facebookLoginBtn.setBackground(globalClass.getCurrentActivity().getResources().getDrawable(R.drawable.button_rounded_corners_facebook));
+        facebookLoginBtn.setTextColor(globalClass.getCurrentActivity().getResources().getColor(R.color.white));
+        facebookLoginBtn.setAlpha((float) 1);
+        facebookLoginBtn.setEnabled(true);
+
+        SignInButton googleLoginBtn = (SignInButton) findViewById(R.id.btn_Google);
+        googleLoginBtn.setEnabled(true);
+
+
         facebookLogin();
         if (Profile.getCurrentProfile() != null) //If connected once and still connected with Facebook, auto connect to Facebook.
         {
@@ -447,10 +434,8 @@ public class ActivityEntrance extends AppCompatActivity implements GoogleApiClie
             SharedPreferences sharedpreferences = getSharedPreferences(prefsConnection, Context.MODE_PRIVATE); //If auto-connect: take last saved Facebook email
             user = new FacebookUser(Profile.getCurrentProfile().getName(), Profile.getCurrentProfile().getProfilePictureUri(500, 500).toString(), Profile.getCurrentProfile(), sharedpreferences.getString(facebookEmail, ""));
             globalClass.setUser(user);
-            String send = "102○" + ((FacebookUser) user).getFacebookUserEmail() + "○" + ((FacebookUser) user).getFacebookProfile().getFirstName() + "○" + user.getPicURL() + "#";
-            globalClass.getErrorHandler().setConnectingClientMsg(send);
-            globalClass.getCommunication().send(send); //Connect via Facebook
-            moveToNewsFeed();
+            //globalClass.getErrorHandler().setConnectingClientMsg(send);
+            globalClass.getNewCommunication().authenticate(((FacebookUser) user).getFacebookUserEmail(),user.getPicURL(), ((FacebookUser) user).getFacebookProfile().getFirstName(), ActivityEntrance.this, globalClass); //Connect via Facebook
         }
         else //Connect via Google
         {
@@ -461,23 +446,5 @@ public class ActivityEntrance extends AppCompatActivity implements GoogleApiClie
             mProgressDialog.setMessage("Loading...");
             mGoogleApiClient.connect();
         }
-    }
-
-    public void connectToServer(View v)
-    {
-        Button connectToServer = (Button) findViewById(R.id.btn_connectToServer);
-        connectToServer.setVisibility(View.GONE);
-        EditText serverIPText = (EditText) findViewById(R.id.editText_serverIP);
-        serverIPText.setVisibility(View.GONE);
-        View editTextShadow = findViewById(R.id.view_shadow);
-        editTextShadow.setVisibility(View.GONE);
-        InputMethodManager in = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-        in.hideSoftInputFromWindow(v.getApplicationWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
-        EditText serverIP = (EditText) findViewById(R.id.editText_serverIP);
-        globalClass.getErrorHandler().setServerIP(serverIP.getText().toString());
-        communication = new Communication((GlobalClass) getApplicationContext()); //Connect to NB server
-        globalClass.setCommunication(communication);
-        Thread t = new Thread(communication); //This is communication to server thread
-        t.start();
     }
 }

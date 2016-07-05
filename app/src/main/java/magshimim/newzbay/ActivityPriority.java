@@ -45,8 +45,8 @@ public class ActivityPriority extends AppCompatActivity
             TextView explanation = (TextView) findViewById(R.id.tv_explanation);
             explanation.setTextColor(getResources().getColor(R.color.disabledButton));
         }
-        Button sendPriority = (Button) findViewById(R.id.btn_endPriority);
-        sendPriority.setOnClickListener(new View.OnClickListener() //Close Activity
+        Button closeActivity = (Button) findViewById(R.id.btn_endPriority);
+        closeActivity.setOnClickListener(new View.OnClickListener() //Close Activity
         {
             @Override
             public void onClick(View v)
@@ -55,7 +55,10 @@ public class ActivityPriority extends AppCompatActivity
                 ((GlobalClass) getApplicationContext()).getCategoriesHandler().setCurrentlyInUseCategoryServer("");
                 ((GlobalClass) getApplicationContext()).getCategoriesHandler().setCurrentlyInUseCategory("");
                 ((GlobalClass) getApplicationContext()).getCategoriesHandler().getCurrentlyInUse().clear();
-                ((GlobalClass) getApplicationContext()).getCategoriesHandler().getArticlesRecyclerAdapter().notifyDataSetChanged();
+                if(((GlobalClass) getApplicationContext()).getCategoriesHandler().getArticlesRecyclerAdapter() != null)
+                {
+                    ((GlobalClass) getApplicationContext()).getCategoriesHandler().getArticlesRecyclerAdapter().notifyDataSetChanged();
+                }
             }
         });
     }
@@ -73,7 +76,10 @@ public class ActivityPriority extends AppCompatActivity
         ((GlobalClass) getApplicationContext()).getCategoriesHandler().setCurrentlyInUseCategoryServer("");
         ((GlobalClass) getApplicationContext()).getCategoriesHandler().setCurrentlyInUseCategory("");
         ((GlobalClass) getApplicationContext()).getCategoriesHandler().getCurrentlyInUse().clear();
-        ((GlobalClass) getApplicationContext()).getCategoriesHandler().getArticlesRecyclerAdapter().notifyDataSetChanged();
+        if(((GlobalClass) getApplicationContext()).getCategoriesHandler().getArticlesRecyclerAdapter() != null)
+        {
+            ((GlobalClass) getApplicationContext()).getCategoriesHandler().getArticlesRecyclerAdapter().notifyDataSetChanged();
+        }
         super.onBackPressed();
     }
 }

@@ -1,24 +1,33 @@
 package magshimim.newzbay;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 public class RSS
 {
+    @SerializedName("ID")
+    @Expose
     private String id;
+    @SerializedName("subject")
+    @Expose
     private String subject;
-    private String site;
+    @SerializedName("website")
+    @Expose
+    private String website;
 
-    public RSS(String id, String subject, String site)
+    public RSS(String ID, String subject, String site)
     {
-        this.id = id;
+        this.id = ID;
         this.subject = subject;
-        this.site = site;
+        this.website = site;
     }
 
-    public String getId()
+    public String getID()
     {
         return id;
     }
 
-    public void setId(String id)
+    public void setID(String id)
     {
         this.id = id;
     }
@@ -28,8 +37,8 @@ public class RSS
         return subject;
     }
 
-    public String getSite()
+    public String getWebsite()
     {
-        return site;
+        return website;
     }
 }

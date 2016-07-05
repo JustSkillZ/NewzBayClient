@@ -115,7 +115,7 @@ public class ActivityNewsFeed extends AppCompatActivity
                         if (!categoriesHandler.isLoading()) //If not asking, ask for more articles from current subject
                         {
                             categoriesHandler.setLoading(true);
-                            globalClass.getCommunication().send("118○" + categoriesHandler.getCurrentlyInUseCategoryServer() + "○" + categoriesHandler.getCurrentlyInUse().lastElement().getUrl() + "#");
+                            //globalClass.getCommunication().send("118○" + categoriesHandler.getCurrentlyInUseCategoryServer() + "○" + categoriesHandler.getCurrentlyInUse().lastElement().getUrl() + "#");
                             findViewById(R.id.pb_loadingArticles).setVisibility(View.VISIBLE);
                         }
                     }
@@ -370,7 +370,6 @@ public class ActivityNewsFeed extends AppCompatActivity
             {
                 LoginManager.getInstance().logOut();
             }
-            globalClass.getCommunication().send("500#"); //Disconnect from the server
             globalClass.endClass();
             Intent intent = new Intent(this, ActivityEntrance.class);
             startActivity(intent);
@@ -402,16 +401,16 @@ public class ActivityNewsFeed extends AppCompatActivity
         {
             if (user.getConnectedVia().equals("Guest"))
             {
-                Picasso.with(globalClass.getCurrentActivity()).load(R.drawable.user_icon).into(userPic);
+                Picasso.with(ActivityNewsFeed.this).load(R.drawable.user_icon).into(userPic);
             }
             else if (user.getConnectedVia().equals("Facebook"))
             {
-                Picasso.with(globalClass.getCurrentActivity()).load(((FacebookUser) user).getFacebookProfile().getProfilePictureUri(500, 500)).placeholder(R.drawable.user_icon).into(userPic);
+                Picasso.with(ActivityNewsFeed.this).load(((FacebookUser) user).getFacebookProfile().getProfilePictureUri(500, 500)).placeholder(R.drawable.user_icon).into(userPic);
                 user.setFullName(((FacebookUser) user).getFacebookProfile().getName());
             }
             else if (user.getConnectedVia().equals("Google"))
             {
-                Picasso.with(globalClass.getCurrentActivity()).load(((GoogleUser) user).getGoogleProfile().getImage().getUrl().replace("sz=50", "sz=500")).placeholder(R.drawable.user_icon).into(userPic);
+                Picasso.with(ActivityNewsFeed.this).load(((GoogleUser) user).getGoogleProfile().getImage().getUrl().replace("sz=50", "sz=500")).placeholder(R.drawable.user_icon).into(userPic);
                 user.setFullName(((GoogleUser) user).getGoogleProfile().getDisplayName());
             }
         }
@@ -436,18 +435,18 @@ public class ActivityNewsFeed extends AppCompatActivity
 
     private void updateArticles()
     {
-        globalClass.getCommunication().send("114○" + categoriesHandler.getCurrentlyInUseCategoryServer() + "#");
         findViewById(R.id.pb_loadingArticles).setVisibility(View.VISIBLE);
         categoriesHandler.setCurrentlyInUseCategory(categoriesHandler.getCurrentCategoryID(), this);
+        globalClass.getNewCommunication().getArticles(categoriesHandler.getCurrentlyInUseCategoryServer(), globalClass);
         recyclerLayoutManager.scrollToPositionWithOffset(0, 0);
     }
 
     private void changeCategory(int categoryID)
     {
-        globalClass.getCommunication().send("114○" + categoriesHandler.getCategoriesForServer().get(categoryID) + "#");
         findViewById(R.id.pb_loadingArticles).setVisibility(View.VISIBLE);
         categoriesHandler.setCurrentlyInUseCategory(categoryID, this);
         toolbarMain.setBackgroundColor(categoriesHandler.getCategoryColor().get(categoriesHandler.getCurrentCategoryID()));
+        globalClass.getNewCommunication().getArticles(categoriesHandler.getCurrentlyInUseCategoryServer(), globalClass);
         recyclerLayoutManager.scrollToPositionWithOffset(0, 0);
     }
 

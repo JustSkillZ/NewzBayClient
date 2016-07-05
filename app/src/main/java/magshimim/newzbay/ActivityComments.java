@@ -54,6 +54,7 @@ public class ActivityComments extends AppCompatActivity implements EmojiconGridF
         setContentView(R.layout.activity_comments);
 
         globalClass = (GlobalClass) getApplicationContext();
+        globalClass.setCurrentActivity(ActivityComments.this);
         commentsHandler = globalClass.getCommentsHandler();
         user = globalClass.getUser();
         commentText = (EditText) findViewById(R.id.commentText);
@@ -112,7 +113,7 @@ public class ActivityComments extends AppCompatActivity implements EmojiconGridF
         });
         ((TextView) findViewById(R.id.tv_mainHeadline)).setText(commentsHandler.getArticle().getMainHeadline());
         ((TextView) findViewById(R.id.tv_secondHeadline)).setText(commentsHandler.getArticle().getSecondHeadline());
-        ((TextView) findViewById(R.id.tv_site)).setText(commentsHandler.getArticle().getSiteName());
+        ((TextView) findViewById(R.id.tv_site)).setText(commentsHandler.getArticle().getWebSite());
         if (commentsHandler.getArticle().getDate() != null)
         {
             Date d = new Date();
@@ -141,7 +142,7 @@ public class ActivityComments extends AppCompatActivity implements EmojiconGridF
         commentsRecyclerAdapter = new CommentsAdapter(globalClass, ActivityComments.this);
         commentsHandler.setCommentsRecyclerAdapter(commentsRecyclerAdapter);
         recyclerViewComments.setAdapter(commentsRecyclerAdapter);
-        globalClass.getCommunication().send("120◘" + commentsHandler.getArticle().getUrl() + "#");
+        //globalClass.getCommunication().send("120◘" + commentsHandler.getArticle().getUrl() + "#");
         //*****************************************************************************************************************
 
         commentsHandler.setCommentActivity(this);
@@ -186,11 +187,8 @@ public class ActivityComments extends AppCompatActivity implements EmojiconGridF
     {
         if (!commentText.getText().toString().equals(""))
         {
-            globalClass.getCommunication().send("122◘" + commentsHandler.getArticle().getUrl() + "○" + commentText.getText().toString() + "#");
-            commentsHandler.getCommentsOfCurrentArticle().addElement(new Comment(user.getFullName(), user.getPicURL(), commentText.getText().toString(), true, "-1"));
-            commentsRecyclerAdapter.notifyDataSetChanged();
+            globalClass.getNewCommunication().addComment(commentsHandler.getArticle().getUrl(), commentText.getText().toString(), globalClass, commentsHandler, user, commentText.getText().toString());
             commentText.setText("");
-            commentsHandler.getArticle().incNumberOfComments();
             ViewGroup parent = (ViewGroup) v.getParent().getParent().getParent();
             ((TextView) parent.findViewById(R.id.tv_comments)).setText(commentsHandler.getArticle().getNumberOfComments() + "");
             if(emojiconsOpen)

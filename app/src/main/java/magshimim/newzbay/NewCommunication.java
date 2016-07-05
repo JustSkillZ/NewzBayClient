@@ -5,11 +5,10 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.view.ContextThemeWrapper;
 import android.util.Log;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.text.ParseException;
@@ -323,7 +322,7 @@ public class NewCommunication
         });
     }
 
-    public void deleteComment(String articleURL, String id, final Context context)
+    public void deleteComment(String articleURL, String id, final GlobalClass globalClass, final int tempPosition)
     {
         Call<InfoFromServer> call = newzBayAPI.deleteComment(token, articleURL, id);
         call.enqueue(new Callback<InfoFromServer>()
@@ -333,16 +332,19 @@ public class NewCommunication
             {
                 if(response.body().getStatus() == 200)
                 {
-
+                    globalClass.getCommentsHandler().getCommentsOfCurrentArticle().remove(tempPosition);
+                    globalClass.getCommentsHandler().getArticle().decNumberOfComments();
+                    globalClass.getCommentsHandler().getCommentsRecyclerAdapter().notifyDataSetChanged();
+                    ((TextView) ((Activity) globalClass.getCurrentActivity()).findViewById(R.id.tv_comments)).setText(globalClass.getCommentsHandler().getArticle().getNumberOfComments() + "");
                 }
             }
 
             @Override
             public void onFailure(Call<InfoFromServer> call, Throwable t)
             {
-                new AlertDialog.Builder(context)
+                new AlertDialog.Builder(globalClass.getCurrentActivity(), R.style.NBAlertDialog)
                         .setTitle("הפעולה נכשלה")
-                        .setMessage("לא היה ניתן למחוק את התגובה, אהא נסה/י שנית מאוחר יותר")
+                        .setMessage("לא היה ניתן למחוק את התגובה, אנא נסה/י שנית מאוחר יותר")
                         .setNeutralButton("אוקיי", new DialogInterface.OnClickListener()
                         {
                             @Override
@@ -352,6 +354,39 @@ public class NewCommunication
                             }
                         })
                         .show();
+            }
+        });
+    }
+
+    public void getComments(String articleURL, final GlobalClass globalClass)
+    {
+        Call<JsonRecievedComments> call = newzBayAPI.getComments(token, articleURL);
+        call.enqueue(new Callback<JsonRecievedComments>()
+        {
+            @Override
+            public void onResponse(Call<JsonRecievedComments> call, Response<JsonRecievedComments> response)
+            {
+                if(response.body().getStatus() == 200)
+                {
+                    globalClass.getCommentsHandler().getCommentsOfCurrentArticle().clear();
+                    for(int i = 0; i < response.body().getComments().size(); i++)
+                    {
+                        globalClass.getCommentsHandler().getCommentsOfCurrentArticle().addElement(new Comment(
+                                response.body().getComments().get(i).getName()
+                                ,
+                                response.body().getComments().get(i).getPicURL(),
+                                response.body().getComments().get(i).getComment(),
+                                !response.body().getComments().get(i).getId().equals(""), //Check if the author is the user
+                                response.body().getComments().get(i).getId())); //if ID == "" the author is not the user
+                    }
+                    globalClass.getCommentsHandler().getCommentsRecyclerAdapter().notifyDataSetChanged();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<JsonRecievedComments> call, Throwable t)
+            {
+
             }
         });
     }

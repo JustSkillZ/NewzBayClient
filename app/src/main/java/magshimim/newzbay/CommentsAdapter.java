@@ -64,11 +64,10 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.ViewHo
                             switch (which)
                             {
                                 case DialogInterface.BUTTON_POSITIVE:
-                                    //globalClass.getCommunication().send("124◘" + commentsHandler.getArticle().getUrl() + "○" + commentsHandler.getCommentsOfCurrentArticle().get(tempPosition).getID() + "#");
-                                    commentsHandler.getCommentsOfCurrentArticle().remove(tempPosition);
-                                    commentsHandler.getArticle().decNumberOfComments();
-                                    commentsHandler.getCommentsRecyclerAdapter().notifyDataSetChanged();
-                                    ((TextView) ((Activity) context).findViewById(R.id.tv_comments)).setText(commentsHandler.getArticle().getNumberOfComments() + "");
+                                    globalClass.getNewCommunication().deleteComment(commentsHandler.getArticle().getUrl(),
+                                            commentsHandler.getCommentsOfCurrentArticle().get(tempPosition).getId(),
+                                            globalClass,
+                                            tempPosition);
                                     break;
                             }
                         }

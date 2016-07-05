@@ -47,4 +47,8 @@ public interface NewzBayAPI
     @FormUrlEncoded
     @POST("/article/comment/deleteComment")
     Call<InfoFromServer> deleteComment(@Header ("x-access-token") String token, @Field("URL") String articleURL, @Field("ID") String id);
+
+    @FormUrlEncoded
+    @POST("/article/comment/getComments")
+    Call<JsonRecievedComments> getComments(@Header ("x-access-token") String token, @Field("URL") String articleURL);
 }

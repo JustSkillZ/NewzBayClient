@@ -32,14 +32,17 @@ public class Communication
     private String token;
     private boolean firstRegistration;
 
+    private boolean loadingIP;
 
 
     public Communication()
     {
+        loadingIP = false;
     }
 
     public void getIPFromBaseURL(final GlobalClass globalClass)
     {
+        loadingIP = true;
         token = "";
         IP = "http://";
         firstRegistration = true;
@@ -71,20 +74,24 @@ public class Communication
                 {
 
                 }
+                loadingIP = false;
             }
 
             @Override
             public void onFailure(Call<InfoFromServer> call, Throwable t)
             {
-                new AlertDialog.Builder(globalClass.getCurrentActivity(), R.style.NBAlertDialog)
-                        .setMessage("אירעה שגיאה")
-                        .setCancelable(false)
-                        .setPositiveButton("נסה שנית", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                getIPFromBaseURL(globalClass);
-                            }
-                        })
-                        .show();
+                if(!loadingIP)
+                {
+                    new AlertDialog.Builder(globalClass.getCurrentActivity(), R.style.NBAlertDialog)
+                            .setMessage("אירעה שגיאה")
+                            .setCancelable(false)
+                            .setPositiveButton("נסה שנית", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    getIPFromBaseURL(globalClass);
+                                }
+                            })
+                            .show();
+                }
             }
         });
     }
@@ -119,15 +126,18 @@ public class Communication
             @Override
             public void onFailure(Call<AuthenticationRecieve> call, Throwable t)
             {
-                new AlertDialog.Builder(globalClass.getCurrentActivity(), R.style.NBAlertDialog)
-                        .setMessage("אירעה שגיאה")
-                        .setCancelable(false)
-                        .setPositiveButton("נסה שנית", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                getIPFromBaseURL(globalClass);
-                            }
-                        })
-                        .show();
+                if(!loadingIP)
+                {
+                    new AlertDialog.Builder(globalClass.getCurrentActivity(), R.style.NBAlertDialog)
+                            .setMessage("אירעה שגיאה")
+                            .setCancelable(false)
+                            .setPositiveButton("נסה שנית", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    getIPFromBaseURL(globalClass);
+                                }
+                            })
+                            .show();
+                }
             }
         });
     }
@@ -148,19 +158,22 @@ public class Communication
             @Override
             public void onFailure(Call<InfoFromServer> call, Throwable t)
             {
-                new AlertDialog.Builder(globalClass.getCurrentActivity(), R.style.NBAlertDialog)
-                        .setMessage("אירעה שגיאה")
-                        .setPositiveButton("נסה שנית", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                getIPFromBaseURL(globalClass);
-                            }
-                        })
-                        .setNegativeButton("ביטול", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                // do nothing
-                            }
-                        })
-                        .show();
+                if(!loadingIP)
+                {
+                    new AlertDialog.Builder(globalClass.getCurrentActivity(), R.style.NBAlertDialog)
+                            .setMessage("אירעה שגיאה")
+                            .setPositiveButton("נסה שנית", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    getIPFromBaseURL(globalClass);
+                                }
+                            })
+                            .setNegativeButton("ביטול", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    // do nothing
+                                }
+                            })
+                            .show();
+                }
             }
         });
     }
@@ -184,19 +197,22 @@ public class Communication
             @Override
             public void onFailure(Call<SubWeb> call, Throwable t)
             {
-                new AlertDialog.Builder(globalClass.getCurrentActivity(), R.style.NBAlertDialog)
-                        .setMessage("אירעה שגיאה")
-                        .setPositiveButton("נסה שנית", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                getIPFromBaseURL(globalClass);
-                            }
-                        })
-                        .setNegativeButton("ביטול", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                // do nothing
-                            }
-                        })
-                        .show();
+                if(!loadingIP)
+                {
+                    new AlertDialog.Builder(globalClass.getCurrentActivity(), R.style.NBAlertDialog)
+                            .setMessage("אירעה שגיאה")
+                            .setPositiveButton("נסה שנית", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    getIPFromBaseURL(globalClass);
+                                }
+                            })
+                            .setNegativeButton("ביטול", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    // do nothing
+                                }
+                            })
+                            .show();
+                }
             }
         });
     }
@@ -214,19 +230,22 @@ public class Communication
             @Override
             public void onFailure(Call<InfoFromServer> call, Throwable t)
             {
-                new AlertDialog.Builder(globalClass.getCurrentActivity(), R.style.NBAlertDialog)
-                        .setMessage("אירעה שגיאה")
-                        .setPositiveButton("נסה שנית", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                getIPFromBaseURL(globalClass);
-                            }
-                        })
-                        .setNegativeButton("ביטול", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                // do nothing
-                            }
-                        })
-                        .show();
+                if(!loadingIP)
+                {
+                    new AlertDialog.Builder(globalClass.getCurrentActivity(), R.style.NBAlertDialog)
+                            .setMessage("אירעה שגיאה")
+                            .setPositiveButton("נסה שנית", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    getIPFromBaseURL(globalClass);
+                                }
+                            })
+                            .setNegativeButton("ביטול", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    // do nothing
+                                }
+                            })
+                            .show();
+                }
             }
         });
     }
@@ -249,19 +268,22 @@ public class Communication
             @Override
             public void onFailure(Call<UserPriority> call, Throwable t)
             {
-                new AlertDialog.Builder(globalClass.getCurrentActivity(), R.style.NBAlertDialog)
-                        .setMessage("אירעה שגיאה")
-                        .setPositiveButton("נסה שנית", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                getIPFromBaseURL(globalClass);
-                            }
-                        })
-                        .setNegativeButton("ביטול", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                // do nothing
-                            }
-                        })
-                        .show();
+                if(!loadingIP)
+                {
+                    new AlertDialog.Builder(globalClass.getCurrentActivity(), R.style.NBAlertDialog)
+                            .setMessage("אירעה שגיאה")
+                            .setPositiveButton("נסה שנית", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    getIPFromBaseURL(globalClass);
+                                }
+                            })
+                            .setNegativeButton("ביטול", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    // do nothing
+                                }
+                            })
+                            .show();
+                }
             }
         });
     }
@@ -321,19 +343,28 @@ public class Communication
             @Override
             public void onFailure(Call<JsonRecievedArticles> call, Throwable t)
             {
-                new AlertDialog.Builder(globalClass.getCurrentActivity(), R.style.NBAlertDialog)
-                        .setMessage("אירעה שגיאה")
-                        .setPositiveButton("נסה שנית", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                getIPFromBaseURL(globalClass);
-                            }
-                        })
-                        .setNegativeButton("ביטול", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                // do nothing
-                            }
-                        })
-                        .show();
+                if(!loadingIP)
+                {
+                    new AlertDialog.Builder(globalClass.getCurrentActivity(), R.style.NBAlertDialog)
+                            .setMessage("אירעה שגיאה")
+                            .setPositiveButton("נסה שנית", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    getIPFromBaseURL(globalClass);
+                                }
+                            })
+                            .setNegativeButton("ביטול", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    // do nothing
+                                }
+                            })
+                            .show();
+                }
+                globalClass.getCategoriesHandler().setLoading(false);
+                ProgressBar pb = (ProgressBar) ((Activity) globalClass.getCurrentActivity()).findViewById(R.id.pb_loadingArticles);
+                if (pb != null)
+                {
+                    pb.setVisibility(View.INVISIBLE);
+                }
             }
         });
     }
@@ -352,19 +383,22 @@ public class Communication
             @Override
             public void onFailure(Call<InfoFromServer> call, Throwable t)
             {
-                new AlertDialog.Builder(globalClass.getCurrentActivity(), R.style.NBAlertDialog)
-                        .setMessage("אירעה שגיאה")
-                        .setPositiveButton("נסה שנית", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                getIPFromBaseURL(globalClass);
-                            }
-                        })
-                        .setNegativeButton("ביטול", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                // do nothing
-                            }
-                        })
-                        .show();
+                if(!loadingIP)
+                {
+                    new AlertDialog.Builder(globalClass.getCurrentActivity(), R.style.NBAlertDialog)
+                            .setMessage("אירעה שגיאה")
+                            .setPositiveButton("נסה שנית", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    getIPFromBaseURL(globalClass);
+                                }
+                            })
+                            .setNegativeButton("ביטול", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    // do nothing
+                                }
+                            })
+                            .show();
+                }
             }
         });
     }
@@ -388,20 +422,23 @@ public class Communication
             @Override
             public void onFailure(Call<InfoFromServer> call, Throwable t)
             {
-                new AlertDialog.Builder(globalClass.getCurrentActivity(), R.style.NBAlertDialog)
-                        .setTitle("הפעולה נכשלה")
-                        .setMessage("לא היה ניתן להוסיף את התגובה, אנא נסה/י שנית מאוחר יותר")
-                        .setPositiveButton("נסה שנית", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                getIPFromBaseURL(globalClass);
-                            }
-                        })
-                        .setNegativeButton("ביטול", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                // do nothing
-                            }
-                        })
-                        .show();
+                if(!loadingIP)
+                {
+                    new AlertDialog.Builder(globalClass.getCurrentActivity(), R.style.NBAlertDialog)
+                            .setTitle("הפעולה נכשלה")
+                            .setMessage("לא היה ניתן להוסיף את התגובה, אנא נסה/י שנית מאוחר יותר")
+                            .setPositiveButton("נסה שנית", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    getIPFromBaseURL(globalClass);
+                                }
+                            })
+                            .setNegativeButton("ביטול", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    // do nothing
+                                }
+                            })
+                            .show();
+                }
             }
         });
     }
@@ -426,20 +463,23 @@ public class Communication
             @Override
             public void onFailure(Call<InfoFromServer> call, Throwable t)
             {
-                new AlertDialog.Builder(globalClass.getCurrentActivity(), R.style.NBAlertDialog)
-                        .setTitle("הפעולה נכשלה")
-                        .setMessage("לא היה ניתן למחוק את התגובה, אנא נסה/י שנית מאוחר יותר")
-                        .setPositiveButton("נסה שנית", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                getIPFromBaseURL(globalClass);
-                            }
-                        })
-                        .setNegativeButton("ביטול", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                // do nothing
-                            }
-                        })
-                        .show();
+                if(loadingIP)
+                {
+                    new AlertDialog.Builder(globalClass.getCurrentActivity(), R.style.NBAlertDialog)
+                            .setTitle("הפעולה נכשלה")
+                            .setMessage("לא היה ניתן למחוק את התגובה, אנא נסה/י שנית מאוחר יותר")
+                            .setPositiveButton("נסה שנית", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    getIPFromBaseURL(globalClass);
+                                }
+                            })
+                            .setNegativeButton("ביטול", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    // do nothing
+                                }
+                            })
+                            .show();
+                }
             }
         });
     }
@@ -472,19 +512,22 @@ public class Communication
             @Override
             public void onFailure(Call<JsonRecievedComments> call, Throwable t)
             {
-                new AlertDialog.Builder(globalClass.getCurrentActivity(), R.style.NBAlertDialog)
-                        .setMessage("אירעה שגיאה")
-                        .setPositiveButton("נסה שנית", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                getIPFromBaseURL(globalClass);
-                            }
-                        })
-                        .setNegativeButton("ביטול", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                // do nothing
-                            }
-                        })
-                        .show();
+                if(!loadingIP)
+                {
+                    new AlertDialog.Builder(globalClass.getCurrentActivity(), R.style.NBAlertDialog)
+                            .setMessage("אירעה שגיאה")
+                            .setPositiveButton("נסה שנית", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    getIPFromBaseURL(globalClass);
+                                }
+                            })
+                            .setNegativeButton("ביטול", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    // do nothing
+                                }
+                            })
+                            .show();
+                }
             }
         });
     }
@@ -535,19 +578,22 @@ public class Communication
             @Override
             public void onFailure(Call<JsonRecievedArticles> call, Throwable t)
             {
-                new AlertDialog.Builder(globalClass.getCurrentActivity(), R.style.NBAlertDialog)
-                        .setMessage("אירעה שגיאה")
-                        .setPositiveButton("נסה שנית", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                getIPFromBaseURL(globalClass);
-                            }
-                        })
-                        .setNegativeButton("ביטול", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                // do nothing
-                            }
-                        })
-                        .show();
+                if(!loadingIP)
+                {
+                    new AlertDialog.Builder(globalClass.getCurrentActivity(), R.style.NBAlertDialog)
+                            .setMessage("אירעה שגיאה")
+                            .setPositiveButton("נסה שנית", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    getIPFromBaseURL(globalClass);
+                                }
+                            })
+                            .setNegativeButton("ביטול", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    // do nothing
+                                }
+                            })
+                            .show();
+                }
             }
         });
     }
@@ -601,19 +647,29 @@ public class Communication
             @Override
             public void onFailure(Call<JsonRecievedArticles> call, Throwable t)
             {
-                new AlertDialog.Builder(globalClass.getCurrentActivity(), R.style.NBAlertDialog)
-                        .setMessage("אירעה שגיאה")
-                        .setPositiveButton("נסה שנית", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                getIPFromBaseURL(globalClass);
-                            }
-                        })
-                        .setNegativeButton("ביטול", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                // do nothing
-                            }
-                        })
-                        .show();
+                if(!loadingIP)
+                {
+                    new AlertDialog.Builder(globalClass.getCurrentActivity(), R.style.NBAlertDialog)
+                            .setMessage("אירעה שגיאה")
+                            .setPositiveButton("נסה שנית", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    getIPFromBaseURL(globalClass);
+                                }
+                            })
+                            .setNegativeButton("ביטול", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    // do nothing
+                                }
+                            })
+                            .show();
+                }
+
+                globalClass.getCategoriesHandler().setLoading(false);
+                ProgressBar pb = (ProgressBar) ((Activity) globalClass.getCurrentActivity()).findViewById(R.id.pb_loadingArticles);
+                if (pb != null)
+                {
+                    pb.setVisibility(View.INVISIBLE);
+                }
             }
         });
     }

@@ -353,10 +353,6 @@ public class ActivityNewsFeed extends AppCompatActivity
             intent.putExtra(Intent.EXTRA_EMAIL, new String[]{"nnewzbay@gmail.com"});
             startActivity(Intent.createChooser(intent, "צור קשר"));
         }
-        else if(id == R.id.nav_donateNB)
-        {
-
-        }
         else if (id == R.id.nav_discconect)
         {
             if (user.getConnectedVia().equals("Google"))

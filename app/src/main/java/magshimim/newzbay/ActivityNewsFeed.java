@@ -70,7 +70,6 @@ public class ActivityNewsFeed extends AppCompatActivity
         globalClass = ((GlobalClass) getApplicationContext());
         user = globalClass.getUser();
         globalClass.setCurrentActivity(ActivityNewsFeed.this);
-        globalClass.setCurrentLayout(R.id.newsfeed_layout);
         categoriesHandler = globalClass.getCategoriesHandler();
         SharedPreferences sharedpreferences; //If first time in this activity, show explanation activity.
         if (!getSharedPreferences(explanationPref, Context.MODE_PRIVATE).getBoolean(isExplanation1, false))
@@ -115,7 +114,7 @@ public class ActivityNewsFeed extends AppCompatActivity
                         if (!categoriesHandler.isLoading()) //If not asking, ask for more articles from current subject
                         {
                             categoriesHandler.setLoading(true);
-                            //globalClass.getCommunication().send("118○" + categoriesHandler.getCurrentlyInUseCategoryServer() + "○" + categoriesHandler.getCurrentlyInUse().lastElement().getUrl() + "#");
+                            globalClass.getCommunication().getMoreArticles(categoriesHandler.getCurrentlyInUseCategoryServer(), categoriesHandler.getCurrentlyInUse().lastElement().getUrl(), globalClass);
                             findViewById(R.id.pb_loadingArticles).setVisibility(View.VISIBLE);
                         }
                     }
@@ -437,7 +436,7 @@ public class ActivityNewsFeed extends AppCompatActivity
     {
         findViewById(R.id.pb_loadingArticles).setVisibility(View.VISIBLE);
         categoriesHandler.setCurrentlyInUseCategory(categoriesHandler.getCurrentCategoryID(), this);
-        globalClass.getNewCommunication().getArticles(categoriesHandler.getCurrentlyInUseCategoryServer(), globalClass);
+        globalClass.getCommunication().getArticles(categoriesHandler.getCurrentlyInUseCategoryServer(), globalClass);
         recyclerLayoutManager.scrollToPositionWithOffset(0, 0);
     }
 
@@ -446,7 +445,7 @@ public class ActivityNewsFeed extends AppCompatActivity
         findViewById(R.id.pb_loadingArticles).setVisibility(View.VISIBLE);
         categoriesHandler.setCurrentlyInUseCategory(categoryID, this);
         toolbarMain.setBackgroundColor(categoriesHandler.getCategoryColor().get(categoriesHandler.getCurrentCategoryID()));
-        globalClass.getNewCommunication().getArticles(categoriesHandler.getCurrentlyInUseCategoryServer(), globalClass);
+        globalClass.getCommunication().getArticles(categoriesHandler.getCurrentlyInUseCategoryServer(), globalClass);
         recyclerLayoutManager.scrollToPositionWithOffset(0, 0);
     }
 

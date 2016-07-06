@@ -18,6 +18,7 @@ public class ActivityPriority extends AppCompatActivity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_priority);
+        ((GlobalClass) getApplicationContext()).setCurrentActivity(ActivityPriority.this);
         Time now = new Time();
         now.setToNow();
         if (now.hour >= 19 || now.hour >= 0 && now.hour <= 5) //Change Theme if the time is after 7 PM or before 6 AM
@@ -81,5 +82,12 @@ public class ActivityPriority extends AppCompatActivity
             ((GlobalClass) getApplicationContext()).getCategoriesHandler().getArticlesRecyclerAdapter().notifyDataSetChanged();
         }
         super.onBackPressed();
+    }
+
+    @Override
+    protected void onResume()
+    {
+        ((GlobalClass) getApplicationContext()).setCurrentActivity(ActivityPriority.this);
+        super.onResume();
     }
 }

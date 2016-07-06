@@ -51,4 +51,11 @@ public interface NewzBayAPI
     @FormUrlEncoded
     @POST("/article/comment/getComments")
     Call<JsonRecievedComments> getComments(@Header ("x-access-token") String token, @Field("URL") String articleURL);
+
+    @GET("/article/getHotnews")
+    Call<JsonRecievedArticles> getHotNews(@Header ("x-access-token") String token);
+
+    @FormUrlEncoded
+    @POST("/article/getMoreArticles")
+    Call<JsonRecievedArticles> getMoreArticles(@Header ("x-access-token") String token, @Field("subject") String subject, @Field("URL") String lastArticleURL);
 }

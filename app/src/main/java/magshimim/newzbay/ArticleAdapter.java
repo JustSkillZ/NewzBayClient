@@ -2,7 +2,6 @@ package magshimim.newzbay;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.drawable.BitmapDrawable;
 import android.support.v7.widget.RecyclerView;
 import android.text.format.DateUtils;
 import android.view.LayoutInflater;
@@ -100,14 +99,14 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
                             like.setTextColor(globalClass.getResources().getColor(R.color.grey));
                             categoriesHandler.getCurrentlyInUse().get(tempPosition).setLiked(false);
                             categoriesHandler.getCurrentlyInUse().get(tempPosition).decNumberOfLikes();
-                            globalClass.getNewCommunication().like(categoriesHandler.getCurrentlyInUse().get(tempPosition).getUrl());
+                            globalClass.getCommunication().like(categoriesHandler.getCurrentlyInUse().get(tempPosition).getUrl(), globalClass);
                         }
                         else //Like
                         {
                             like.setTextColor(categoriesHandler.getCategoryColor().get(categoriesHandler.getCurrentCategoryID()));
                             categoriesHandler.getCurrentlyInUse().get(tempPosition).setLiked(true);
                             categoriesHandler.getCurrentlyInUse().get(tempPosition).incNumberOfLikes();
-                            globalClass.getNewCommunication().like(categoriesHandler.getCurrentlyInUse().get(tempPosition).getUrl());
+                            globalClass.getCommunication().like(categoriesHandler.getCurrentlyInUse().get(tempPosition).getUrl(), globalClass);
                         }
                         float numOfLikes = Integer.parseInt(String.valueOf(categoriesHandler.getCurrentlyInUse().get(tempPosition).getNumberOfLikes()));
                         if (numOfLikes >= 1000) //Nice format, if there is more than 1000 likes. Example: (1.5k)

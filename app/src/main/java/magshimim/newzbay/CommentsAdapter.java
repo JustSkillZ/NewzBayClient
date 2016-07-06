@@ -1,6 +1,5 @@
 package magshimim.newzbay;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -64,7 +63,7 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.ViewHo
                             switch (which)
                             {
                                 case DialogInterface.BUTTON_POSITIVE:
-                                    globalClass.getNewCommunication().deleteComment(commentsHandler.getArticle().getUrl(),
+                                    globalClass.getCommunication().deleteComment(commentsHandler.getArticle().getUrl(),
                                             commentsHandler.getCommentsOfCurrentArticle().get(tempPosition).getId(),
                                             globalClass,
                                             tempPosition);

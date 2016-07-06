@@ -10,7 +10,6 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.text.format.DateUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -54,7 +53,7 @@ public class ActivityHotNews extends AppCompatActivity
         mViewPager.setAdapter(mSectionsPagerAdapter);
         ((GlobalClass) getApplicationContext()).setCurrentActivity(ActivityHotNews.this);
         ((GlobalClass) getApplicationContext()).getCategoriesHandler().setHotNewsPageAdapter(mSectionsPagerAdapter); //Save adapter in order to notify on change in another thread
-        //((GlobalClass) getApplicationContext()).getCommunication().send("126#");
+        ((GlobalClass) getApplicationContext()).getCommunication().getHotNews(((GlobalClass) getApplicationContext()));
     }
 
     @Override
@@ -68,6 +67,13 @@ public class ActivityHotNews extends AppCompatActivity
         ((GlobalClass) getApplicationContext()).getCategoriesHandler().getCurrentlyInUse().clear();
         ((GlobalClass) getApplicationContext()).getCategoriesHandler().getArticlesRecyclerAdapter().notifyDataSetChanged();
         super.onBackPressed();
+    }
+
+    @Override
+    protected void onResume()
+    {
+        ((GlobalClass) getApplicationContext()).setCurrentActivity(ActivityHotNews.this);
+        super.onResume();
     }
 
     /**
@@ -189,14 +195,14 @@ public class ActivityHotNews extends AppCompatActivity
                                 Picasso.with(getContext()).load(R.drawable.like_hot_article).into(like);
                                 hotNews.get(getArguments().getInt("NB")).setLiked(false);
                                 hotNews.get(getArguments().getInt("NB")).decNumberOfLikes();
-                                //globalClass.getCommunication().send("110○" + globalClass.getCategoriesHandler().getHotNewsArticles().get(getArguments().getInt("NB")).getUrl() + "#");
+                                globalClass.getCommunication().like(globalClass.getCategoriesHandler().getHotNewsArticles().get(getArguments().getInt("NB")).getUrl(), globalClass);
                             }
                             else //Like
                             {
                                 Picasso.with(getContext()).load(R.drawable.hot_article_liked).into(like);
                                 hotNews.get(getArguments().getInt("NB")).setLiked(true);
                                 hotNews.get(getArguments().getInt("NB")).incNumberOfLikes();
-                                //globalClass.getCommunication().send("110○" + globalClass.getCategoriesHandler().getHotNewsArticles().get(getArguments().getInt("NB")).getUrl() + "#");
+                                globalClass.getCommunication().like(globalClass.getCategoriesHandler().getHotNewsArticles().get(getArguments().getInt("NB")).getUrl(), globalClass);
                             }
                             float numOfLikes = Integer.parseInt(String.valueOf(hotNews.get(getArguments().getInt("NB")).getNumberOfLikes()));
                             if (numOfLikes >= 1000) //Nice format, if there is more than 1000 likes. Example: (1.5k)

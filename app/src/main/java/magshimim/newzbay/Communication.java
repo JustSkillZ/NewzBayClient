@@ -1,514 +1,620 @@
-//package magshimim.newzbay;
-//
-//import android.app.Activity;
-//import android.content.Intent;
-//import android.util.Log;
-//import android.view.View;
-//import android.widget.Button;
-//import android.widget.ProgressBar;
-//import android.widget.Toast;
-//
-//import com.facebook.login.widget.LoginButton;
-//import com.google.android.gms.common.SignInButton;
-//
-//import java.io.BufferedReader;
-//import java.io.IOException;
-//import java.io.InputStreamReader;
-//import java.io.PrintWriter;
-//import java.net.InetSocketAddress;
-//import java.net.Socket;
-//import java.text.ParseException;
-//import java.text.SimpleDateFormat;
-//import java.util.Date;
-//
-//public class Communication implements Runnable
-//{
-//    private GlobalClass globalClass;
-//    private Socket socket;
-//    private String serverIP;
-//    private int dstport;
-//    private boolean userConnected;
-//    private PrintWriter out;
-//    private BufferedReader in;
-//    private CategoriesHandler categoriesHandler;
-//    private CommentsHandler commentsHandler;
-//    private PriorityHandler priorityHandler;
-//    private AESEncryption aesEncryption;
-//
-//    public Communication(GlobalClass globalClass)
-//    {
-//        this.globalClass = globalClass;
-//        categoriesHandler = globalClass.getCategoriesHandler();
-//        priorityHandler = globalClass.getPriorityHandler();
-//        commentsHandler = globalClass.getCommentsHandler();
-//        aesEncryption = new AESEncryption();
-//    }
-//
-//    @Override
-//    public void run()
-//    {
-//        serverIP = globalClass.getErrorHandler().getServerIP(); //Nir PC's IP
-//        dstport = 4444; //Communication port
-//        userConnected = false;
-//        socket = new Socket();
-//        try
-//        {
-//            socket.connect(new InetSocketAddress(serverIP, dstport), 5000);
-//            ((Activity) globalClass.getCurrentActivity()).runOnUiThread(new Runnable() //Connected to NB server
-//            {
-//                @Override
-//                public void run() //Set GUI buttons clickable in order to choose social net or guest
-//                {
-//
-//                    Button guestLoginBtn = (Button) ((Activity) globalClass.getCurrentActivity()).findViewById(R.id.btn_NB);
-//                    if (guestLoginBtn != null)
-//                    {
-//                        guestLoginBtn.setBackground(globalClass.getCurrentActivity().getResources().getDrawable(R.drawable.button_rounded_corners));
-//                        guestLoginBtn.setTextColor(globalClass.getCurrentActivity().getResources().getColor(R.color.white));
-//                        guestLoginBtn.setAlpha((float) 1);
-//                        guestLoginBtn.setEnabled(true);
-//                    }
-//
-//                    LoginButton facebookLoginBtn = (LoginButton) ((Activity) globalClass.getCurrentActivity()).findViewById(R.id.btn_Facebook);
-//                    if (facebookLoginBtn != null)
-//                    {
-//                        facebookLoginBtn.setBackground(globalClass.getCurrentActivity().getResources().getDrawable(R.drawable.button_rounded_corners_facebook));
-//                        facebookLoginBtn.setTextColor(globalClass.getCurrentActivity().getResources().getColor(R.color.white));
-//                        facebookLoginBtn.setAlpha((float) 1);
-//                        facebookLoginBtn.setEnabled(true);
-//                    }
-//
-//                    SignInButton googleLoginBtn = (SignInButton) ((Activity) globalClass.getCurrentActivity()).findViewById(R.id.btn_Google);
-//                    if (googleLoginBtn != null)
-//                    {
-//                        googleLoginBtn.setEnabled(true);
-//                    }
-//
-//                    if (globalClass.getUser() != null) //If user reconnected to the server
-//                    {
-//                        userConnected = true;
-//                    }
-//                    else //If first entrance, log in into social nets or guest
-//                    {
-//                        ((ActivityEntrance) globalClass.getCurrentActivity()).connectToSocialNets();
-//                    }
-//                }
-//            });
-//            try
-//            {
-//                out = new PrintWriter(socket.getOutputStream());
-//                in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-//            }
-//            catch (IOException e)
-//            {
-//                Log.d("check", "IO Error/ Client terminated abruptly");
-//            }
-//            catch (NullPointerException e)
-//            {
-//                Log.d("check", "Client Closed");
-//            }
-//            out.println("404◘" + aesEncryption.getAesKey() + "##"); //Get AES Encryption key, and send it to NB server
-//            out.flush();
-//            try
-//            {
-//                if (in.readLine().equals("405#")) //When server returns 405, connect officially to the server
-//                {
-//                    send("100#"); //First message with encryption. Its like an ID that the user uses NB legal application
-//                    read(); //Loop of reading messages
-//                }
-//            }
-//            catch (IOException e)
-//            {
-//                e.printStackTrace();
-//            }
-//        }
-//        catch (IOException e) //No connection to server
-//        {
-//            globalClass.getErrorHandler().reConnect(); //Reconnect
-//            ((Activity) globalClass.getCurrentActivity()).runOnUiThread(new Runnable() //Connected to NB server
-//            {
-//                @Override
-//                public void run() //Set GUI buttons clickable in order to choose social net or guest
-//                {
-//                }
-//            });
-//        }
-//    }
-//
-//    public void read()
-//    {
-//        try
-//        {
-//            String line = "";
-//            do
-//            {
-//                line = line + in.readLine();
-//                if (line.contains("##")) //Read until get ##
-//                {
-//                    line = line.substring(0, line.length() - 2);
-//                    line = aesEncryption.decrypt(line);
-//                }
-//                if (line.contains("#"))
-//                {
-//                    Log.d("check", "Response from server :  " + line);
-//                    if (line.equals("101#")) //Client Accepted by the server
-//                    {
-//                        if (userConnected)
-//                        {
-//                            send(globalClass.getErrorHandler().getConnectingClientMsg());
-//                            send(globalClass.getErrorHandler().getLastMsgToServer());
-//                            globalClass.getErrorHandler().setLastMsgToServer("");
-//                        }
-//                        else
-//                        {
-//                            send("106#"); //Client asks for sites of each subject
-//
-//                            if (!globalClass.getErrorHandler().getConnectingClientMsg().equals("")) //If was problem with sending 102 to server (connect a user to social net or guest)
-//                            {
-//                                send(globalClass.getErrorHandler().getConnectingClientMsg());
-//                            }
-//                        }
-//                    }
-//                    else if (line.equals("103#")) //User registered successfully
-//                    {
-//                        ((Activity) globalClass.getCurrentActivity()).runOnUiThread(new Runnable()
-//                        {
-//                            @Override
-//                            public void run()
-//                            {
-//                                Intent priority = new Intent(globalClass.getCurrentActivity(), ActivityPriority.class);
-//                                globalClass.getCurrentActivity().startActivity(priority);
-//                            }
-//                        });
-//                    }
-//                    else if (line.contains("107◘")) //Client got sites of each subject, and id of each site
-//                    {
-//                        String id, subject, site;
-//                        line = line.substring(line.indexOf("◘") + 1);
-//                        while (line.contains("◘"))
-//                        {
-//                            String temp = line.substring(0, line.indexOf("◘"));
-//                            id = temp.substring(0, temp.indexOf("○"));
-//                            temp = temp.substring((temp.indexOf("○") + 1));
-//                            subject = temp.substring(0, temp.indexOf("○"));
-//                            temp = temp.substring(temp.indexOf("○") + 1);
-//                            site = temp;
-//                            line = line.substring(line.indexOf("◘") + 1);
-//                            priorityHandler.getRssSites().add(new RSS(id, subject, site));
-//                        }
-//                    }
-//                    else if (line.contains("115◘") || line.contains("127◘")) //Client got articles from a category. 127 is hot news.
-//                    {
-//                        boolean hotNews = line.contains("127◘");
-//                        if (!line.equals("115◘#") && !line.equals("127◘#")) //If empty don't parse line
-//                        {
-//                            line = line.substring(line.indexOf("◘") + 1);
-//                            categoriesHandler.getCurrentlyInUse().clear();
-//                            if(!hotNews || categoriesHandler.getHotNewsArticles().size() == 0)
-//                            {
-//                                while (line.contains("◘"))
-//                                {
-//                                    String id, subject = "", mainHeadLine, secondHeadLine, date, siteName = "", url, likes, comments, imgURL;
-//                                    Boolean liked;
-//                                    String temp = line.substring(0, line.indexOf("◘"));
-//                                    id = temp.substring(0, temp.indexOf("○"));
-//
-//                                    temp = temp.substring((temp.indexOf("○") + 1));
-//                                    mainHeadLine = temp.substring(0, temp.indexOf("○"));
-//                                    temp = temp.substring((temp.indexOf("○") + 1));
-//                                    secondHeadLine = temp.substring(0, temp.indexOf("○"));
-//                                    temp = temp.substring(temp.indexOf("○") + 1);
-//                                    date = temp.substring(0, temp.indexOf("○"));
-//                                    temp = temp.substring(temp.indexOf("○") + 1);
-//                                    url = temp.substring(0, temp.indexOf("○"));
-//                                    temp = temp.substring(temp.indexOf("○") + 1);
-//                                    imgURL = temp.substring(0, temp.indexOf("○"));
-//                                    temp = temp.substring(temp.indexOf("○") + 1);
-//                                    likes = temp.substring(0, temp.indexOf("○"));
-//                                    temp = temp.substring(temp.indexOf("○") + 1);
-//                                    comments = temp.substring(0, temp.indexOf("○"));
-//                                    temp = temp.substring(temp.indexOf("○") + 1);
-//                                    if ((Integer.parseInt(temp)) == 1)
-//                                    {
-//                                        liked = true;
-//                                    }
-//                                    else
-//                                    {
-//                                        liked = false;
-//                                    }
-//                                    line = line.substring(line.indexOf("◘") + 1);
-//                                    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-//                                    Date dates = null;
-//                                    try
-//                                    {
-//                                        dates = formatter.parse(date);
-//
-//                                    }
-//                                    catch (ParseException e)
-//                                    {
-//                                        e.printStackTrace();
-//                                    }
-//                                    for (int i = 0; i < priorityHandler.getRssSites().size(); i++)
-//                                    {
-//                                        if (priorityHandler.getRssSites().get(i).getID().equals(id))
-//                                        {
-//                                            siteName = priorityHandler.getRssSites().get(i).getWebsite();
-//                                            subject = priorityHandler.getRssSites().get(i).getSubject();
-//                                        }
-//                                    }
-//                                    Article article = new Article(subject, mainHeadLine, secondHeadLine, imgURL, dates, siteName, url, Integer.parseInt(likes), Integer.parseInt(comments), liked, globalClass);
-//                                    if(hotNews)
-//                                    {
-//                                        categoriesHandler.getHotNewsArticles().add(article);
-//                                    }
-//                                    else
-//                                    {
-//                                        categoriesHandler.getCurrentlyInUse().add(article);
-//                                    }
-//                                    if(hotNews && categoriesHandler.getHotNewsPageAdapter() != null)
-//                                    {
-//                                        ((Activity) globalClass.getCurrentActivity()).runOnUiThread(new Runnable()
-//                                        {
-//                                            @Override
-//                                            public void run()
-//                                            {
-//                                                categoriesHandler.getHotNewsPageAdapter().notifyDataSetChanged();
-//                                            }
-//                                        });
-//                                    }
-//                                    else
-//                                    {
-//                                        ((Activity) globalClass.getCurrentActivity()).runOnUiThread(new Runnable()
-//                                        {
-//                                            @Override
-//                                            public void run()
-//                                            {
-//                                                categoriesHandler.getArticlesRecyclerAdapter().notifyDataSetChanged();
-//                                                ProgressBar pb = (ProgressBar) ((Activity) globalClass.getCurrentActivity()).findViewById(R.id.pb_loadingArticles);
-//                                                if(pb != null)
-//                                                {
-//                                                    pb.setVisibility(View.INVISIBLE);
-//                                                }
-//                                            }
-//                                        });
-//                                    }
-//                                }
-//                            }
-//                        }
-//                        else
-//                        {
-//                            ((Activity) globalClass.getCurrentActivity()).runOnUiThread(new Runnable()
-//                            {
-//                                @Override
-//                                public void run()
-//                                {
-//                                    categoriesHandler.getCurrentlyInUse().clear();
-//                                    categoriesHandler.getArticlesRecyclerAdapter().notifyDataSetChanged();
-//                                    Toast.makeText(globalClass.getCurrentActivity(), "לא ביצעת העדפה בנושא זה", Toast.LENGTH_LONG).show();
-//                                    ProgressBar pb = (ProgressBar) ((Activity) globalClass.getCurrentActivity()).findViewById(R.id.pb_loadingArticles);
-//                                    if(pb != null)
-//                                    {
-//                                        pb.setVisibility(View.INVISIBLE);
-//                                    }
-//                                }
-//                            });
-//                        }
-//                    }
-//                    else if (line.contains("119◘")) //Client got more articles from current subject
-//                    {
-//                        if (!line.equals("119◘#")) //If empty don't parse line
-//                        {
-//                            line = line.substring(line.indexOf("◘") + 1);
-//                            while (line.contains("◘"))
-//                            {
-//                                String id, subject = "", mainHeadLine, secondHeadLine, date, siteName = "", url, likes, comments, imgURL;
-//                                Boolean liked;
-//                                String temp = line.substring(0, line.indexOf("◘"));
-//                                id = temp.substring(0, temp.indexOf("○"));
-//                                temp = temp.substring((temp.indexOf("○") + 1));
-//                                mainHeadLine = temp.substring(0, temp.indexOf("○"));
-//                                temp = temp.substring((temp.indexOf("○") + 1));
-//                                secondHeadLine = temp.substring(0, temp.indexOf("○"));
-//                                temp = temp.substring(temp.indexOf("○") + 1);
-//                                date = temp.substring(0, temp.indexOf("○"));
-//                                temp = temp.substring(temp.indexOf("○") + 1);
-//                                url = temp.substring(0, temp.indexOf("○"));
-//                                temp = temp.substring(temp.indexOf("○") + 1);
-//                                imgURL = temp.substring(0, temp.indexOf("○"));
-//                                temp = temp.substring(temp.indexOf("○") + 1);
-//                                likes = temp.substring(0, temp.indexOf("○"));
-//                                temp = temp.substring(temp.indexOf("○") + 1);
-//                                comments = temp.substring(0, temp.indexOf("○"));
-//                                temp = temp.substring(temp.indexOf("○") + 1);
-//                                liked = (Integer.parseInt(temp)) == 1;
-//                                line = line.substring(line.indexOf("◘") + 1);
-//                                SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-//                                Date dates = null;
-//                                try
-//                                {
-//
-//                                    dates = formatter.parse(date);
-//                                    System.out.println(dates);
-//                                    System.out.println(formatter.format(dates));
-//
-//                                }
-//                                catch (ParseException e)
-//                                {
-//                                    e.printStackTrace();
-//                                }
-//                                for (int i = 0; i < priorityHandler.getRssSites().size(); i++)
-//                                {
-//                                    if (priorityHandler.getRssSites().get(i).getID().equals(id))
-//                                    {
-//                                        siteName = priorityHandler.getRssSites().get(i).getWebsite();
-//                                        subject = priorityHandler.getRssSites().get(i).getSubject();
-//                                    }
-//                                }
-//                                Article article = new Article(subject, mainHeadLine, secondHeadLine, imgURL, dates, siteName, url, Integer.parseInt(likes), Integer.parseInt(comments), liked, globalClass);
-//                                categoriesHandler.getCurrentlyInUse().addElement(article);
-//                                ((Activity) globalClass.getCurrentActivity()).runOnUiThread(new Runnable()
-//                                {
-//                                    @Override
-//                                    public void run()
-//                                    {
-//                                        categoriesHandler.getArticlesRecyclerAdapter().notifyDataSetChanged();
-//                                    }
-//                                });
-//                            }
-//                        }
-//                        categoriesHandler.setLoading(false);
-//                        ((Activity) globalClass.getCurrentActivity()).runOnUiThread(new Runnable()
-//                        {
-//                            @Override
-//                            public void run()
-//                            {
-//                                ProgressBar pb = (ProgressBar) ((Activity) globalClass.getCurrentActivity()).findViewById(R.id.pb_loadingArticles);
-//                                if(pb != null)
-//                                {
-//                                    pb.setVisibility(View.INVISIBLE);
-//                                }
-//                            }
-//                        });
-//                    }
-//                    else if (line.contains("121◘")) //Client got comments of current article
-//                    {
-//                        if (!line.equals("121◘◘#")) //If empty don't parse line
-//                        {
-//                            commentsHandler.getCommentsOfCurrentArticle().clear();
-//                            line = line.substring(line.indexOf("◘") + 1);
-//                            while (line.contains("◘"))
-//                            {
-//                                String username, picURL, commentText, id = "-1";
-//                                Boolean clientComment = false;
-//                                String temp = line.substring(0, line.indexOf("◘"));
-//                                username = temp.substring(0, temp.indexOf("○"));
-//                                temp = temp.substring((temp.indexOf("○") + 1));
-//                                picURL = temp.substring(0, temp.indexOf("○"));
-//                                temp = temp.substring(temp.indexOf("○") + 1);
-//                                if(temp.contains("►"))
-//                                {
-//                                    id = temp.substring(temp.indexOf("►") + 1);
-//                                    temp = temp.substring(0, temp.indexOf("►"));
-//                                    clientComment = true;
-//                                }
-//                                commentText = temp;
-//                                line = line.substring(line.indexOf("◘") + 1);
-//                                Comment comment = new Comment(username, picURL, commentText, clientComment, id);
-//                                commentsHandler.getCommentsOfCurrentArticle().addElement(comment);
-//                                ((Activity) globalClass.getCurrentActivity()).runOnUiThread(new Runnable()
-//                                {
-//                                    @Override
-//                                    public void run()
-//                                    {
-//                                        commentsHandler.getCommentsRecyclerAdapter().notifyDataSetChanged();
-//                                    }
-//                                });
-//                            }
-//                        }
-//                    }
-//                    else if (line.contains("129◘")) //Client gets his priority of current subject
-//                    {
-//                        String temp;
-//                        line = line.substring(line.indexOf("◘") + 1);
-//                        while (line.contains("◘"))
-//                        {
-//                            temp = line.substring(0, line.indexOf("◘"));
-//                            line = line.substring(line.indexOf("◘") + 1);
-//                            priorityHandler.getClientPriority().add(temp);
-//                            ((Activity) globalClass.getCurrentActivity()).runOnUiThread(new Runnable()
-//                            {
-//                                @Override
-//                                public void run()
-//                                {
-//                                    priorityHandler.getRecyclerAdapter().notifyDataSetChanged();
-//                                }
-//                            });
-//                        }
-//                        priorityHandler.createRemovedSitesList();
-//                    }
-//                    else if(line.contains("123◘")) //Client gets the id of comment he wrote
-//                    {
-//                        line = line.substring(0,line.length() - 1);
-//                        boolean done = false;
-//                        for(int i = 0; i < commentsHandler.getCommentsOfCurrentArticle().size(); i++)
-//                        {
-//                            if(!done)
-//                            {
-//                                if(commentsHandler.getCommentsOfCurrentArticle().get(i).getClientComment() && commentsHandler.getCommentsOfCurrentArticle().get(i).getId().equals("-1"))
-//                                {
-//                                    commentsHandler.getCommentsOfCurrentArticle().get(i).setId(line.substring(line.indexOf("◘") + 1));
-//                                    if(commentsHandler.getCommentActivity() != null)
-//                                    {
-//                                        ((Activity) commentsHandler.getCommentActivity()).runOnUiThread(new Runnable()
-//                                        {
-//                                            @Override
-//                                            public void run()
-//                                            {
-//                                                commentsHandler.getCommentsRecyclerAdapter().notifyDataSetChanged();
-//                                            }
-//                                        });
-//                                    }
-//                                    done = true;
-//                                }
-//                            }
-//                        }
-//                    }
-//                    line = "";
-//                }
-//            }
-//            while (line.compareTo("501#") != 0); //501 is disconnected from the server
-//        }
-//        catch (IOException e)
-//        {
-//            Log.d("check", "IO Error/ Client terminated abruptly");
-//        }
-//        catch (NullPointerException e)
-//        {
-//            Log.d("check", "Client Closed");
-//        }
-//        catch (Exception e)
-//        {
-//            e.printStackTrace();
-//        }
-//    }
-//
-//    public void send(String str)
-//    {
-//        try
-//        {
-//            String cipherText = aesEncryption.encrypt(str) + "##";
-//            Log.d("send", str);
-//            out.println(cipherText);
-//            out.flush();
-//            if (out.checkError())
-//            {
-//                globalClass.getErrorHandler().setLastMsgToServer(str);
-//                globalClass.getErrorHandler().reConnect();
-//            }
-//        }
-//        catch (Exception e)
-//        {
-//            e.printStackTrace();
-//        }
-//    }
-//}
+package magshimim.newzbay;
+
+import android.app.Activity;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.support.v7.app.AlertDialog;
+import android.view.View;
+import android.widget.ProgressBar;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Locale;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+
+public class Communication
+{
+    private final String BASE_URL = "http://newzbay.ddns.net";
+    private String PORT = "4646";
+    private String IP;
+    private Retrofit retrofit;
+    private NewzBayAPI newzBayAPI;
+    private String token;
+    private boolean firstRegistration;
+
+
+
+    public Communication()
+    {
+    }
+
+    public void getIPFromBaseURL(final GlobalClass globalClass)
+    {
+        token = "";
+        IP = "http://";
+        firstRegistration = true;
+        retrofit = new Retrofit.Builder()
+                .baseUrl(BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        newzBayAPI = retrofit.create(NewzBayAPI.class);
+
+        Call<InfoFromServer> call = newzBayAPI.getIP();
+        call.enqueue(new Callback<InfoFromServer>()
+        {
+            @Override
+            public void onResponse(Call<InfoFromServer> call, Response<InfoFromServer> response)
+            {
+                IP = IP + response.body().getMessage() + ":" + PORT;
+                retrofit = new Retrofit.Builder()
+                        .baseUrl(IP)
+                        .addConverterFactory(GsonConverterFactory.create())
+                        .build();
+
+                newzBayAPI = retrofit.create(NewzBayAPI.class);
+                if(globalClass.getCurrentActivity() instanceof ActivityEntrance)
+                {
+                    ((ActivityEntrance) globalClass.getCurrentActivity()).connectToSocialNets();
+                }
+                else
+                {
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<InfoFromServer> call, Throwable t)
+            {
+                new AlertDialog.Builder(globalClass.getCurrentActivity(), R.style.NBAlertDialog)
+                        .setMessage("אירעה שגיאה")
+                        .setCancelable(false)
+                        .setPositiveButton("נסה שנית", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                getIPFromBaseURL(globalClass);
+                            }
+                        })
+                        .show();
+            }
+        });
+    }
+
+    public void authenticate(String email, String picURL, String name, final Context context, final GlobalClass globalClass)
+    {
+        Call<AuthenticationRecieve> call = newzBayAPI.authenticateUser(new AuthenticationSend(email, picURL, name));
+        call.enqueue(new Callback<AuthenticationRecieve>() {
+            @Override
+            public void onResponse(Call<AuthenticationRecieve> call, Response<AuthenticationRecieve> response)
+            {
+                if(response.body().getStatus() == 200)
+                {
+                    token = response.body().getToken();
+                    getAllRSS(globalClass.getPriorityHandler(), globalClass);
+                    if(response.body().getMessage().equals("Welcome back"))
+                    {
+                        firstRegistration = false;
+                    }
+                    if(context instanceof ActivityEntrance)
+                    {
+                        ((ActivityEntrance) context).moveToNewsFeed();
+                        if(firstRegistration)
+                        {
+                            Intent priority = new Intent(context, ActivityPriority.class);
+                            context.startActivity(priority);
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<AuthenticationRecieve> call, Throwable t)
+            {
+                new AlertDialog.Builder(globalClass.getCurrentActivity(), R.style.NBAlertDialog)
+                        .setMessage("אירעה שגיאה")
+                        .setCancelable(false)
+                        .setPositiveButton("נסה שנית", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                getIPFromBaseURL(globalClass);
+                            }
+                        })
+                        .show();
+            }
+        });
+    }
+
+    public void setPriority(ArrayList<Priority> priorityList, final Context context, final GlobalClass globalClass)
+    {
+        Call<InfoFromServer> call = newzBayAPI.setPriority(token, priorityList);
+        call.enqueue(new Callback<InfoFromServer>() {
+            @Override
+            public void onResponse(Call<InfoFromServer> call, Response<InfoFromServer> response)
+            {
+                if(response.body().getStatus() == 200)
+                {
+                    Toast.makeText(context, "העדפות נוספו בהצלחה!", Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<InfoFromServer> call, Throwable t)
+            {
+                new AlertDialog.Builder(globalClass.getCurrentActivity(), R.style.NBAlertDialog)
+                        .setMessage("אירעה שגיאה")
+                        .setPositiveButton("נסה שנית", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                getIPFromBaseURL(globalClass);
+                            }
+                        })
+                        .setNegativeButton("ביטול", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                // do nothing
+                            }
+                        })
+                        .show();
+            }
+        });
+    }
+
+    public void getAllRSS(final PriorityHandler priorityHandler, final GlobalClass globalClass)
+    {
+        Call<SubWeb> call = newzBayAPI.getAllRSS(token);
+        call.enqueue(new Callback<SubWeb>() {
+            @Override
+            public void onResponse(Call<SubWeb> call, Response<SubWeb> response)
+            {
+                for(int i = 0; i < response.body().getSubWeb().size(); i++)
+                {
+                    priorityHandler.getRssSites().add(new RSS(
+                            response.body().getSubWeb().get(i).getID(),
+                            response.body().getSubWeb().get(i).getSubject(),
+                            response.body().getSubWeb().get(i).getWebsite()));
+                }
+            }
+
+            @Override
+            public void onFailure(Call<SubWeb> call, Throwable t)
+            {
+                new AlertDialog.Builder(globalClass.getCurrentActivity(), R.style.NBAlertDialog)
+                        .setMessage("אירעה שגיאה")
+                        .setPositiveButton("נסה שנית", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                getIPFromBaseURL(globalClass);
+                            }
+                        })
+                        .setNegativeButton("ביטול", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                // do nothing
+                            }
+                        })
+                        .show();
+            }
+        });
+    }
+
+    public void deletePrioritySubject(String subject, final GlobalClass globalClass)
+    {
+        Call<InfoFromServer> call = newzBayAPI.deletePrioritySubject(token, subject);
+        call.enqueue(new Callback<InfoFromServer>() {
+            @Override
+            public void onResponse(Call<InfoFromServer> call, Response<InfoFromServer> response)
+            {
+
+            }
+
+            @Override
+            public void onFailure(Call<InfoFromServer> call, Throwable t)
+            {
+                new AlertDialog.Builder(globalClass.getCurrentActivity(), R.style.NBAlertDialog)
+                        .setMessage("אירעה שגיאה")
+                        .setPositiveButton("נסה שנית", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                getIPFromBaseURL(globalClass);
+                            }
+                        })
+                        .setNegativeButton("ביטול", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                // do nothing
+                            }
+                        })
+                        .show();
+            }
+        });
+    }
+
+    public void getUserPriority(String subject, final GlobalClass globalClass)
+    {
+        Call<UserPriority> call = newzBayAPI.getUserPriority(token, subject);
+        call.enqueue(new Callback<UserPriority>() {
+            @Override
+            public void onResponse(Call<UserPriority> call, Response<UserPriority> response)
+            {
+                for(int i = 0; i < response.body().getPriority().size(); i++)
+                {
+                    globalClass.getPriorityHandler().getClientPriority().add(response.body().getPriority().get(i).getWebsite());
+                    globalClass.getPriorityHandler().getRecyclerAdapter().notifyDataSetChanged();
+                }
+                globalClass.getPriorityHandler().createRemovedSitesList();
+            }
+
+            @Override
+            public void onFailure(Call<UserPriority> call, Throwable t)
+            {
+                new AlertDialog.Builder(globalClass.getCurrentActivity(), R.style.NBAlertDialog)
+                        .setMessage("אירעה שגיאה")
+                        .setPositiveButton("נסה שנית", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                getIPFromBaseURL(globalClass);
+                            }
+                        })
+                        .setNegativeButton("ביטול", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                // do nothing
+                            }
+                        })
+                        .show();
+            }
+        });
+    }
+
+    public void getArticles(String subject, final GlobalClass globalClass)
+    {
+        Call<JsonRecievedArticles> call = newzBayAPI.getArticles(token, subject);
+        call.enqueue(new Callback<JsonRecievedArticles>() {
+            @Override
+            public void onResponse(Call<JsonRecievedArticles> call, Response<JsonRecievedArticles> response)
+            {
+                globalClass.getCategoriesHandler().getCurrentlyInUse().clear();
+                if(response.body().getStatus() == 200)
+                {
+                    globalClass.getCategoriesHandler().getCurrentlyInUse().clear();
+                    for(int i = 0; i < response.body().getArticles().size(); i++)
+                    {
+                        SimpleDateFormat formatter = new SimpleDateFormat("EEE MMM dd yyyy HH:mm:ss", Locale.ENGLISH);
+                        Date date = null;
+                        try
+                        {
+                            date = formatter.parse(response.body().getArticles().get(i).getDate());
+
+                        }
+                        catch (ParseException e)
+                        {
+                            e.printStackTrace();
+                        }
+                        globalClass.getCategoriesHandler().getCurrentlyInUse().add( new Article(
+                                globalClass.getPriorityHandler().getSubjectByID(response.body().getArticles().get(i).getID()),
+                                globalClass.getPriorityHandler().getWebsiteByID(response.body().getArticles().get(i).getID()),
+                                response.body().getArticles().get(i).getMainHeadline(),
+                                response.body().getArticles().get(i).getSecondHeadline(),
+                                response.body().getArticles().get(i).getPicURL(),
+                                date,
+                                response.body().getArticles().get(i).getUrl(),
+                                response.body().getArticles().get(i).getNumberOfLikes(),
+                                response.body().getArticles().get(i).getNumberOfComments(),
+                                response.body().getArticles().get(i).isLiked(),
+                                globalClass
+                        ));
+                    }
+                    globalClass.getCategoriesHandler().getArticlesRecyclerAdapter().notifyDataSetChanged();
+                    globalClass.getCategoriesHandler().setLoading(false);
+                    if(response.body().getArticles().size() == 0)
+                    {
+                        Toast.makeText(globalClass.getCurrentActivity(), "לא ביצעת העדפה בנושא זה", Toast.LENGTH_LONG).show();
+                    }
+                    ProgressBar pb = (ProgressBar) ((Activity) globalClass.getCurrentActivity()).findViewById(R.id.pb_loadingArticles);
+                    if (pb != null)
+                    {
+                        pb.setVisibility(View.INVISIBLE);
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<JsonRecievedArticles> call, Throwable t)
+            {
+                new AlertDialog.Builder(globalClass.getCurrentActivity(), R.style.NBAlertDialog)
+                        .setMessage("אירעה שגיאה")
+                        .setPositiveButton("נסה שנית", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                getIPFromBaseURL(globalClass);
+                            }
+                        })
+                        .setNegativeButton("ביטול", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                // do nothing
+                            }
+                        })
+                        .show();
+            }
+        });
+    }
+
+    public void like(String articleURL, final GlobalClass globalClass)
+    {
+        Call<InfoFromServer> call = newzBayAPI.like(token, articleURL);
+        call.enqueue(new Callback<InfoFromServer>()
+        {
+            @Override
+            public void onResponse(Call<InfoFromServer> call, Response<InfoFromServer> response)
+            {
+
+            }
+
+            @Override
+            public void onFailure(Call<InfoFromServer> call, Throwable t)
+            {
+                new AlertDialog.Builder(globalClass.getCurrentActivity(), R.style.NBAlertDialog)
+                        .setMessage("אירעה שגיאה")
+                        .setPositiveButton("נסה שנית", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                getIPFromBaseURL(globalClass);
+                            }
+                        })
+                        .setNegativeButton("ביטול", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                // do nothing
+                            }
+                        })
+                        .show();
+            }
+        });
+    }
+
+    public void addComment(String articleURL, String comment, final GlobalClass globalClass, final CommentsHandler commentsHandler, final User user, final String commentText)
+    {
+        Call<InfoFromServer> call = newzBayAPI.addComment(token, articleURL, comment);
+        call.enqueue(new Callback<InfoFromServer>()
+        {
+            @Override
+            public void onResponse(Call<InfoFromServer> call, Response<InfoFromServer> response)
+            {
+                if(response.body().getStatus() == 200)
+                {
+                    commentsHandler.getCommentsOfCurrentArticle().addElement(new Comment(user.getFullName(), user.getPicURL(), commentText, true, response.body().getMessage()));
+                    commentsHandler.getCommentsRecyclerAdapter().notifyDataSetChanged();
+                    commentsHandler.getArticle().incNumberOfComments();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<InfoFromServer> call, Throwable t)
+            {
+                new AlertDialog.Builder(globalClass.getCurrentActivity(), R.style.NBAlertDialog)
+                        .setTitle("הפעולה נכשלה")
+                        .setMessage("לא היה ניתן להוסיף את התגובה, אנא נסה/י שנית מאוחר יותר")
+                        .setPositiveButton("נסה שנית", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                getIPFromBaseURL(globalClass);
+                            }
+                        })
+                        .setNegativeButton("ביטול", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                // do nothing
+                            }
+                        })
+                        .show();
+            }
+        });
+    }
+
+    public void deleteComment(String articleURL, String id, final GlobalClass globalClass, final int tempPosition)
+    {
+        Call<InfoFromServer> call = newzBayAPI.deleteComment(token, articleURL, id);
+        call.enqueue(new Callback<InfoFromServer>()
+        {
+            @Override
+            public void onResponse(Call<InfoFromServer> call, Response<InfoFromServer> response)
+            {
+                if(response.body().getStatus() == 200)
+                {
+                    globalClass.getCommentsHandler().getCommentsOfCurrentArticle().remove(tempPosition);
+                    globalClass.getCommentsHandler().getArticle().decNumberOfComments();
+                    globalClass.getCommentsHandler().getCommentsRecyclerAdapter().notifyDataSetChanged();
+                    ((TextView) ((Activity) globalClass.getCurrentActivity()).findViewById(R.id.tv_comments)).setText(globalClass.getCommentsHandler().getArticle().getNumberOfComments() + "");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<InfoFromServer> call, Throwable t)
+            {
+                new AlertDialog.Builder(globalClass.getCurrentActivity(), R.style.NBAlertDialog)
+                        .setTitle("הפעולה נכשלה")
+                        .setMessage("לא היה ניתן למחוק את התגובה, אנא נסה/י שנית מאוחר יותר")
+                        .setPositiveButton("נסה שנית", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                getIPFromBaseURL(globalClass);
+                            }
+                        })
+                        .setNegativeButton("ביטול", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                // do nothing
+                            }
+                        })
+                        .show();
+            }
+        });
+    }
+
+    public void getComments(String articleURL, final GlobalClass globalClass)
+    {
+        Call<JsonRecievedComments> call = newzBayAPI.getComments(token, articleURL);
+        call.enqueue(new Callback<JsonRecievedComments>()
+        {
+            @Override
+            public void onResponse(Call<JsonRecievedComments> call, Response<JsonRecievedComments> response)
+            {
+                if(response.body().getStatus() == 200)
+                {
+                    globalClass.getCommentsHandler().getCommentsOfCurrentArticle().clear();
+                    for(int i = 0; i < response.body().getComments().size(); i++)
+                    {
+                        globalClass.getCommentsHandler().getCommentsOfCurrentArticle().addElement(new Comment(
+                                response.body().getComments().get(i).getName()
+                                ,
+                                response.body().getComments().get(i).getPicURL(),
+                                response.body().getComments().get(i).getComment(),
+                                !response.body().getComments().get(i).getId().equals(""), //Check if the author is the user
+                                response.body().getComments().get(i).getId())); //if ID == "" the author is not the user
+                    }
+                    globalClass.getCommentsHandler().getCommentsRecyclerAdapter().notifyDataSetChanged();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<JsonRecievedComments> call, Throwable t)
+            {
+                new AlertDialog.Builder(globalClass.getCurrentActivity(), R.style.NBAlertDialog)
+                        .setMessage("אירעה שגיאה")
+                        .setPositiveButton("נסה שנית", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                getIPFromBaseURL(globalClass);
+                            }
+                        })
+                        .setNegativeButton("ביטול", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                // do nothing
+                            }
+                        })
+                        .show();
+            }
+        });
+    }
+
+    public void getHotNews(final GlobalClass globalClass)
+    {
+        Call<JsonRecievedArticles> call = newzBayAPI.getHotNews(token);
+        call.enqueue(new Callback<JsonRecievedArticles>() {
+            @Override
+            public void onResponse(Call<JsonRecievedArticles> call, Response<JsonRecievedArticles> response)
+            {
+                if(response.body().getStatus() == 200 && globalClass.getCategoriesHandler().getHotNewsArticles().size() == 0)
+                {
+                        for(int i = 0; i < response.body().getArticles().size(); i++)
+                        {
+                            if(response.body().getArticles().get(i).getDate() != null)
+                            {
+                                SimpleDateFormat formatter = new SimpleDateFormat("EEE MMM dd yyyy HH:mm:ss", Locale.ENGLISH);
+                                Date date = null;
+                                try
+                                {
+                                    date = formatter.parse(response.body().getArticles().get(i).getDate());
+
+                                }
+                                catch (ParseException e)
+                                {
+                                    e.printStackTrace();
+                                }
+                                globalClass.getCategoriesHandler().getHotNewsArticles().add( new Article(
+                                        globalClass.getPriorityHandler().getSubjectByID(response.body().getArticles().get(i).getID()),
+                                        globalClass.getPriorityHandler().getWebsiteByID(response.body().getArticles().get(i).getID()),
+                                        response.body().getArticles().get(i).getMainHeadline(),
+                                        response.body().getArticles().get(i).getSecondHeadline(),
+                                        response.body().getArticles().get(i).getPicURL(),
+                                        date,
+                                        response.body().getArticles().get(i).getUrl(),
+                                        response.body().getArticles().get(i).getNumberOfLikes(),
+                                        response.body().getArticles().get(i).getNumberOfComments(),
+                                        response.body().getArticles().get(i).isLiked(),
+                                        globalClass
+                                ));
+                            }
+                        }
+                    globalClass.getCategoriesHandler().getHotNewsPageAdapter().notifyDataSetChanged();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<JsonRecievedArticles> call, Throwable t)
+            {
+                new AlertDialog.Builder(globalClass.getCurrentActivity(), R.style.NBAlertDialog)
+                        .setMessage("אירעה שגיאה")
+                        .setPositiveButton("נסה שנית", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                getIPFromBaseURL(globalClass);
+                            }
+                        })
+                        .setNegativeButton("ביטול", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                // do nothing
+                            }
+                        })
+                        .show();
+            }
+        });
+    }
+
+    public void getMoreArticles(String subject, String lastArticleURL, final GlobalClass globalClass)
+    {
+        Call<JsonRecievedArticles> call = newzBayAPI.getMoreArticles(token, subject, lastArticleURL);
+        call.enqueue(new Callback<JsonRecievedArticles>() {
+            @Override
+            public void onResponse(Call<JsonRecievedArticles> call, Response<JsonRecievedArticles> response)
+            {
+                if(response.body().getStatus() == 200)
+                {
+                    for(int i = 0; i < response.body().getArticles().size(); i++)
+                    {
+                        SimpleDateFormat formatter = new SimpleDateFormat("EEE MMM dd yyyy HH:mm:ss", Locale.ENGLISH);
+                        Date date = null;
+                        try
+                        {
+                            date = formatter.parse(response.body().getArticles().get(i).getDate());
+
+                        }
+                        catch (ParseException e)
+                        {
+                            e.printStackTrace();
+                        }
+                        globalClass.getCategoriesHandler().getCurrentlyInUse().add( new Article(
+                                globalClass.getPriorityHandler().getSubjectByID(response.body().getArticles().get(i).getID()),
+                                globalClass.getPriorityHandler().getWebsiteByID(response.body().getArticles().get(i).getID()),
+                                response.body().getArticles().get(i).getMainHeadline(),
+                                response.body().getArticles().get(i).getSecondHeadline(),
+                                response.body().getArticles().get(i).getPicURL(),
+                                date,
+                                response.body().getArticles().get(i).getUrl(),
+                                response.body().getArticles().get(i).getNumberOfLikes(),
+                                response.body().getArticles().get(i).getNumberOfComments(),
+                                response.body().getArticles().get(i).isLiked(),
+                                globalClass
+                        ));
+                    }
+                    globalClass.getCategoriesHandler().getArticlesRecyclerAdapter().notifyDataSetChanged();
+                    globalClass.getCategoriesHandler().setLoading(false);
+                    ProgressBar pb = (ProgressBar) ((Activity) globalClass.getCurrentActivity()).findViewById(R.id.pb_loadingArticles);
+                    if (pb != null)
+                    {
+                        pb.setVisibility(View.INVISIBLE);
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<JsonRecievedArticles> call, Throwable t)
+            {
+                new AlertDialog.Builder(globalClass.getCurrentActivity(), R.style.NBAlertDialog)
+                        .setMessage("אירעה שגיאה")
+                        .setPositiveButton("נסה שנית", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                getIPFromBaseURL(globalClass);
+                            }
+                        })
+                        .setNegativeButton("ביטול", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                // do nothing
+                            }
+                        })
+                        .show();
+            }
+        });
+    }
+}

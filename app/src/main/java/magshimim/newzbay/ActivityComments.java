@@ -142,7 +142,7 @@ public class ActivityComments extends AppCompatActivity implements EmojiconGridF
         commentsRecyclerAdapter = new CommentsAdapter(globalClass, ActivityComments.this);
         commentsHandler.setCommentsRecyclerAdapter(commentsRecyclerAdapter);
         recyclerViewComments.setAdapter(commentsRecyclerAdapter);
-        globalClass.getNewCommunication().getComments(commentsHandler.getArticle().getUrl(), globalClass);
+        globalClass.getCommunication().getComments(commentsHandler.getArticle().getUrl(), globalClass);
         //*****************************************************************************************************************
 
         commentsHandler.setCommentActivity(this);
@@ -187,7 +187,7 @@ public class ActivityComments extends AppCompatActivity implements EmojiconGridF
     {
         if (!commentText.getText().toString().equals(""))
         {
-            globalClass.getNewCommunication().addComment(commentsHandler.getArticle().getUrl(), commentText.getText().toString(), globalClass, commentsHandler, user, commentText.getText().toString());
+            globalClass.getCommunication().addComment(commentsHandler.getArticle().getUrl(), commentText.getText().toString(), globalClass, commentsHandler, user, commentText.getText().toString());
             commentText.setText("");
             ViewGroup parent = (ViewGroup) v.getParent().getParent().getParent();
             ((TextView) parent.findViewById(R.id.tv_comments)).setText(commentsHandler.getArticle().getNumberOfComments() + "");
@@ -281,5 +281,12 @@ public class ActivityComments extends AppCompatActivity implements EmojiconGridF
             globalClass.getCategoriesHandler().getArticlesRecyclerAdapter().notifyDataSetChanged();
             super.onBackPressed();
         }
+    }
+
+    @Override
+    protected void onResume()
+    {
+        globalClass.setCurrentActivity(ActivityComments.this);
+        super.onResume();
     }
 }

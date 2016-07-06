@@ -30,6 +30,7 @@ public class ActivityInnerWeb extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_inner_web);
         categoriesHandler = ((GlobalClass) getApplicationContext()).getCategoriesHandler();
+        ((GlobalClass) getApplicationContext()).setCurrentActivity(ActivityInnerWeb.this);
         if (!getSharedPreferences(prefsConnection, Context.MODE_PRIVATE).getBoolean(isExplanation2, false)) //If opened this screen first time, open explanation activity.
         {
             Intent explanation2 = new Intent(this, ActivityExplanationInnerWeb.class);

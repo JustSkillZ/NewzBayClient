@@ -11,7 +11,6 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.format.Time;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RelativeLayout;
@@ -57,7 +56,6 @@ public class ActivityEntrance extends AppCompatActivity implements GoogleApiClie
     private ConnectionResult mConnectionResult;
     private int requestCode;
     private ProgressDialog mProgressDialog;
-    private NewCommunication newCommunication;
     private boolean isIntentInprogress;
     private boolean isSignInBtnClicked;
     private GlobalClass globalClass;
@@ -70,17 +68,10 @@ public class ActivityEntrance extends AppCompatActivity implements GoogleApiClie
 
         //******************************Init GlobalClass************************
         //getApplicationContext() set for returning GlobalClass
-        ((GlobalClass) getApplicationContext()).initiateClass(getResources());
+        ((GlobalClass) getApplicationContext()).initiateClass();
         globalClass = ((GlobalClass) getApplicationContext());
         globalClass.setCurrentActivity(ActivityEntrance.this);
-        globalClass.setCurrentLayout(R.id.entrance_layout);
         //**********************************************************************
-
-        //******************************Init Error Handler***********************************************************************************
-        LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        globalClass.getErrorHandler().setPopupWindowViewNoConnectionWithServer(inflater.inflate(R.layout.popup_no_connection, null, false));
-        globalClass.getErrorHandler().handleNoConnectionToTheServer();
-        //***********************************************************************************************************************************
 
         FacebookSdk.sdkInitialize(getApplicationContext());
         callbackManager = CallbackManager.Factory.create();
@@ -116,7 +107,7 @@ public class ActivityEntrance extends AppCompatActivity implements GoogleApiClie
             slogan.setTextColor(getResources().getColor(R.color.white));
         }
 
-        globalClass.getNewCommunication().getIPFromBaseURL(globalClass);
+        globalClass.getCommunication().getIPFromBaseURL(globalClass);
     }
 
     @Override
@@ -141,8 +132,7 @@ public class ActivityEntrance extends AppCompatActivity implements GoogleApiClie
     {
         user = new User("Guest", "", "Guest");
         globalClass.setUser(user);
-        //globalClass.getErrorHandler().setConnectingClientMsg(send);
-        globalClass.getNewCommunication().authenticate("guest@guest.com", "Guest", "Guest", ActivityEntrance.this, globalClass); //Connect as guest
+        globalClass.getCommunication().authenticate("guest@guest.com", "Guest", "Guest", ActivityEntrance.this, globalClass); //Connect as guest
     }
 
     public void moveToNewsFeed() //Connect and open NewsFeed activity
@@ -177,8 +167,7 @@ public class ActivityEntrance extends AppCompatActivity implements GoogleApiClie
                                 {
                                     String email = object.getString("email");
                                     ((FacebookUser) user).setFacebookUserEmail(email);
-                                    //globalClass.getErrorHandler().setConnectingClientMsg(send);
-                                    globalClass.getNewCommunication().authenticate(((FacebookUser) user).getFacebookUserEmail(),user.getPicURL(), ((FacebookUser) user).getFacebookProfile().getFirstName(), ActivityEntrance.this, globalClass); //Connect via Facebook
+                                    globalClass.getCommunication().authenticate(((FacebookUser) user).getFacebookUserEmail(),user.getPicURL(), ((FacebookUser) user).getFacebookProfile().getFirstName(), ActivityEntrance.this, globalClass); //Connect via Facebook
                                     SharedPreferences sharedpreferences = getSharedPreferences(prefsConnection, Context.MODE_PRIVATE);
                                     SharedPreferences.Editor editor = sharedpreferences.edit();
                                     editor.putString(facebookEmail, email);
@@ -318,8 +307,7 @@ public class ActivityEntrance extends AppCompatActivity implements GoogleApiClie
         isSignInBtnClicked = false;
         user = new GoogleUser(Plus.PeopleApi.getCurrentPerson(mGoogleApiClient).getDisplayName(), Plus.PeopleApi.getCurrentPerson(mGoogleApiClient).getImage().getUrl(), Plus.PeopleApi.getCurrentPerson(mGoogleApiClient), mGoogleApiClient);
         globalClass.setUser(user);
-        //globalClass.getErrorHandler().setConnectingClientMsg(send);
-        globalClass.getNewCommunication().authenticate(Plus.AccountApi.getAccountName(mGoogleApiClient), user.getPicURL(), ((GoogleUser) user).getGoogleProfile().getName().getGivenName(), ActivityEntrance.this, globalClass); //Connect via Google
+        globalClass.getCommunication().authenticate(Plus.AccountApi.getAccountName(mGoogleApiClient), user.getPicURL(), ((GoogleUser) user).getGoogleProfile().getName().getGivenName(), ActivityEntrance.this, globalClass); //Connect via Google
 
     }
 
@@ -329,8 +317,7 @@ public class ActivityEntrance extends AppCompatActivity implements GoogleApiClie
         mGoogleApiClient.connect();
         user = new GoogleUser(Plus.PeopleApi.getCurrentPerson(mGoogleApiClient).getDisplayName(), Plus.PeopleApi.getCurrentPerson(mGoogleApiClient).getImage().getUrl(), Plus.PeopleApi.getCurrentPerson(mGoogleApiClient), mGoogleApiClient);
         globalClass.setUser(user);
-        //globalClass.getErrorHandler().setConnectingClientMsg(send);
-        globalClass.getNewCommunication().authenticate(Plus.AccountApi.getAccountName(mGoogleApiClient), user.getPicURL(), ((GoogleUser) user).getGoogleProfile().getName().getGivenName(), ActivityEntrance.this, globalClass); //Connect via Google
+        globalClass.getCommunication().authenticate(Plus.AccountApi.getAccountName(mGoogleApiClient), user.getPicURL(), ((GoogleUser) user).getGoogleProfile().getName().getGivenName(), ActivityEntrance.this, globalClass); //Connect via Google
     }
 
     @Override
@@ -434,8 +421,7 @@ public class ActivityEntrance extends AppCompatActivity implements GoogleApiClie
             SharedPreferences sharedpreferences = getSharedPreferences(prefsConnection, Context.MODE_PRIVATE); //If auto-connect: take last saved Facebook email
             user = new FacebookUser(Profile.getCurrentProfile().getName(), Profile.getCurrentProfile().getProfilePictureUri(500, 500).toString(), Profile.getCurrentProfile(), sharedpreferences.getString(facebookEmail, ""));
             globalClass.setUser(user);
-            //globalClass.getErrorHandler().setConnectingClientMsg(send);
-            globalClass.getNewCommunication().authenticate(((FacebookUser) user).getFacebookUserEmail(),user.getPicURL(), ((FacebookUser) user).getFacebookProfile().getFirstName(), ActivityEntrance.this, globalClass); //Connect via Facebook
+            globalClass.getCommunication().authenticate(((FacebookUser) user).getFacebookUserEmail(),user.getPicURL(), ((FacebookUser) user).getFacebookProfile().getFirstName(), ActivityEntrance.this, globalClass); //Connect via Facebook
         }
         else //Connect via Google
         {

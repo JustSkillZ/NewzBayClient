@@ -36,10 +36,11 @@ public class ActivityChoosePriority extends AppCompatActivity implements PopupMe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_choose_priority);
         globalClass = (GlobalClass) getApplicationContext();
+        globalClass.setCurrentActivity(ActivityChoosePriority.this);
         priorityHandler = globalClass.getPriorityHandler();
         priorityHandler.getRemovedSitesOfCurrentSubject().clear();
         priorityHandler.getClientPriority().clear();
-        globalClass.getNewCommunication().getUserPriority(priorityHandler.getCurrentPrioritySubject(), globalClass);
+        globalClass.getCommunication().getUserPriority(priorityHandler.getCurrentPrioritySubject(), globalClass);
         TextView subject = (TextView) findViewById(R.id.tv_subject);
         subject.setText(priorityHandler.getSubjects().get(priorityHandler.getCurrentPrioritySubject()));
         ImageButton addSite = (ImageButton) findViewById(R.id.btn_add);
@@ -91,11 +92,11 @@ public class ActivityChoosePriority extends AppCompatActivity implements PopupMe
         }
         if(priorityList.size() == 0)
         {
-            globalClass.getNewCommunication().deletePrioritySubject(priorityHandler.getCurrentPrioritySubject());
+            globalClass.getCommunication().deletePrioritySubject(priorityHandler.getCurrentPrioritySubject(), globalClass);
         }
         else
         {
-            globalClass.getNewCommunication().setPriority(priorityList, ActivityChoosePriority.this);
+            globalClass.getCommunication().setPriority(priorityList, ActivityChoosePriority.this, globalClass);
         }
         finish();
     }

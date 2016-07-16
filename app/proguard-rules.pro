@@ -25,6 +25,7 @@
 -keep class retrofit2.** { *; }
 -keepattributes Signature
 -keepattributes Exceptions
+-dontwarn okio.**
 -keepclasseswithmembernames class * {
     native <methods>;
     }

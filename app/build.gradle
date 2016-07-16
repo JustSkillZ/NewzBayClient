@@ -7,9 +7,9 @@ android {
     defaultConfig {
         applicationId "magshimim.newzbay"
         minSdkVersion 18
-        targetSdkVersion 23
-        versionCode 12
-        versionName "1.2"
+        targetSdkVersion 22
+        versionCode 14
+        versionName "1.4"
     }
     buildTypes {
         release {
@@ -23,6 +23,10 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'),
                     'proguard-rules.pro'
         }
+    }
+    compileOptions {
+        JavaVersion.VERSION_1_8
+        JavaVersion.VERSION_1_8
     }
 }
 repositories {

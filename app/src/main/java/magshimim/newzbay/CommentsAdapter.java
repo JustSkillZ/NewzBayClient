@@ -66,7 +66,7 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.ViewHo
                                     globalClass.getCommunication().deleteComment(commentsHandler.getArticle().getUrl(),
                                             commentsHandler.getCommentsOfCurrentArticle().get(tempPosition).getId(),
                                             globalClass,
-                                            tempPosition);
+                                            commentsHandler.getCommentsOfCurrentArticle().get(tempPosition));
                                     break;
                             }
                         }

@@ -14,7 +14,7 @@ public class GlobalClass extends Application
 
     public void initiateClass() //Init the fields of the class
     {
-        communication = new Communication();
+        communication = new Communication(this);
         categoriesHandler = new CategoriesHandler(null, "", "", false, this);
         commentsHandler = new CommentsHandler();
         user = null;

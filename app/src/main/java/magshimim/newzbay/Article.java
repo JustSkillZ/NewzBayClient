@@ -127,6 +127,9 @@ class JsonRecievedArticles
     @SerializedName("articles")
     @Expose
     private List<JsonArticle> articles = new ArrayList<JsonArticle>();
+    @SerializedName("message")
+    @Expose
+    private String message;
 
     public Integer getStatus()
     {
@@ -146,6 +149,16 @@ class JsonRecievedArticles
     public void setArticles(List<JsonArticle> articles)
     {
         this.articles = articles;
+    }
+
+    public String getMessage()
+    {
+        return message;
+    }
+
+    public void setMessage(String message)
+    {
+        this.message = message;
     }
 }
 

@@ -1,20 +1,31 @@
 package magshimim.newzbay;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.format.Time;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
@@ -34,7 +45,9 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Scope;
 import com.google.android.gms.common.api.Status;
+import com.google.android.gms.drive.Permission;
 import com.google.android.gms.plus.Plus;
+import com.google.android.gms.plus.model.people.Person;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -77,23 +90,7 @@ public class ActivityEntrance extends AppCompatActivity implements GoogleApiClie
         callbackManager = CallbackManager.Factory.create();
         setContentView(R.layout.activity_entrance);
 
-        Button guestLoginBtn = (Button) findViewById(R.id.btn_NB);
-        guestLoginBtn.setBackground(getResources().getDrawable(R.drawable.disabled_button_rounded_corners));
-        guestLoginBtn.setTextColor(getResources().getColor(R.color.grey));
-        guestLoginBtn.setAlpha((float) 0.1);
-        guestLoginBtn.setEnabled(false);
-        Drawable logo = getResources().getDrawable(R.drawable.anchor_logo);
-        logo.setBounds(0, 0, (int) (logo.getIntrinsicWidth() * 0.5), (int) (logo.getIntrinsicHeight() * 0.5));
-        guestLoginBtn.setCompoundDrawables(logo, null, null, null);
-
-        LoginButton facebookLoginBtn = (LoginButton) findViewById(R.id.btn_Facebook);
-        facebookLoginBtn.setBackground(getResources().getDrawable(R.drawable.disabled_button_rounded_corners));
-        facebookLoginBtn.setTextColor(getResources().getColor(R.color.grey));
-        facebookLoginBtn.setAlpha((float) 0.1);
-        facebookLoginBtn.setEnabled(false);
-
-        SignInButton googleLoginBtn = (SignInButton) findViewById(R.id.btn_Google);
-        googleLoginBtn.setEnabled(false);
+        disableButtons();
 
         Time now = new Time();
         now.setToNow();
@@ -107,7 +104,7 @@ public class ActivityEntrance extends AppCompatActivity implements GoogleApiClie
             slogan.setTextColor(getResources().getColor(R.color.white));
         }
 
-        globalClass.getCommunication().getIPFromBaseURL(globalClass);
+        checkConnectionWithNet();
     }
 
     @Override
@@ -130,9 +127,9 @@ public class ActivityEntrance extends AppCompatActivity implements GoogleApiClie
 
     public void signInAsGuest(View v)
     {
-        user = new User("Guest", "", "Guest");
+        user = new User("Guest", "", "Guest", "guest@guest.com");
         globalClass.setUser(user);
-        globalClass.getCommunication().authenticate("guest@guest.com", "Guest", "Guest", ActivityEntrance.this, globalClass); //Connect as guest
+        globalClass.getCommunication().authenticate("guest@guest.com", "Guest", "Guest", globalClass); //Connect as guest
     }
 
     public void moveToNewsFeed() //Connect and open NewsFeed activity
@@ -166,8 +163,8 @@ public class ActivityEntrance extends AppCompatActivity implements GoogleApiClie
                                 try
                                 {
                                     String email = object.getString("email");
-                                    ((FacebookUser) user).setFacebookUserEmail(email);
-                                    globalClass.getCommunication().authenticate(((FacebookUser) user).getFacebookUserEmail(),user.getPicURL(), ((FacebookUser) user).getFacebookProfile().getFirstName(), ActivityEntrance.this, globalClass); //Connect via Facebook
+                                    user.setEmail(email);
+                                    globalClass.getCommunication().authenticate(user.getEmail(),user.getPicURL(), ((FacebookUser) user).getFacebookProfile().getFirstName(), globalClass); //Connect via Facebook
                                     SharedPreferences sharedpreferences = getSharedPreferences(prefsConnection, Context.MODE_PRIVATE);
                                     SharedPreferences.Editor editor = sharedpreferences.edit();
                                     editor.putString(facebookEmail, email);
@@ -186,7 +183,7 @@ public class ActivityEntrance extends AppCompatActivity implements GoogleApiClie
                         @Override
                         protected void onCurrentProfileChanged(Profile profile, Profile profile2)
                         {
-                            user = new FacebookUser(Profile.getCurrentProfile().getName(), Profile.getCurrentProfile().getProfilePictureUri(500, 500).toString(), Profile.getCurrentProfile(), "");
+                            user = new FacebookUser(Profile.getCurrentProfile().getFirstName(), Profile.getCurrentProfile().getProfilePictureUri(500, 500).toString(), Profile.getCurrentProfile(), "");
                             globalClass.setUser(user);
                             Bundle parameters = new Bundle();
                             parameters.putString("fields", "id,name,email,gender, birthday"); //Request extra information about the user
@@ -199,7 +196,7 @@ public class ActivityEntrance extends AppCompatActivity implements GoogleApiClie
                 }
                 else
                 {
-                    user = new FacebookUser(Profile.getCurrentProfile().getName(), Profile.getCurrentProfile().getProfilePictureUri(500, 500).toString(), Profile.getCurrentProfile(), "");
+                    user = new FacebookUser(Profile.getCurrentProfile().getFirstName(), Profile.getCurrentProfile().getProfilePictureUri(500, 500).toString(), Profile.getCurrentProfile(), "");
                     globalClass.setUser(user);
                     Bundle parameters = new Bundle();
                     parameters.putString("fields", "id,name,email,gender, birthday"); //Request extra information about the user
@@ -218,6 +215,7 @@ public class ActivityEntrance extends AppCompatActivity implements GoogleApiClie
             public void onError(FacebookException e)
             {
                 globalClass.setUser(null);
+                checkConnectionWithNet();
             }
         });
     }
@@ -240,10 +238,13 @@ public class ActivityEntrance extends AppCompatActivity implements GoogleApiClie
     private void customizeGoogleSignBtn()
     {
         googleSignInButton = (SignInButton) findViewById(R.id.btn_Google);
-        googleSignInButton.setSize(SignInButton.SIZE_STANDARD);
-        googleSignInButton.setColorScheme(SignInButton.COLOR_DARK);
-        googleSignInButton.setScopes(new Scope[]{Plus.SCOPE_PLUS_LOGIN});
-        setGooglePlusButtonText(googleSignInButton);
+        if(googleSignInButton != null)
+        {
+            googleSignInButton.setSize(SignInButton.SIZE_STANDARD);
+            googleSignInButton.setColorScheme(SignInButton.COLOR_DARK);
+            googleSignInButton.setScopes(new Scope[]{Plus.SCOPE_PLUS_LOGIN});
+            setGooglePlusButtonText(googleSignInButton);
+        }
     }
 
     protected void onStart()
@@ -304,20 +305,27 @@ public class ActivityEntrance extends AppCompatActivity implements GoogleApiClie
     @Override
     public void onConnected(Bundle arg0) //Google+ connected
     {
-        isSignInBtnClicked = false;
-        user = new GoogleUser(Plus.PeopleApi.getCurrentPerson(mGoogleApiClient).getDisplayName(), Plus.PeopleApi.getCurrentPerson(mGoogleApiClient).getImage().getUrl(), Plus.PeopleApi.getCurrentPerson(mGoogleApiClient), mGoogleApiClient);
-        globalClass.setUser(user);
-        globalClass.getCommunication().authenticate(Plus.AccountApi.getAccountName(mGoogleApiClient), user.getPicURL(), ((GoogleUser) user).getGoogleProfile().getName().getGivenName(), ActivityEntrance.this, globalClass); //Connect via Google
-
+        Person p = Plus.PeopleApi.getCurrentPerson(mGoogleApiClient);
+        if(Plus.PeopleApi.getCurrentPerson(mGoogleApiClient) != null)
+        {
+            isSignInBtnClicked = false;
+            user = new GoogleUser(Plus.PeopleApi.getCurrentPerson(mGoogleApiClient).getName().getGivenName(), Plus.PeopleApi.getCurrentPerson(mGoogleApiClient).getImage().getUrl(), Plus.PeopleApi.getCurrentPerson(mGoogleApiClient), mGoogleApiClient, Plus.AccountApi.getAccountName(mGoogleApiClient));
+            globalClass.setUser(user);
+            globalClass.getCommunication().authenticate(Plus.AccountApi.getAccountName(mGoogleApiClient), user.getPicURL(), ((GoogleUser) user).getGoogleProfile().getName().getGivenName(), globalClass); //Connect via Google
+        }
+        else
+        {
+            checkConnectionWithNet();
+        }
     }
 
     @Override
     public void onConnectionSuspended(int arg0) //Google connection suspended
     {
         mGoogleApiClient.connect();
-        user = new GoogleUser(Plus.PeopleApi.getCurrentPerson(mGoogleApiClient).getDisplayName(), Plus.PeopleApi.getCurrentPerson(mGoogleApiClient).getImage().getUrl(), Plus.PeopleApi.getCurrentPerson(mGoogleApiClient), mGoogleApiClient);
+        user = new GoogleUser(Plus.PeopleApi.getCurrentPerson(mGoogleApiClient).getName().getGivenName(), Plus.PeopleApi.getCurrentPerson(mGoogleApiClient).getImage().getUrl(), Plus.PeopleApi.getCurrentPerson(mGoogleApiClient), mGoogleApiClient, Plus.AccountApi.getAccountName(mGoogleApiClient));
         globalClass.setUser(user);
-        globalClass.getCommunication().authenticate(Plus.AccountApi.getAccountName(mGoogleApiClient), user.getPicURL(), ((GoogleUser) user).getGoogleProfile().getName().getGivenName(), ActivityEntrance.this, globalClass); //Connect via Google
+        globalClass.getCommunication().authenticate(Plus.AccountApi.getAccountName(mGoogleApiClient), user.getPicURL(), ((GoogleUser) user).getGoogleProfile().getName().getGivenName(), globalClass); //Connect via Google
     }
 
     @Override
@@ -385,7 +393,7 @@ public class ActivityEntrance extends AppCompatActivity implements GoogleApiClie
         for (int i = 0; i < signInButton.getChildCount(); i++)
         {
             View v = signInButton.getChildAt(i);
-            if (v instanceof TextView)
+            if (v instanceof TextView && v != null)
             {
                 TextView mTextView = (TextView) v;
                 mTextView.setText(R.string.SignInWithGoogle);
@@ -397,31 +405,16 @@ public class ActivityEntrance extends AppCompatActivity implements GoogleApiClie
 
     public void connectToSocialNets() //If connected successfully to NB server, now connect to social nets.
     {
-        //Enable Buttons
-        Button guestLoginBtn = (Button) findViewById(R.id.btn_NB);
-        guestLoginBtn.setBackground(globalClass.getCurrentActivity().getResources().getDrawable(R.drawable.button_rounded_corners));
-        guestLoginBtn.setTextColor(globalClass.getCurrentActivity().getResources().getColor(R.color.white));
-        guestLoginBtn.setAlpha((float) 1);
-        guestLoginBtn.setEnabled(true);
-
-        LoginButton facebookLoginBtn = (LoginButton) findViewById(R.id.btn_Facebook);
-        facebookLoginBtn.setBackground(globalClass.getCurrentActivity().getResources().getDrawable(R.drawable.button_rounded_corners_facebook));
-        facebookLoginBtn.setTextColor(globalClass.getCurrentActivity().getResources().getColor(R.color.white));
-        facebookLoginBtn.setAlpha((float) 1);
-        facebookLoginBtn.setEnabled(true);
-
-        SignInButton googleLoginBtn = (SignInButton) findViewById(R.id.btn_Google);
-        googleLoginBtn.setEnabled(true);
-
+        enableButtons();
 
         facebookLogin();
         if (Profile.getCurrentProfile() != null) //If connected once and still connected with Facebook, auto connect to Facebook.
         {
             Log.d(TAG, "facebook login");
             SharedPreferences sharedpreferences = getSharedPreferences(prefsConnection, Context.MODE_PRIVATE); //If auto-connect: take last saved Facebook email
-            user = new FacebookUser(Profile.getCurrentProfile().getName(), Profile.getCurrentProfile().getProfilePictureUri(500, 500).toString(), Profile.getCurrentProfile(), sharedpreferences.getString(facebookEmail, ""));
+            user = new FacebookUser(Profile.getCurrentProfile().getFirstName(), Profile.getCurrentProfile().getProfilePictureUri(500, 500).toString(), Profile.getCurrentProfile(), sharedpreferences.getString(facebookEmail, ""));
             globalClass.setUser(user);
-            globalClass.getCommunication().authenticate(((FacebookUser) user).getFacebookUserEmail(),user.getPicURL(), ((FacebookUser) user).getFacebookProfile().getFirstName(), ActivityEntrance.this, globalClass); //Connect via Facebook
+            globalClass.getCommunication().authenticate(user.getEmail() ,user.getPicURL(), ((FacebookUser) user).getFacebookProfile().getFirstName(), globalClass); //Connect via Facebook
         }
         else //Connect via Google
         {
@@ -431,6 +424,84 @@ public class ActivityEntrance extends AppCompatActivity implements GoogleApiClie
             mProgressDialog = new ProgressDialog(this);
             mProgressDialog.setMessage("Loading...");
             mGoogleApiClient.connect();
+        }
+    }
+
+    void disableButtons()
+    {
+        Button guestLoginBtn = (Button) findViewById(R.id.btn_NB);
+        guestLoginBtn.setBackground(getResources().getDrawable(R.drawable.disabled_button_rounded_corners));
+        guestLoginBtn.setTextColor(getResources().getColor(R.color.grey));
+        guestLoginBtn.setAlpha((float) 0.1);
+        guestLoginBtn.setEnabled(false);
+        Drawable logo = getResources().getDrawable(R.drawable.anchor_logo);
+        logo.setBounds(0, 0, (int) (logo.getIntrinsicWidth() * 0.5), (int) (logo.getIntrinsicHeight() * 0.5));
+        guestLoginBtn.setCompoundDrawables(logo, null, null, null);
+
+        LoginButton facebookLoginBtn = (LoginButton) findViewById(R.id.btn_Facebook);
+        facebookLoginBtn.setBackground(getResources().getDrawable(R.drawable.disabled_button_rounded_corners));
+        facebookLoginBtn.setTextColor(getResources().getColor(R.color.grey));
+        facebookLoginBtn.setAlpha((float) 0.1);
+        facebookLoginBtn.setEnabled(false);
+
+        SignInButton googleLoginBtn = (SignInButton) findViewById(R.id.btn_Google);
+        googleLoginBtn.setEnabled(false);
+    }
+
+    void enableButtons()
+    {
+        //Enable Buttons
+        Button guestLoginBtn = (Button) findViewById(R.id.btn_NB);
+        if(guestLoginBtn != null)
+        {
+            guestLoginBtn.setBackground(globalClass.getCurrentActivity().getResources().getDrawable(R.drawable.button_rounded_corners));
+            guestLoginBtn.setTextColor(globalClass.getCurrentActivity().getResources().getColor(R.color.white));
+            guestLoginBtn.setAlpha((float) 1);
+            guestLoginBtn.setEnabled(true);
+        }
+
+        LoginButton facebookLoginBtn = (LoginButton) findViewById(R.id.btn_Facebook);
+        if(facebookLoginBtn != null)
+        {
+            facebookLoginBtn.setBackground(globalClass.getCurrentActivity().getResources().getDrawable(R.drawable.button_rounded_corners_facebook));
+            facebookLoginBtn.setTextColor(globalClass.getCurrentActivity().getResources().getColor(R.color.white));
+            facebookLoginBtn.setAlpha((float) 1);
+            facebookLoginBtn.setEnabled(true);
+        }
+
+        SignInButton googleLoginBtn = (SignInButton) findViewById(R.id.btn_Google);
+        if(googleLoginBtn != null)
+        {
+            googleLoginBtn.setEnabled(true);
+        }
+    }
+
+    boolean isOnline() {
+        ConnectivityManager cm =
+                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        return netInfo != null && netInfo.isConnectedOrConnecting();
+    }
+
+    void checkConnectionWithNet()
+    {
+        if(isOnline())
+        {
+            connectToSocialNets();
+        }
+        else
+        {
+            disableButtons();
+            new AlertDialog.Builder(globalClass.getCurrentActivity(), R.style.NBAlertDialog)
+                    .setTitle("אין גישה לרשת האינטרנט")
+                    .setMessage("אנא תקן זאת ונסה שנית....")
+                    .setCancelable(false)
+                    .setPositiveButton("נסה שנית", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            checkConnectionWithNet();
+                        }
+                    })
+                    .show();
         }
     }
 }

@@ -180,6 +180,9 @@ class UserPriority
     @SerializedName("priority")
     @Expose
     private List<RSS> priority = new ArrayList<RSS>();
+    @SerializedName("message")
+    @Expose
+    private String message;
 
     public Integer getStatus()
     {
@@ -200,6 +203,16 @@ class UserPriority
     {
         this.priority = message;
     }
+
+    public String getMessage()
+    {
+        return message;
+    }
+
+    public void setMessage(String message)
+    {
+        this.message = message;
+    }
 }
 
 class SubWeb
@@ -210,6 +223,9 @@ class SubWeb
     @SerializedName("subWeb")
     @Expose
     private List<RSS> subWeb = new ArrayList<RSS>();
+    @SerializedName("message")
+    @Expose
+    private String message;
 
     public Integer getStatus()
     {
@@ -231,4 +247,13 @@ class SubWeb
         this.subWeb = subWeb;
     }
 
+    public String getMessage()
+    {
+        return message;
+    }
+
+    public void setMessage(String message)
+    {
+        this.message = message;
+    }
 }

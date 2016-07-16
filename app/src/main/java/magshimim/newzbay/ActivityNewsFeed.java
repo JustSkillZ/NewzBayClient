@@ -115,7 +115,6 @@ public class ActivityNewsFeed extends AppCompatActivity
                         {
                             categoriesHandler.setLoading(true);
                             globalClass.getCommunication().getMoreArticles(categoriesHandler.getCurrentlyInUseCategoryServer(), categoriesHandler.getCurrentlyInUse().lastElement().getUrl(), globalClass);
-                            findViewById(R.id.pb_loadingArticles).setVisibility(View.VISIBLE);
                         }
                     }
                 }
@@ -430,7 +429,6 @@ public class ActivityNewsFeed extends AppCompatActivity
 
     private void updateArticles()
     {
-        findViewById(R.id.pb_loadingArticles).setVisibility(View.VISIBLE);
         categoriesHandler.setCurrentlyInUseCategory(categoriesHandler.getCurrentCategoryID(), this);
         globalClass.getCommunication().getArticles(categoriesHandler.getCurrentlyInUseCategoryServer(), globalClass);
         recyclerLayoutManager.scrollToPositionWithOffset(0, 0);
@@ -438,7 +436,8 @@ public class ActivityNewsFeed extends AppCompatActivity
 
     private void changeCategory(int categoryID)
     {
-        findViewById(R.id.pb_loadingArticles).setVisibility(View.VISIBLE);
+        categoriesHandler.getCurrentlyInUse().clear();
+        recyclerAdapterArticle.notifyDataSetChanged();
         categoriesHandler.setCurrentlyInUseCategory(categoryID, this);
         toolbarMain.setBackgroundColor(categoriesHandler.getCategoryColor().get(categoriesHandler.getCurrentCategoryID()));
         globalClass.getCommunication().getArticles(categoriesHandler.getCurrentlyInUseCategoryServer(), globalClass);

@@ -66,6 +66,9 @@ class JsonRecievedComments
     @SerializedName("comments")
     @Expose
     private List<JsonComment> comments = new ArrayList<JsonComment>();
+    @SerializedName("message")
+    @Expose
+    private String message;
 
     public Integer getStatus()
     {
@@ -85,6 +88,16 @@ class JsonRecievedComments
     public void setComments(List<JsonComment> articles)
     {
         this.comments = articles;
+    }
+
+    public String getMessage()
+    {
+        return message;
+    }
+
+    public void setMessage(String message)
+    {
+        this.message = message;
     }
 }
 

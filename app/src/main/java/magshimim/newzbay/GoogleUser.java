@@ -8,9 +8,9 @@ public class GoogleUser extends User
     private Person googleProfile;
     private GoogleApiClient googleApiClient;
 
-    public GoogleUser(String fullName, String picURL, Person googleProfile, GoogleApiClient googleApiClient)
+    public GoogleUser(String fullName, String picURL, Person googleProfile, GoogleApiClient googleApiClient, String email)
     {
-        super(fullName, picURL, "Google");
+        super(fullName, picURL, "Google", email);
         this.googleProfile = googleProfile;
         this.googleApiClient = googleApiClient;
     }

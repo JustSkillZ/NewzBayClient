@@ -88,4 +88,29 @@
         android:layout_centerHorizontal="true"
         android:visibility="gone"/>
 
+    <ProgressBar
+        android:id="@+id/pb_loading"
+        android:layout_below="@id/btn_NB"
+        android:layout_marginTop="40dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="3dp"
+        android:layout_marginLeft="3dp"
+        android:theme="@style/LinearProgress"
+        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+        android:visibility="invisible"
+        android:indeterminate="true"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/pb_loading"
+        android:visibility="invisible"
+        android:textStyle="bold"
+        android:text="מתבצעת התחברות לשרת"
+        android:textColor="@color/orange"
+        android:textSize="15dp"
+        android:id="@+id/tv_connectingToServer"/>
+
 </RelativeLayout>

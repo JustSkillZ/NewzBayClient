@@ -96,7 +96,7 @@ public class ActivityChoosePriority extends AppCompatActivity implements PopupMe
         }
         else
         {
-            globalClass.getCommunication().setPriority(priorityList, ActivityChoosePriority.this, globalClass);
+            globalClass.getCommunication().setPriority(priorityList, globalClass);
         }
         finish();
     }

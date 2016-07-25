@@ -65,7 +65,10 @@ public class Communication
                 {
                     pb.setVisibility(View.INVISIBLE);
                 }
-                ((Activity) globalClass.getCurrentActivity()).findViewById(R.id.tv_connectingToServer).setVisibility(View.INVISIBLE);
+                if (globalClass.getCurrentActivity() instanceof ActivityEntrance)
+                {
+                    ((Activity) globalClass.getCurrentActivity()).findViewById(R.id.tv_connectingToServer).setVisibility(View.INVISIBLE);
+                }
                 if(response.body().getStatus() == 200)
                 {
                     token = response.body().getToken();

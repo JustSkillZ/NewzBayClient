@@ -3,7 +3,6 @@ package magshimim.newzbay;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.support.v4.view.PagerAdapter;
 import android.support.v7.widget.RecyclerView;
 

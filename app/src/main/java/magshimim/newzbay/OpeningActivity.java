@@ -14,5 +14,6 @@ public class OpeningActivity extends AppCompatActivity
         setContentView(R.layout.activity_opening);
         Intent entrance = new Intent(OpeningActivity.this, ActivityEntrance.class);
         this.startActivity(entrance);
+        finish();
     }
 }

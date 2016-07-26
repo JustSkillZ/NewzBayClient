@@ -2,6 +2,7 @@ package magshimim.newzbay;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
@@ -58,6 +59,11 @@ public class ActivityComments extends AppCompatActivity implements EmojiconGridF
         commentsHandler = globalClass.getCommentsHandler();
         user = globalClass.getUser();
         commentText = (EditText) findViewById(R.id.commentText);
+
+        Button senComment = (Button) findViewById(R.id.btn_sendComment);
+        senComment.getBackground().setColorFilter(getResources().getColor(R.color.nb), PorterDuff.Mode.SRC_ATOP);
+        Button chooseSmile = (Button) findViewById(R.id.btn_chooseSmile);
+        chooseSmile.getBackground().setColorFilter(getResources().getColor(R.color.nb), PorterDuff.Mode.SRC_ATOP);
 
         emojicons = getSupportFragmentManager().findFragmentById(R.id.fragment_emojicons);
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction(); //Hide emojicons keyboard

@@ -215,6 +215,7 @@
                 android:layout_height="30dp"
                 android:background="@drawable/send_icon"
                 android:id="@+id/btn_sendComment"
+                android:backgroundTint="@color/nb"
                 android:layout_marginTop="5dp" />
 
             <com.rockerhieu.emojicon.EmojiconEditText
@@ -234,7 +235,7 @@
                 android:layout_height="30dp"
                 android:background="@drawable/emoji_icon"
                 android:id="@+id/btn_chooseSmile"
-                android:tint="@color/black"
+                android:backgroundTint="@color/nb"
                 android:onClick="changeFragmentVisibility"
                 android:layout_marginTop="5dp"/>
         </LinearLayout>

@@ -3,6 +3,7 @@ package magshimim.newzbay;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -131,25 +132,16 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
                 });
             }
             holder.mainHeadline.setText(categoriesHandler.getCurrentlyInUse().elementAt(position).getMainHeadline());
-            holder.mainHeadline.setOnClickListener(new View.OnClickListener() //Go to comments activity
-            {
-                @Override
-                public void onClick(View v)
-                {
-                    globalClass.getCommentsHandler().setArticle(categoriesHandler.getCurrentlyInUse().elementAt(tempPosition));
-                    Intent comments = new Intent(context, ActivityComments.class);
-                    context.startActivity(comments);
-                }
-            });
             holder.secondHeadline.setText(categoriesHandler.getCurrentlyInUse().elementAt(position).getSecondHeadline());
+            holder.secondHeadline.setMaxLines(2);
+            holder.secondHeadline.setEllipsize(TextUtils.TruncateAt.END);
             holder.secondHeadline.setOnClickListener(new View.OnClickListener() //Go to comments activity
             {
                 @Override
                 public void onClick(View v)
                 {
-                    globalClass.getCommentsHandler().setArticle(categoriesHandler.getCurrentlyInUse().elementAt(tempPosition));
-                    Intent comments = new Intent(context, ActivityComments.class);
-                    context.startActivity(comments);
+                    ((TextView)v).setMaxLines(Integer.MAX_VALUE);
+                    ((TextView)v).setEllipsize(null);
                 }
             });
             holder.site.setText(categoriesHandler.getCurrentlyInUse().elementAt(position).getWebSite());

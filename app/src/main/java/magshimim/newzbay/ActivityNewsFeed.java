@@ -26,6 +26,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.login.LoginManager;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.google.android.gms.plus.Plus;
 import com.squareup.picasso.Picasso;
 
@@ -66,6 +68,7 @@ public class ActivityNewsFeed extends AppCompatActivity
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.newsfeed_activity);
+
         changeTheme();
         globalClass = ((GlobalClass) getApplicationContext());
         user = globalClass.getUser();

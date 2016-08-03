@@ -38,6 +38,11 @@ public class Article
         this.liked = liked;
     }
 
+    public Article()
+    {
+
+    }
+
     public String getMainHeadline()
     {
         return this.mainHeadline;

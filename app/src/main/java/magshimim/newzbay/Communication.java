@@ -351,6 +351,10 @@ public class Communication
                         {
                             e.printStackTrace();
                         }
+                        if((globalClass.getCategoriesHandler().getCurrentlyInUse().size()) % 8 == 0 && globalClass.getCategoriesHandler().getCurrentlyInUse().size() != 0)
+                        {
+                            globalClass.getCategoriesHandler().getCurrentlyInUse().add( new Article());
+                        }
                         globalClass.getCategoriesHandler().getCurrentlyInUse().add( new Article(
                                 globalClass.getPriorityHandler().getSubjectByID(response.body().getArticles().get(i).getID()),
                                 globalClass.getPriorityHandler().getWebsiteByID(response.body().getArticles().get(i).getID()),
@@ -738,6 +742,10 @@ public class Communication
                         catch (ParseException e)
                         {
                             e.printStackTrace();
+                        }
+                        if((globalClass.getCategoriesHandler().getCurrentlyInUse().size()) % 8 == 0 && globalClass.getCategoriesHandler().getCurrentlyInUse().size() != 0)
+                        {
+                            globalClass.getCategoriesHandler().getCurrentlyInUse().add( new Article());
                         }
                         globalClass.getCategoriesHandler().getCurrentlyInUse().add( new Article(
                                 globalClass.getPriorityHandler().getSubjectByID(response.body().getArticles().get(i).getID()),

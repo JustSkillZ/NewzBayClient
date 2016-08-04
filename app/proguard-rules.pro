@@ -47,3 +47,8 @@
 -keep class com.google.gson.examples.android.model.** { *; }
 
 ##---------------End: proguard configuration for Gson  ----------
+
+##---------------AdMob  ----------
+ -keep public class com.google.ads.**{
+       public *;
+    }

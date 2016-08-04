@@ -1,18 +1,24 @@
 package magshimim.newzbay;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.Window;
 import android.webkit.WebBackForwardList;
+import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
+import android.widget.ProgressBar;
 
 public class ActivityInnerWeb extends AppCompatActivity
 {
@@ -23,12 +29,16 @@ public class ActivityInnerWeb extends AppCompatActivity
     private WebBackForwardList webBackForwardList;
     private android.support.v7.widget.Toolbar toolbarWeb;
     private CategoriesHandler categoriesHandler;
+    private ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_inner_web);
+        progressBar = (ProgressBar) findViewById(R.id.progressBar);
+        progressBar.setMax(100);
+        progressBar.getProgressDrawable().setColorFilter(new PorterDuffColorFilter(getResources().getColor(R.color.white), android.graphics.PorterDuff.Mode.SRC_IN));
         categoriesHandler = ((GlobalClass) getApplicationContext()).getCategoriesHandler();
         ((GlobalClass) getApplicationContext()).setCurrentActivity(ActivityInnerWeb.this);
         if (!getSharedPreferences(prefsConnection, Context.MODE_PRIVATE).getBoolean(isExplanation2, false)) //If opened this screen first time, open explanation activity.
@@ -104,6 +114,16 @@ public class ActivityInnerWeb extends AppCompatActivity
         web.getSettings().setJavaScriptEnabled(true);
         web.getSettings().setBuiltInZoomControls(true);
         web.getSettings().setDisplayZoomControls(false);
+        web.setWebChromeClient(new WebChromeClient() {
+            public void onProgressChanged(WebView view, int progress)
+            {
+                progressBar.setProgress(progress);
+                if(progress == 100)
+                {
+                    progressBar.setVisibility(View.GONE);
+                }
+            }
+        });
         web.setWebViewClient(new WebViewClient()
         {
 
@@ -111,6 +131,8 @@ public class ActivityInnerWeb extends AppCompatActivity
             public void onPageStarted(WebView view, String url, Bitmap favicon)
             {
                 super.onPageStarted(view, url, favicon);
+                progressBar.setVisibility(View.VISIBLE);
+                progressBar.setProgress(0);
             }
 
             @Override

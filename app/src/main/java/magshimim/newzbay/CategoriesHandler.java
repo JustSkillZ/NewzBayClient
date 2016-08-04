@@ -56,7 +56,8 @@ public class CategoriesHandler
         siteLogo.put("9TV", BitmapFactory.decodeResource(globalClass.getResources(), R.drawable.site_9tv_new));
         siteLogo.put("calcalist", BitmapFactory.decodeResource(globalClass.getResources(), R.drawable.site_calcalist));
         siteLogo.put("0404", BitmapFactory.decodeResource(globalClass.getResources(), R.drawable.site_0404));
-        siteLogo.put("TheMarker", BitmapFactory.decodeResource(globalClass.getResources(), R.drawable.site_themarker));
+        siteLogo.put("TheMarker", BitmapFactory.decodeResource(globalClass.getResources(), R.drawable.site_themarker_new));
+        siteLogo.put("Globes", BitmapFactory.decodeResource(globalClass.getResources(), R.drawable.site_globes));
 
         categoryIcon = new Vector<>();
         categoryIcon.add(BitmapFactory.decodeResource(globalClass.getResources(), R.drawable.hot_news));

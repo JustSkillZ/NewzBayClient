@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -199,11 +200,6 @@ public class Communication
                                 getAllRSS(globalClass);
                             }
                         })
-                        .setNegativeButton("ביטול", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                // do nothing
-                            }
-                        })
                         .show();
             }
         });
@@ -351,10 +347,10 @@ public class Communication
                         {
                             e.printStackTrace();
                         }
-                        if((globalClass.getCategoriesHandler().getCurrentlyInUse().size()) % 8 == 0 && globalClass.getCategoriesHandler().getCurrentlyInUse().size() != 0)
-                        {
-                            globalClass.getCategoriesHandler().getCurrentlyInUse().add( new Article());
-                        }
+//                        if((globalClass.getCategoriesHandler().getCurrentlyInUse().size()) % 8 == 0 && globalClass.getCategoriesHandler().getCurrentlyInUse().size() != 0)
+//                        {
+//                            globalClass.getCategoriesHandler().getCurrentlyInUse().add( new Article());
+//                        }
                         globalClass.getCategoriesHandler().getCurrentlyInUse().add( new Article(
                                 globalClass.getPriorityHandler().getSubjectByID(response.body().getArticles().get(i).getID()),
                                 globalClass.getPriorityHandler().getWebsiteByID(response.body().getArticles().get(i).getID()),
@@ -669,7 +665,10 @@ public class Communication
                                 ));
                             }
                         }
-                    globalClass.getCategoriesHandler().getHotNewsPageAdapter().notifyDataSetChanged();
+                    if(globalClass.getCategoriesHandler().getHotNewsPageAdapter() != null)
+                    {
+                        globalClass.getCategoriesHandler().getHotNewsPageAdapter().notifyDataSetChanged();
+                    }
                 }
                 else if(response.body().getStatus() == 400)
                 {
@@ -743,10 +742,10 @@ public class Communication
                         {
                             e.printStackTrace();
                         }
-                        if((globalClass.getCategoriesHandler().getCurrentlyInUse().size()) % 8 == 0 && globalClass.getCategoriesHandler().getCurrentlyInUse().size() != 0)
-                        {
-                            globalClass.getCategoriesHandler().getCurrentlyInUse().add( new Article());
-                        }
+//                        if((globalClass.getCategoriesHandler().getCurrentlyInUse().size()) % 8 == 0 && globalClass.getCategoriesHandler().getCurrentlyInUse().size() != 0)
+//                        {
+//                            globalClass.getCategoriesHandler().getCurrentlyInUse().add( new Article());
+//                        }
                         globalClass.getCategoriesHandler().getCurrentlyInUse().add( new Article(
                                 globalClass.getPriorityHandler().getSubjectByID(response.body().getArticles().get(i).getID()),
                                 globalClass.getPriorityHandler().getWebsiteByID(response.body().getArticles().get(i).getID()),

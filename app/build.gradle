@@ -8,8 +8,8 @@ android {
         applicationId "magshimim.newzbay"
         minSdkVersion 18
         targetSdkVersion 24
-        versionCode 25
-        versionName "2.5"
+        versionCode 30
+        versionName "1.58 BETA"
     }
     buildTypes {
         release {

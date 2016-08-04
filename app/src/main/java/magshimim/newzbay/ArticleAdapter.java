@@ -52,14 +52,14 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
     {
         View view = null;
         ArticleAdapter.ViewHolder vh = null;
-        if(firstTime)
-        {
-            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.recyclerview_admob, parent, false);
-            AdRequest adRequest = new AdRequest.Builder()
-                    .build();
-            ((NativeExpressAdView) view.findViewById(R.id.adView)).loadAd(adRequest);
-            firstTime = false;
-        }
+//        if(firstTime)
+//        {
+//            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.recyclerview_admob, parent, false);
+//            AdRequest adRequest = new AdRequest.Builder()
+//                    .build();
+//            ((NativeExpressAdView) view.findViewById(R.id.adView)).loadAd(adRequest);
+//            firstTime = false;
+//        }
         if (viewType == AD_TYPE)
         {
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.recyclerview_admob, parent, false);
@@ -311,8 +311,8 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
     @Override
     public int getItemViewType(int position)
     {
-        if (position % 8 == 0 && position != 0)
-            return AD_TYPE;
+//        if (position % 8 == 0 && position != 0)
+//            return AD_TYPE;
         return CONTENT_TYPE;
     }
 }

@@ -10,11 +10,21 @@
         layout="@layout/toolbar_web">
     </include>
 
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:minHeight="7dip"
+        android:maxHeight="7dip"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/nb"
+        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+        android:layout_below="@id/toolbar_web"/>
+
     <WebView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/wv_article"
-        android:layout_below="@+id/toolbar_web">
+        android:layout_below="@+id/progressBar">
     </WebView>
 
 </RelativeLayout>

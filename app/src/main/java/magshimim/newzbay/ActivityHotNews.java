@@ -129,7 +129,7 @@ public class ActivityHotNews extends AppCompatActivity
                 date.setText((String) DateUtils.getRelativeTimeSpanString(hotNews.get(getArguments().getInt("NB")).getDate().getTime(), d.getTime(), 0));
             }
             ImageButton articlePic = (ImageButton) rootView.findViewById(R.id.ib_article_pic);
-            if (!hotNews.get(getArguments().getInt("NB")).getPicURL().equals("null")) //If there is a URL, load the pic.
+            if (hotNews.get(getArguments().getInt("NB")).getPicURL() != null) //If there is a URL, load the pic.
             {
                 Picasso.with(getContext()).load(hotNews.get(getArguments().getInt("NB")).getPicURL()).fit().centerCrop().placeholder(R.drawable.loading_hotnews).into(articlePic);
             }

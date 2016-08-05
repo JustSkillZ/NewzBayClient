@@ -10,7 +10,6 @@ import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -19,11 +18,7 @@ import android.widget.Toast;
 
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdSize;
-import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.NativeExpressAdView;
-import com.google.android.gms.ads.doubleclick.PublisherAdRequest;
-import com.google.android.gms.ads.doubleclick.PublisherAdView;
 import com.squareup.picasso.Picasso;
 
 import java.util.Date;
@@ -92,6 +87,10 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
                 holder.line1.setBackgroundColor(categoriesHandler.getCategoryColor().get(categoriesHandler.getCurrentCategoryID()));
                 holder.line2.setBackgroundColor(categoriesHandler.getCategoryColor().get(categoriesHandler.getCurrentCategoryID()));
                 holder.line3.setBackgroundColor(categoriesHandler.getCategoryColor().get(categoriesHandler.getCurrentCategoryID()));
+                holder.line4.setBackgroundColor(categoriesHandler.getCategoryColor().get(categoriesHandler.getCurrentCategoryID()));
+                holder.line5.setBackgroundColor(categoriesHandler.getCategoryColor().get(categoriesHandler.getCurrentCategoryID()));
+                holder.imComments.getBackground().setColorFilter(categoriesHandler.getCategoryColor().get(categoriesHandler.getCurrentCategoryID()), PorterDuff.Mode.SRC_ATOP);
+                holder.imLikes.getBackground().setColorFilter(categoriesHandler.getCategoryColor().get(categoriesHandler.getCurrentCategoryID()), PorterDuff.Mode.SRC_ATOP);
                 if (user.getConnectedVia().equals("Guest")) //Guest cant like or comment
                 {
                     holder.like.setBackgroundResource(R.drawable.buttonborder_disabled);
@@ -123,10 +122,12 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
                     if (categoriesHandler.getCurrentlyInUse().get(position).isLiked())
                     {
                         holder.like.setTextColor(categoriesHandler.getCategoryColor().get(categoriesHandler.getCurrentCategoryID()));
+                        holder.like.getCompoundDrawables()[0].mutate().setColorFilter(categoriesHandler.getCategoryColor().get(categoriesHandler.getCurrentCategoryID()), PorterDuff.Mode.SRC_ATOP);
                     }
                     else
                     {
                         holder.like.setTextColor(globalClass.getResources().getColor(R.color.grey));
+                        holder.like.getCompoundDrawables()[0].mutate().setColorFilter(null);
                     }
                     holder.like.setOnClickListener(new View.OnClickListener()
                     {
@@ -139,9 +140,7 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
                             if (categoriesHandler.getCurrentlyInUse().get(tempPosition).isLiked()) //Unlike
                             {
                                 like.setTextColor(globalClass.getResources().getColor(R.color.grey));
-//                                Drawable[] drawables = like.getCompoundDrawables();
-//                                drawables[0].setColorFilter(null);
-//                                like.setCompoundDrawablesWithIntrinsicBounds(drawables[0], null, null, null);
+                                like.getCompoundDrawables()[0].mutate().setColorFilter(null);
                                 categoriesHandler.getCurrentlyInUse().get(tempPosition).setLiked(false);
                                 categoriesHandler.getCurrentlyInUse().get(tempPosition).decNumberOfLikes();
                                 globalClass.getCommunication().like(categoriesHandler.getCurrentlyInUse().get(tempPosition).getUrl(), globalClass);
@@ -149,9 +148,7 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
                             else //Like
                             {
                                 like.setTextColor(categoriesHandler.getCategoryColor().get(categoriesHandler.getCurrentCategoryID()));
-//                                Drawable[] drawables = like.getCompoundDrawables();
-//                                drawables[0].setColorFilter(categoriesHandler.getCategoryColor().get(categoriesHandler.getCurrentCategoryID()), PorterDuff.Mode.SRC_ATOP);
-//                                like.setCompoundDrawablesWithIntrinsicBounds(drawables[0], null, null, null);
+                                like.getCompoundDrawables()[0].mutate().setColorFilter(categoriesHandler.getCategoryColor().get(categoriesHandler.getCurrentCategoryID()), PorterDuff.Mode.SRC_ATOP);
                                 categoriesHandler.getCurrentlyInUse().get(tempPosition).setLiked(true);
                                 categoriesHandler.getCurrentlyInUse().get(tempPosition).incNumberOfLikes();
                                 globalClass.getCommunication().like(categoriesHandler.getCurrentlyInUse().get(tempPosition).getUrl(), globalClass);
@@ -281,6 +278,10 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
         public View line1;
         public View line2;
         public View line3;
+        public View line4;
+        public View line5;
+        public ImageView imComments;
+        public ImageView imLikes;
 
         public ViewHolder(View itemView)
         {
@@ -299,6 +300,11 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
             this.line1 = (View) itemView.findViewById(R.id.line1);
             this.line2 = (View) itemView.findViewById(R.id.line2);
             this.line3 = (View) itemView.findViewById(R.id.line3);
+            this.line4 = (View) itemView.findViewById(R.id.line4);
+            this.line5 = (View) itemView.findViewById(R.id.line5);
+            this.imComments = (ImageView) itemView.findViewById(R.id.im_comments);
+            this.imLikes = (ImageView) itemView.findViewById(R.id.im_likes);
+
         }
     }
 

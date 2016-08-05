@@ -52,7 +52,7 @@
         android:layout_marginLeft="3dp"
         android:layout_alignParentBottom="true"
         android:layout_toEndOf="@+id/tv_article_likes"
-        android:background="@drawable/likes_icon"/>
+        android:background="@drawable/likes_hotnews"/>
 
     <TextView
         android:layout_width="wrap_content"

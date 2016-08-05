@@ -10,6 +10,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="mainHeadline"
+        android:layout_marginTop="5dp"
         android:textStyle="bold"
         android:textSize="20sp"
         android:textColor="@color/black"
@@ -58,6 +59,13 @@
             android:layout_alignParentRight="true"/>
     </RelativeLayout>
 
+    <View
+        android:layout_height="2dp"
+        android:id="@+id/line4"
+        android:layout_width="match_parent"
+        android:background="@color/nb"
+        android:layout_marginTop="5dp"/>
+
     <ImageButton
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -66,6 +74,13 @@
         android:adjustViewBounds="true"
         android:minHeight="150dp"
         android:scaleType="fitCenter"/>
+
+    <View
+        android:layout_height="2dp"
+        android:id="@+id/line5"
+        android:layout_width="match_parent"
+        android:background="@color/nb"
+        android:layout_marginBottom="5dp"/>
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -90,7 +105,7 @@
             android:layout_toEndOf="@id/tv_likes"
             android:layout_marginTop="1dp"
             android:layout_marginLeft="3dp"
-            android:background="@drawable/likes_icon"/>
+            android:background="@drawable/icon_like"/>
 
         <TextView
             android:layout_width="wrap_content"
@@ -111,7 +126,7 @@
             android:id="@+id/im_comments"
             android:layout_marginLeft="3dp"
             android:layout_toEndOf="@id/tv_comments"
-            android:background="@drawable/comments_icon"/>
+            android:background="@drawable/icon_comment"/>
 
     </RelativeLayout>
 
@@ -119,7 +134,8 @@
         android:layout_height="2dp"
         android:id="@+id/line1"
         android:layout_width="match_parent"
-        android:background="@color/nb" />
+        android:background="@color/nb"
+        android:layout_marginTop="5dp"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -138,7 +154,7 @@
             android:saveEnabled="true"
             android:textColor="@color/grey"
             android:background="@color/white"
-            android:drawableLeft="@drawable/icon_like"
+            android:drawableLeft="@drawable/icon_like2"
             android:paddingLeft="15dp"/>
 
         <View
@@ -158,7 +174,7 @@
             android:textStyle="bold"
             android:textColor="@color/grey"
             android:background="@color/white"
-            android:drawableLeft="@drawable/icon_comment"
+            android:drawableLeft="@drawable/icon_comment2"
             android:paddingLeft="15dp"/>
 
         <View

@@ -108,7 +108,7 @@
     <string name="NewsFeedHelp3">לחיצה על התמונה של הכתבה</string>
     <string name="NewsFeedHelp4">תוביל לכתבה המלאה</string>
     <string name="Done">סיים</string>
-    <string name="WelcomeToBay">ברוכים הבאים למפרץ</string>
+    <string name="WelcomeToBay">ברוכים הבאים</string>
     <string name="comment">הגב</string>
     <string name="like">אהבתי</string>
     <string name="categories">קטגוריות</string>
@@ -131,4 +131,5 @@
     <string name="reconnect">נסה להתחבר שוב</string>
     <string name="donate">תמכו בנו</string>
     <string name="ad_unit_id">ca-app-pub-3444735342824338/7447438409</string>
+    <string name="share">שתף</string>
 </resources>

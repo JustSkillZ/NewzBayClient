@@ -25,6 +25,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class Communication
 {
     private final String BASE_URL = "http://ec2-52-28-112-77.eu-central-1.compute.amazonaws.com:4646";
+//    private final String BASE_URL = "http://109.66.145.173:4646";
     private Retrofit retrofit;
     private NewzBayAPI newzBayAPI;
     private String token;
@@ -167,6 +168,7 @@ public class Communication
             {
                 if(response.body().getStatus() == 200)
                 {
+                    globalClass.getPriorityHandler().getRssSites().clear();
                     for(int i = 0; i < response.body().getSubWeb().size(); i++)
                     {
                         globalClass.getPriorityHandler().getRssSites().add(new RSS(
@@ -365,7 +367,10 @@ public class Communication
                                 globalClass
                         ));
                     }
-                    globalClass.getCategoriesHandler().getArticlesRecyclerAdapter().notifyDataSetChanged();
+                    if(globalClass.getCategoriesHandler().getArticlesRecyclerAdapter() != null)
+                    {
+                        globalClass.getCategoriesHandler().getArticlesRecyclerAdapter().notifyDataSetChanged();
+                    }
                     globalClass.getCategoriesHandler().setLoading(false);
                     if(response.body().getArticles().size() == 0)
                     {
@@ -760,7 +765,10 @@ public class Communication
                                 globalClass
                         ));
                     }
-                    globalClass.getCategoriesHandler().getArticlesRecyclerAdapter().notifyDataSetChanged();
+                    if(globalClass.getCategoriesHandler().getArticlesRecyclerAdapter() != null)
+                    {
+                        globalClass.getCategoriesHandler().getArticlesRecyclerAdapter().notifyDataSetChanged();
+                    }
                     globalClass.getCategoriesHandler().setLoading(false);
                     pb = (ProgressBar) ((Activity) globalClass.getCurrentActivity()).findViewById(R.id.pb_loading);
                     if (pb != null)

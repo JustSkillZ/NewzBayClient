@@ -125,7 +125,7 @@ public class ActivityComments extends AppCompatActivity implements EmojiconGridF
             Date d = new Date();
             ((TextView) findViewById(R.id.tv_date)).setText((String) DateUtils.getRelativeTimeSpanString(commentsHandler.getArticle().getDate().getTime(), d.getTime(), 0));
         }
-        if (!commentsHandler.getArticle().getPicURL().equals("null"))
+        if (commentsHandler.getArticle().getPicURL() != null)
         {
             Picasso.with(this).load(commentsHandler.getArticle().getPicURL()).into(((ImageButton) findViewById(R.id.ib_picture)));
         }

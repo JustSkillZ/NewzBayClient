@@ -4,7 +4,6 @@
     android:layout_height="wrap_content"
     android:background="@color/white"
     android:orientation="vertical"
-    android:layout_gravity="left"
     android:weightSum="1">
 
     <TextView
@@ -59,29 +58,18 @@
             android:layout_alignParentRight="true"/>
     </RelativeLayout>
 
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="3dp"
-        android:background="#bacee4"/>
-
     <ImageButton
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/ib_picture"
-        android:background="@drawable/buttonborder"
+        android:background="@color/transparent"
         android:adjustViewBounds="true"
         android:minHeight="150dp"
         android:scaleType="fitCenter"/>
 
-    <ImageView
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="3dp"
-        android:background="#bacee4"/>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:weightSum="1">
+        android:layout_height="wrap_content">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -99,6 +87,7 @@
             android:layout_width="25dp"
             android:layout_height="25dp"
             android:id="@+id/im_likes"
+            android:layout_toEndOf="@id/tv_likes"
             android:layout_marginTop="1dp"
             android:layout_marginLeft="3dp"
             android:background="@drawable/likes_icon"/>
@@ -109,57 +98,94 @@
             android:id="@+id/tv_comments"
             android:text="+999"
             android:layout_marginLeft="15dp"
+            android:layout_toEndOf="@id/im_likes"
             android:layout_marginTop="4dp"
             android:layout_marginBottom="4dp"
             android:textAllCaps="false"
             android:textSize="16sp"
-            android:textColor="@color/grey" />
+            android:textColor="@color/grey"/>
 
         <ImageView
-            android:layout_width="25dp"
-            android:layout_height="25dp"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
             android:id="@+id/im_comments"
             android:layout_marginLeft="3dp"
+            android:layout_toEndOf="@id/tv_comments"
             android:background="@drawable/comments_icon"/>
 
-    </LinearLayout>
+    </RelativeLayout>
+
+    <View
+        android:layout_height="2dp"
+        android:id="@+id/line1"
+        android:layout_width="match_parent"
+        android:background="@color/nb" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:weightSum="2">
+        android:weightSum="3">
 
         <Button
             android:layout_width="match_parent"
-            android:layout_height="50dp"
+            android:layout_height="43dp"
             android:layout_weight="1"
             android:id="@+id/btn_like"
-            android:background="@drawable/buttonborder"
             android:text="@string/like"
-            android:textStyle="bold"
             android:textAllCaps="false"
+            android:textStyle="bold"
             android:textSize="18sp"
             android:saveEnabled="true"
-            android:textColor="@color/grey" />
+            android:textColor="@color/grey"
+            android:background="@color/white"
+            android:drawableLeft="@drawable/icon_like"
+            android:paddingLeft="15dp"/>
+
+        <View
+            android:layout_width="1dp"
+            android:id="@+id/line2"
+            android:layout_height="match_parent"
+            android:background="@color/nb" />
 
         <Button
             android:layout_width="match_parent"
-            android:layout_height="50dp"
+            android:layout_height="43dp"
             android:layout_weight="1"
             android:id="@+id/btn_comment"
-            android:background="@drawable/buttonborder"
             android:text="@string/comment"
-            android:textStyle="bold"
             android:textAllCaps="false"
             android:textSize="18sp"
-            android:textColor="@color/grey"/>
+            android:textStyle="bold"
+            android:textColor="@color/grey"
+            android:background="@color/white"
+            android:drawableLeft="@drawable/icon_comment"
+            android:paddingLeft="15dp"/>
+
+        <View
+            android:layout_width="1dp"
+            android:id="@+id/line3"
+            android:layout_height="match_parent"
+            android:background="@color/nb" />
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="43dp"
+            android:layout_weight="1"
+            android:id="@+id/btn_share"
+            android:textStyle="bold"
+            android:text="@string/share"
+            android:textAllCaps="false"
+            android:textSize="18sp"
+            android:textColor="@color/grey"
+            android:background="@color/white"
+            android:drawableLeft="@drawable/icon_share"
+            android:paddingLeft="15dp"/>
     </LinearLayout>
 
     <ImageView
         android:layout_width="match_parent"
-        android:layout_height="28dp"
+        android:layout_height="26dp"
         android:background="@color/nb"
-        android:elevation="10dp"
         android:id="@+id/iv_line"/>
 
 </LinearLayout>

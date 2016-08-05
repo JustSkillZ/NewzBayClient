@@ -2,6 +2,8 @@ package magshimim.newzbay;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.text.format.DateUtils;
@@ -87,6 +89,9 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
             {
                 ViewHolder holder = (ViewHolder) viewHolder;
                 holder.line.setBackgroundColor(categoriesHandler.getCategoryColor().get(categoriesHandler.getCurrentCategoryID()));
+                holder.line1.setBackgroundColor(categoriesHandler.getCategoryColor().get(categoriesHandler.getCurrentCategoryID()));
+                holder.line2.setBackgroundColor(categoriesHandler.getCategoryColor().get(categoriesHandler.getCurrentCategoryID()));
+                holder.line3.setBackgroundColor(categoriesHandler.getCategoryColor().get(categoriesHandler.getCurrentCategoryID()));
                 if (user.getConnectedVia().equals("Guest")) //Guest cant like or comment
                 {
                     holder.like.setBackgroundResource(R.drawable.buttonborder_disabled);
@@ -131,9 +136,12 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
                             Button like = (Button) v.findViewById(R.id.btn_like);
                             ViewGroup item = (ViewGroup) v.getParent().getParent();
                             TextView countLikes = (TextView) item.findViewById(R.id.tv_likes);
-                            if (categoriesHandler.getCurrentlyInUse().get(tempPosition).isLiked()) //Dislike
+                            if (categoriesHandler.getCurrentlyInUse().get(tempPosition).isLiked()) //Unlike
                             {
                                 like.setTextColor(globalClass.getResources().getColor(R.color.grey));
+//                                Drawable[] drawables = like.getCompoundDrawables();
+//                                drawables[0].setColorFilter(null);
+//                                like.setCompoundDrawablesWithIntrinsicBounds(drawables[0], null, null, null);
                                 categoriesHandler.getCurrentlyInUse().get(tempPosition).setLiked(false);
                                 categoriesHandler.getCurrentlyInUse().get(tempPosition).decNumberOfLikes();
                                 globalClass.getCommunication().like(categoriesHandler.getCurrentlyInUse().get(tempPosition).getUrl(), globalClass);
@@ -141,6 +149,9 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
                             else //Like
                             {
                                 like.setTextColor(categoriesHandler.getCategoryColor().get(categoriesHandler.getCurrentCategoryID()));
+//                                Drawable[] drawables = like.getCompoundDrawables();
+//                                drawables[0].setColorFilter(categoriesHandler.getCategoryColor().get(categoriesHandler.getCurrentCategoryID()), PorterDuff.Mode.SRC_ATOP);
+//                                like.setCompoundDrawablesWithIntrinsicBounds(drawables[0], null, null, null);
                                 categoriesHandler.getCurrentlyInUse().get(tempPosition).setLiked(true);
                                 categoriesHandler.getCurrentlyInUse().get(tempPosition).incNumberOfLikes();
                                 globalClass.getCommunication().like(categoriesHandler.getCurrentlyInUse().get(tempPosition).getUrl(), globalClass);
@@ -168,18 +179,25 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
                     });
                 }
                 holder.mainHeadline.setText(categoriesHandler.getCurrentlyInUse().elementAt(position).getMainHeadline());
-                holder.secondHeadline.setText(categoriesHandler.getCurrentlyInUse().elementAt(position).getSecondHeadline());
-                holder.secondHeadline.setMaxLines(2);
-                holder.secondHeadline.setEllipsize(TextUtils.TruncateAt.END);
-                holder.secondHeadline.setOnClickListener(new View.OnClickListener() //Go to comments activity
+                if(categoriesHandler.getCurrentlyInUse().elementAt(position).getSecondHeadline().equals(""))
                 {
-                    @Override
-                    public void onClick(View v)
+                    holder.secondHeadline.setVisibility(View.GONE);
+                }
+                else
+                {
+                    holder.secondHeadline.setText(categoriesHandler.getCurrentlyInUse().elementAt(position).getSecondHeadline());
+                    holder.secondHeadline.setMaxLines(2);
+                    holder.secondHeadline.setEllipsize(TextUtils.TruncateAt.END);
+                    holder.secondHeadline.setOnClickListener(new View.OnClickListener() //Go to comments activity
                     {
-                        ((TextView)v).setMaxLines(Integer.MAX_VALUE);
-                        ((TextView)v).setEllipsize(null);
-                    }
-                });
+                        @Override
+                        public void onClick(View v)
+                        {
+                            ((TextView)v).setMaxLines(Integer.MAX_VALUE);
+                            ((TextView)v).setEllipsize(null);
+                        }
+                    });
+                }
                 holder.site.setText(categoriesHandler.getCurrentlyInUse().elementAt(position).getWebSite());
                 if (categoriesHandler.getCurrentlyInUse().elementAt(position).getDate() != null)
                 {
@@ -222,6 +240,21 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
                         context.startActivity(web);
                     }
                 });
+                holder.share.setOnClickListener(new View.OnClickListener() //Go to comments activity
+                {
+                    @Override
+                    public void onClick(View v)
+                    {
+                        Intent sendIntent = new Intent();
+                        sendIntent.setAction(Intent.ACTION_SEND);
+                        sendIntent.putExtra(Intent.EXTRA_TEXT,
+                                categoriesHandler.getCurrentlyInUse().elementAt(tempPosition).getMainHeadline()
+                                        + "\n" +
+                                categoriesHandler.getCurrentlyInUse().elementAt(tempPosition).getUrl());
+                        sendIntent.setType("text/plain");
+                        globalClass.getCurrentActivity().startActivity(Intent.createChooser(sendIntent, globalClass.getResources().getText(R.string.share)));
+                    }
+                });
             }
         }
     }
@@ -243,7 +276,11 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
         public TextView countComments;
         public Button like;
         public Button comment;
+        public Button share;
         public ImageView line;
+        public View line1;
+        public View line2;
+        public View line3;
 
         public ViewHolder(View itemView)
         {
@@ -257,7 +294,11 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
             this.countComments = (TextView) itemView.findViewById(R.id.tv_comments);
             this.like = (Button) itemView.findViewById(R.id.btn_like);
             this.comment = (Button) itemView.findViewById(R.id.btn_comment);
+            this.share = (Button) itemView.findViewById(R.id.btn_share);
             this.line = (ImageView) itemView.findViewById(R.id.iv_line);
+            this.line1 = (View) itemView.findViewById(R.id.line1);
+            this.line2 = (View) itemView.findViewById(R.id.line2);
+            this.line3 = (View) itemView.findViewById(R.id.line3);
         }
     }
 

@@ -39,6 +39,9 @@ public class ActivityNewsFeed extends AppCompatActivity
 
     private final String explanationPref = "magshimim.newzbay.ExplanationPref";
     private final String isExplanation1 = "isExplanation1";
+    private final String prefsConnection = "magshimim.newzbay.ConnectionPrefs";
+    private final String signInViaGoogle = "signInViaGoogle";
+    private final String signInAsGuest = "signInAsGuest";
     private android.support.v7.widget.Toolbar toolbarMain;
     private SwipeRefreshLayout refreshList;
     private Handler handler = new Handler();
@@ -74,17 +77,6 @@ public class ActivityNewsFeed extends AppCompatActivity
         user = globalClass.getUser();
         globalClass.setCurrentActivity(ActivityNewsFeed.this);
         categoriesHandler = globalClass.getCategoriesHandler();
-        SharedPreferences sharedpreferences; //If first time in this activity, show explanation activity.
-        if (!getSharedPreferences(explanationPref, Context.MODE_PRIVATE).getBoolean(isExplanation1, false))
-        {
-            Intent welcome = new Intent(this, ActivityExplanationNewsFeed.class);
-            startActivity(welcome);
-
-            sharedpreferences = getSharedPreferences(explanationPref, Context.MODE_PRIVATE);
-            SharedPreferences.Editor editor = sharedpreferences.edit();
-            editor.putBoolean(isExplanation1, true);
-            editor.commit();
-        }
 
         //********************************Init Main Toolbar*****************************************
         toolbarMain = (android.support.v7.widget.Toolbar) findViewById(R.id.toolbar_main);
@@ -225,6 +217,17 @@ public class ActivityNewsFeed extends AppCompatActivity
             navigationView.getMenu().findItem(R.id.nav_priority).setTitle(spanString);
         }
         //******************************************************************************************
+
+        SharedPreferences sharedpreferences; //If first time in this activity, show explanation activity.
+        if (!getSharedPreferences(explanationPref, Context.MODE_PRIVATE).getBoolean(isExplanation1, false))
+        {
+            changeCategory(1);
+
+            sharedpreferences = getSharedPreferences(explanationPref, Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedpreferences.edit();
+            editor.putBoolean(isExplanation1, true);
+            editor.commit();
+        }
     }
 
     @Override
@@ -362,10 +365,21 @@ public class ActivityNewsFeed extends AppCompatActivity
                 Plus.AccountApi.clearDefaultAccount(((GoogleUser) user).getGoogleApiClient());
                 ((GoogleUser) user).getGoogleApiClient().disconnect();
                 ((GoogleUser) user).getGoogleApiClient().connect();
+                SharedPreferences sharedpreferences = getSharedPreferences(prefsConnection, Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedpreferences.edit();
+                editor.putBoolean(signInViaGoogle, false);
+                editor.commit();
             }
             else if (user.getConnectedVia().equals("Facebook"))
             {
                 LoginManager.getInstance().logOut();
+            }
+            else
+            {
+                SharedPreferences sharedpreferences = getSharedPreferences(prefsConnection, Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedpreferences.edit();
+                editor.putBoolean(signInAsGuest, false);
+                editor.commit();
             }
             globalClass.endClass();
             Intent intent = new Intent(this, ActivityEntrance.class);

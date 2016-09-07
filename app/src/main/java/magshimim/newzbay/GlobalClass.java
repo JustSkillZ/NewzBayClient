@@ -3,8 +3,6 @@ package magshimim.newzbay;
 import android.app.Application;
 import android.content.Context;
 
-import com.google.android.gms.ads.AdRequest;
-
 public class GlobalClass extends Application
 {
     private CategoriesHandler categoriesHandler;

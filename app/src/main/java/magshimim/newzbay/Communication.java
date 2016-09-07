@@ -1,6 +1,7 @@
 package magshimim.newzbay;
 
 import android.app.Activity;
+import android.app.ActivityOptions;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v7.app.AlertDialog;
@@ -54,7 +55,6 @@ public class Communication
         }
         if(globalClass.getCurrentActivity() instanceof ActivityEntrance)
         {
-            ((Activity) globalClass.getCurrentActivity()).findViewById(R.id.tv_connectingToServer).setVisibility(View.VISIBLE);
             ((ActivityEntrance) globalClass.getCurrentActivity()).disableButtons();
         }
         Call<AuthenticationRecieve> call = newzBayAPI.authenticateUser(new AuthenticationSend(email, picURL, name));
@@ -67,10 +67,6 @@ public class Communication
                 {
                     pb.setVisibility(View.INVISIBLE);
                 }
-                if (globalClass.getCurrentActivity() instanceof ActivityEntrance)
-                {
-                    ((Activity) globalClass.getCurrentActivity()).findViewById(R.id.tv_connectingToServer).setVisibility(View.INVISIBLE);
-                }
                 if(response.body().getStatus() == 200)
                 {
                     token = response.body().getToken();
@@ -82,6 +78,15 @@ public class Communication
                     if(globalClass.getCurrentActivity() instanceof ActivityEntrance)
                     {
                         ((ActivityEntrance) globalClass.getCurrentActivity()).moveToNewsFeed();
+                        if(firstRegistration)
+                        {
+                            Intent priority = new Intent(globalClass.getCurrentActivity(), ActivityPriority.class);
+                            globalClass.getCurrentActivity().startActivity(priority);
+                        }
+                    }
+                    else if(globalClass.getCurrentActivity() instanceof OpeningActivity)
+                    {
+                        ((OpeningActivity) globalClass.getCurrentActivity()).moveToNewsFeed();
                         if(firstRegistration)
                         {
                             Intent priority = new Intent(globalClass.getCurrentActivity(), ActivityPriority.class);

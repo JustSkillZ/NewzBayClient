@@ -132,4 +132,7 @@
     <string name="donate">תמכו בנו</string>
     <string name="ad_unit_id">ca-app-pub-3444735342824338/7447438409</string>
     <string name="share">שתף</string>
+    <string name="connectWithSocialNet1">על מנת להנות משלל האפשרויות שהאפליקציה מציעה</string>
+    <string name="connectWithSocialNet2">כמו: בחירת אתרים לכל נושא, כתיבת תגובות ועשיית לייקים</string>
+    <string name="connectWithSocialNet3">יש להתחבר באמצעות גוגל או פייסבוק</string>
 </resources>

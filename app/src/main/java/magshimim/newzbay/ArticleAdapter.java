@@ -1,9 +1,13 @@
 package magshimim.newzbay;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.text.format.DateUtils;
@@ -13,6 +17,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -34,6 +39,9 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
     private final int AD_TYPE = 1;
     private final int CONTENT_TYPE = 0;
     private boolean firstTime;
+
+    private final String signInAsGuest = "signInAsGuest";
+    private final String prefsConnection = "magshimim.newzbay.ConnectionPrefs";
 
     public ArticleAdapter(Context context, GlobalClass globalClass)
     {
@@ -93,26 +101,66 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
                 holder.imLikes.getBackground().setColorFilter(categoriesHandler.getCategoryColor().get(categoriesHandler.getCurrentCategoryID()), PorterDuff.Mode.SRC_ATOP);
                 if (user.getConnectedVia().equals("Guest")) //Guest cant like or comment
                 {
-                    holder.like.setBackgroundResource(R.drawable.buttonborder_disabled);
-                    holder.like.setAlpha((float) 0.3);
                     holder.like.setOnClickListener(new View.OnClickListener()
                     {
                         @Override
                         public void onClick(View v)
                         {
-                            Toast toast = Toast.makeText(context, "רק משתמשים מחוברים יכולים לעשות לייק", Toast.LENGTH_LONG);
-                            toast.show();
+                            new AlertDialog.Builder(globalClass.getCurrentActivity(), R.style.NBAlertDialog)
+                                    .setTitle("טיפ:")
+                                    .setCancelable(false)
+                                    .setMessage(globalClass.getResources().getString(R.string.connectWithSocialNet1) + "\n"
+                                            + globalClass.getResources().getString(R.string.connectWithSocialNet2) + "\n"
+                                            + globalClass.getResources().getString(R.string.connectWithSocialNet3))
+                                    .setPositiveButton("התחבר באמצעות רשת חברתית", new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            SharedPreferences sharedpreferences = globalClass.getCurrentActivity().getSharedPreferences(prefsConnection, Context.MODE_PRIVATE);
+                                            SharedPreferences.Editor editor = sharedpreferences.edit();
+                                            editor.putBoolean(signInAsGuest, false);
+                                            editor.commit();
+                                            Context current = globalClass.getCurrentActivity();
+                                            globalClass.endClass();
+                                            Intent intent = new Intent(current, ActivityEntrance.class);
+                                            current.startActivity(intent);
+                                            ((Activity) current).finish();
+                                        }
+                                    })
+                                    .setNegativeButton("ביטול", new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int which) {
+                                        }
+                                    })
+                                    .show();
                         }
                     });
-                    holder.comment.setBackgroundResource(R.drawable.buttonborder_disabled);
-                    holder.comment.setAlpha((float) 0.3);
                     holder.comment.setOnClickListener(new View.OnClickListener()
                     {
                         @Override
                         public void onClick(View v)
                         {
-                            Toast toast = Toast.makeText(context, "רק משתמשים מחוברים יכולים להגיב", Toast.LENGTH_LONG);
-                            toast.show();
+                            new AlertDialog.Builder(globalClass.getCurrentActivity(), R.style.NBAlertDialog)
+                                    .setTitle("טיפ:")
+                                    .setCancelable(false)
+                                    .setMessage(globalClass.getResources().getString(R.string.connectWithSocialNet1) + "\n"
+                                            + globalClass.getResources().getString(R.string.connectWithSocialNet2) + "\n"
+                                            + globalClass.getResources().getString(R.string.connectWithSocialNet3))
+                                    .setPositiveButton("התחבר באמצעות רשת חברתית", new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            SharedPreferences sharedpreferences = globalClass.getCurrentActivity().getSharedPreferences(prefsConnection, Context.MODE_PRIVATE);
+                                            SharedPreferences.Editor editor = sharedpreferences.edit();
+                                            editor.putBoolean(signInAsGuest, false);
+                                            editor.commit();
+                                            Context current = globalClass.getCurrentActivity();
+                                            globalClass.endClass();
+                                            Intent intent = new Intent(current, ActivityEntrance.class);
+                                            current.startActivity(intent);
+                                            ((Activity) current).finish();
+                                        }
+                                    })
+                                    .setNegativeButton("ביטול", new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int which) {
+                                        }
+                                    })
+                                    .show();
                         }
                     });
 
